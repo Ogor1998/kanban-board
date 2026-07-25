@@ -1,0 +1,73 @@
+.board {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    overflow-x: auto;
+}
+
+.row {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 27rem;
+    min-height: 200px;
+    gap: 10px;
+    border-radius: 15px;
+
+    /* Glassmorphism */
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.15);
+
+    overflow: hidden;
+}
+
+.card {
+    height: 14rem;
+    width: 22rem;
+    /* background-color: red; */
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+
+}
+
+.card__head {
+    font-size: 1.5rem;
+    border-radius: 15px;
+    margin-left: auto;
+}
+
+.card__body {
+    font-size: 1.3rem;
+}
+
+.high,
+.medium,
+.low {
+    padding: 5px 10px;
+    border-radius: 9px;
+    font-size: 10px;
+    color: #000;
+    font-weight: 500;
+}
+
+.high {
+    background-color: #FFA716;
+}
+
+.medium {
+    background-color: #FFC107;
+}
+
+.low {
+    background-color: #4CAF50;
+}

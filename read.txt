@@ -1,0 +1,12 @@
+Set up Express + MongoDB + models
+Build all backend routes
+Set up React + routing
+Build Board list page (fetch + display boards)
+Build single Board page with static columns
+Build Column and Card components
+Add create/delete card and column
+Add drag and drop within a column
+Add drag and drop between columns
+Add card editing (title, description, priority)
+Add auth (protect boards per user)
+Deploy

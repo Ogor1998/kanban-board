@@ -1,0 +1,17 @@
+.Heading {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    gap: 10px;
+    /* background-color: #e0e1dd; */
+    padding: 10px 5px;
+    /* border-radius: 15px; */
+    width: 100%;
+    box-sizing: border-box;
+
+
+}
+
+.heading__text {
+    margin-right: auto;
+}
