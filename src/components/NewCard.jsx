@@ -6,7 +6,7 @@ import axios from 'axios';
 import { Button } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
-export default function NewCard({ setColumns, columnId }) {
+export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
     const priority = ['low', 'medium', 'high']
     const [formData, setFormData] = useState({
         title: "",
@@ -33,6 +33,7 @@ export default function NewCard({ setColumns, columnId }) {
                         }
                         : column
                 ))
+            setisActiveColumn(null)
         } catch (err) {
             console.log(err)
         }

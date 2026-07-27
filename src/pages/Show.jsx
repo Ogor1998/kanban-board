@@ -10,14 +10,18 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import SortableCard from '../components/SortAbleCard'
 import AddIcon from '@mui/icons-material/Add';
 import NewCard from '../components/NewCard'
+import { useNotification } from '../context/NotificationContext'
+import AlertBox from '../components/AlertBox'
+import NewColumnModal from '../components/NewColumnModal'
 
 
 const Show = () => {
     const { boardId } = useParams();
+    const { message, setMessage } = useNotification();
 
     const [columns, setColumns] = useState([])
 
-    const [formData, setFormData] = useState({ title: "" })
+    const [formData, setFormData] = useState({ title: "", boardId })
     const [activeCard, setActiveCard] = useState(null)
     const [isActiveColumn, setisActiveColumn] = useState(null)
     useEffect(() => {
@@ -42,6 +46,7 @@ const Show = () => {
                 title: formData.title,
                 boardId,
             })
+            setMessage(res.message)
             setColumns((prev) => [...prev, res.data.columns])
         } catch (err) {
             console.log(err)
@@ -54,60 +59,83 @@ const Show = () => {
 
     const handleDragEnd = async (event) => {
         const { active, over } = event
-        if (!over) return
+        if (!over || active.id === over.id) return
         setActiveCard(null)
-        // update card's columnId in state and send PATCH to backend
+
+        // Find which column the dragged card came from
+        const sourceColumn = columns.find(col =>
+            col.cards?.some(card => card._id === active.id)
+        )
+        // Find which column it was dropped on
+        const targetColumn = columns.find(col =>
+            col.cards?.some(card => card._id === over.id) || col._id === over.id
+        )
+
+        if (!sourceColumn || !targetColumn) return
+
+        if (sourceColumn._id === targetColumn._id) {
+            // Same column - reorder
+            const oldIndex = sourceColumn.cards.findIndex(c => c._id === active.id)
+            const newIndex = sourceColumn.cards.findIndex(c => c._id === over.id)
+            const newCards = arrayMove(sourceColumn.cards, oldIndex, newIndex)
+            setColumns(prev => prev.map(col =>
+                col._id === sourceColumn._id ? { ...col, cards: newCards } : col
+            ))
+        } else {
+            // Different column - move card
+            const card = sourceColumn.cards.find(c => c._id === active.id)
+            setColumns(prev => prev.map(col => {
+                if (col._id === sourceColumn._id) {
+                    return { ...col, cards: col.cards.filter(c => c._id !== active.id) }
+                }
+                if (col._id === targetColumn._id) {
+                    return { ...col, cards: [...col.cards, card] }
+                }
+                return col
+            }))
+
+            // Update backend
+            await axios.patch(`/cards/${active.id}/move`, { columnId: targetColumn._id })
+        }
     }
 
     const handleDelete = async (id) => {
         const res = await axios.delete(`/columns/${id}/`)
         setColumns((prev) => prev.filter(col => col._id !== id))
+        setMessage(res.data.message)
         console.log('Deleted Column')
     }
 
     return (
-        <div className='board'>
+        <Box className='big__container'>
+            {message && <div>   <AlertBox /></div>}
 
-            <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
+            <div className='board'>
 
-                {columns.map((col) => (
-                    <div key={col._id} className='row'>
-                        <Heading col={col} handleDelete={handleDelete} />
-                        <SortableContext
-                            items={col.cards?.map(card => card._id) || []}  // ← array of IDs
-                            strategy={verticalListSortingStrategy}
-                        >
-                            {col.cards?.map((card) => (
-                                <SortableCard key={card._id} card={card} setColumns={setColumns} />
+                <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
 
-                            ))}
-                        </SortableContext>
+                    {columns.map((col) => (
+                        <div key={col._id} className='row'>
+                            <Heading col={col} handleDelete={handleDelete} setColumns={setColumns} />
+                            <SortableContext
+                                items={col.cards?.map(card => card._id) || []}  // ← array of IDs
+                                strategy={verticalListSortingStrategy}
+                            >
+                                {col.cards?.map((card) => (
+                                    <SortableCard key={card._id} card={card} setColumns={setColumns} />
 
-                        {isActiveColumn === col._id && <NewCard setColumns={setColumns} columnId={col._id} />}
-                        <Button sx={{ color: '#fff' }} onClick={() => handleClick(col._id)}><AddIcon />Add Card</Button>
-                    </div>
-                ))}
-            </DndContext>
-            <Box
-                component="form"
-                sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
-                noValidate
-                autoComplete="off"
-                onSubmit={handleSubmit}
-            >
-                <Box sx={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
-                    <TextField
-                        id="outlined-basic"
-                        label="Column-Title"
-                        variant="outlined"
-                        name='title'
-                        value={formData.title}
-                        onChange={handleChange}
-                    />
-                    <Button type='submit'>Submit</Button>
-                </Box>
-            </Box >
-        </div>
+                                ))}
+                            </SortableContext>
+
+                            {isActiveColumn === col._id && <NewCard setColumns={setColumns} columnId={col._id} setisActiveColumn={setisActiveColumn} />}
+                            <Button sx={{ color: '#fff' }} onClick={() => handleClick(col._id)}><AddIcon />Add Card</Button>
+                        </div>
+                    ))}
+                </DndContext>
+                <NewColumnModal handleChange={handleChange} formData={formData} handleSubmit={handleSubmit} />
+
+            </div>
+        </Box>
 
 
     )

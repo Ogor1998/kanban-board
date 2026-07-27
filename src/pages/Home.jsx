@@ -8,6 +8,8 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import { useNotification } from '../context/NotificationContext'
+import AlertBox from '../components/AlertBox'
 
 
 
@@ -16,6 +18,8 @@ const Home = () => {
     const [formData, setFormData] = useState({
         title: ""
     })
+
+    const { setMessage } = useNotification();
     console.log(data)
     // const { id } = useParams();
     useEffect(() => {
@@ -23,13 +27,14 @@ const Home = () => {
             const res = await axios.get('/boards');
             console.log(res.data)
             setData(res.data.board)
-
+            setMessage(res.data.message)
         }
         fetchData();
     }, [])
     return (
         <div className='home'>
             {/* <h1>{data.message}</h1> */}
+            <AlertBox />
 
             <div className="container">
                 {data.map((item) => (

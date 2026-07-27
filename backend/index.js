@@ -53,16 +53,37 @@ app.get('/columns/:boardId', async (req, res) => {
 })
 
 app.post('/columns', async (req, res) => {
-    const { id } = req.params;
-    const { title } = req.body;
-    const columnCount = await Column.countDocuments({ boardId: id })
+    const { title, boardId } = req.body;
+    const columnCount = await Column.countDocuments({ boardId })
     const newColumn = new Column({
         title,
-        boardId: id,
+        boardId,
         order: columnCount
     })
     await newColumn.save();
-    res.json({ message: 'You have added a column', column: newColumn })
+    res.json({
+        message: 'You have added a column',
+        column: newColumn
+    })
+    console.log('You created a new column')
+})
+
+app.put('/columns/:id', async (req, res) => {
+    const { id } = req.params;
+    const { title } = req.body;
+    const column = await Column.findByIdAndUpdate(id, { title }, {
+        returnDocument: "after",     // Returns the modified document instead of the old one
+        runValidators: true // Ensures the updates adhere to your Mongoose schema
+    });
+
+    if (!column) {
+        return res.status(404).json({ message: 'Column not found' });
+    }
+    res.json({
+        message: 'You updated this column title',
+        column
+    })
+    console.log('Title updated')
 })
 
 

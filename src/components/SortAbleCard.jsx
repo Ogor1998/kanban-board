@@ -37,7 +37,7 @@ export default function SortableCard({ card, setColumns }) {
                 ))
             console.log('deleted')
         } catch (err) {
-            console.log('didint deleted because', err)
+            console.log('didnt deleted because', err)
         }
     }
 
