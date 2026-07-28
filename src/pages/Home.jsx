@@ -27,7 +27,7 @@ const Home = () => {
             const res = await axios.get('/boards');
             console.log(res.data)
             setData(res.data.board)
-            setMessage(res.data.message)
+            setMessage({ text: res.data.message, })
         }
         fetchData();
     }, [])
@@ -38,7 +38,7 @@ const Home = () => {
 
             <div className="container">
                 {data.map((item) => (
-                    <div key={item._id}><Link to={`/columns/${item._id}`}>{item.title}</Link></div>
+                    <Link className='links' to={`/columns/${item._id}`} key={item._id}>{item.title}</Link>
                 ))}
                 <div>
                 </div>

@@ -24,6 +24,7 @@ const Heading = ({ col, handleDelete, setColumns }) => {
         try {
             const res = await axios.put(`/columns/${col._id}`, { title, });
             const updatedColumn = res.data.column;
+            console.log(res.data)
             setColumns((prev) => prev.map(column =>
                 column._id === updatedColumn._id ? {
                     ...column,          // keep cards
@@ -31,9 +32,9 @@ const Heading = ({ col, handleDelete, setColumns }) => {
                 } : column
             ))
             setIsEditting(false)
-            setMessage(res.data.message)
-            console.log('it worked')
+            setMessage({ text: res.data.message, severity: 'success' })
         } catch (err) {
+            setMessage({ text: err.response?.data?.message || "Something went wrong", severity: 'error' })
             console.log('it failed because', err)
         }
 

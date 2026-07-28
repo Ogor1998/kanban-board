@@ -6,6 +6,8 @@ import './App.css'
 import { Link, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Show from './pages/Show'
+import Error from './utils/Error'
+import { Navigate } from 'react-router-dom'
 
 
 function App() {
@@ -19,6 +21,8 @@ function App() {
 
       <Route path='/boards' element={<Home />} />
       <Route path='/columns/:boardId' element={<Show />} />
+      <Route path='/error' element={<Error />} />
+      <Route path="*" element={<Navigate to="/error" state={{ statusCode: 404, message: "Page not found" }} replace />} />
     </Routes>
 
   )

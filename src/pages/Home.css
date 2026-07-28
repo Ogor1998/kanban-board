@@ -6,13 +6,20 @@
 
 .container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     border: 1px solid #000;
     justify-content: center;
+    align-items: center;
     height: 100%;
     gap: 10px;
     font-size: 2rem;
     margin-top: 10px;
     padding: 20px;
+}
 
+.links {
+    text-decoration: none;
+    color: white;
+    background-color: #000;
+    padding: 20px
 }

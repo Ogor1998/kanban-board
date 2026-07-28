@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import './Show.css'
 import { Box, TextField, Button } from '@mui/material'
 import Heading from '../components/Heading'
@@ -20,6 +20,7 @@ import { useDroppable } from '@dnd-kit/core'
 const Show = () => {
     const { boardId } = useParams();
     const { message, setMessage } = useNotification();
+    const navigate = useNavigate();
 
     const [columns, setColumns] = useState([])
 
@@ -28,10 +29,21 @@ const Show = () => {
     const [isActiveColumn, setisActiveColumn] = useState(null)
     useEffect(() => {
         const fetchColumns = async () => {
-            const res = await axios.get(`/columns/${boardId}`)
-            console.log('this is the full data object', res.data)
-            setColumns(res.data.columns)
+            try {
+                const res = await axios.get(`/columns/${boardId}`)
+                console.log('this is the full data object', res.data)
+                setColumns(res.data.columns)
 
+            } catch (err) {
+                navigate('/error', {
+                    state: {
+                        statusCode: err.response?.status,
+                        message: err.response?.data?.message,
+                        stack: err.stack
+                    }
+                })
+
+            }
 
         }
         fetchColumns();
@@ -49,10 +61,10 @@ const Show = () => {
                 boardId,
 
             })
-            setMessage(res.message)
+            setMessage({ text: res.data.message, severity: 'success' })
             setColumns((prev) => [...prev, { ...res.data.column, cards: [] }])
         } catch (err) {
-            console.log(err)
+            setMessage({ text: err.response?.data?.message || "Something went wrong", severity: 'error' })
         }
     }
 
@@ -105,7 +117,7 @@ const Show = () => {
     const handleDelete = async (id) => {
         const res = await axios.delete(`/columns/${id}/`)
         setColumns((prev) => prev.filter(col => col._id !== id))
-        setMessage(res.data.message)
+        setMessage({ text: res.data.message, severity: 'error' })
         console.log('Deleted Column')
     }
 

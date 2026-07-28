@@ -3,8 +3,10 @@ import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useNotification } from '../context/NotificationContext';
 
 export default function BoardName({ setData, formData, setFormData }) {
+    const { setMessage } = useNotification();
     const navigate = useNavigate();
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -17,9 +19,12 @@ export default function BoardName({ setData, formData, setFormData }) {
             const res = await axios.post('/boards', formData);
             console.log(res.data)
             setData(prev => [...prev, formData])
+            setMessage({ text: res.data.message, severity: 'success' })
             navigate('/boards')
+
         } catch (err) {
             console.log(err)
+            setMessage({ text: err.response?.data?.message, severity: 'error' })
         }
 
     }

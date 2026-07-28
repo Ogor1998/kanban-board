@@ -10,14 +10,16 @@ import { useNotification } from '../context/NotificationContext'
 export default function AlertBox() {
     const [open, setOpen] = React.useState(true);
     const { message } = useNotification();
+    if (!message.text) return null
     return (
         <Box sx={{ width: '100%' }}>
             <Collapse in={open}>
                 <Alert
+                    severity={message.severity || "success"}
                     action={
                         <IconButton
                             aria-label="close"
-                            color="inherit"
+                            color={message.severity}
                             size="small"
                             onClick={() => {
                                 setOpen(false);
@@ -28,7 +30,7 @@ export default function AlertBox() {
                     }
                     sx={{ mb: 2 }}
                 >
-                    {message}
+                    {message.text}
                 </Alert>
             </Collapse>
         </Box>
