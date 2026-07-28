@@ -58,7 +58,7 @@ const Heading = ({ col, handleDelete, setColumns }) => {
                     <Button type='submit' variant='outlined' color='error' onClick={handleClick}>Cancel</Button>
                 </Box>) :
 
-                (<Box sx={{ display: 'flex', border: '1px solid #000', width: '100%' }}>
+                (<Box sx={{ display: 'flex', border: '0.4px solid #fff', width: '100%', padding: '0px 10px', borderRadius: '15px', alignItems: 'center' }}>
                     <Typography variant="h6" gutterBottom sx={{ marginRight: 'auto' }}>
 
                         {col.title}

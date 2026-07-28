@@ -13,6 +13,8 @@ import NewCard from '../components/NewCard'
 import { useNotification } from '../context/NotificationContext'
 import AlertBox from '../components/AlertBox'
 import NewColumnModal from '../components/NewColumnModal'
+import { arrayMove } from '@dnd-kit/sortable'
+import { useDroppable } from '@dnd-kit/core'
 
 
 const Show = () => {
@@ -45,9 +47,10 @@ const Show = () => {
             const res = await axios.post(`/columns`, {
                 title: formData.title,
                 boardId,
+
             })
             setMessage(res.message)
-            setColumns((prev) => [...prev, res.data.columns])
+            setColumns((prev) => [...prev, { ...res.data.column, cards: [] }])
         } catch (err) {
             console.log(err)
         }
@@ -106,6 +109,15 @@ const Show = () => {
         console.log('Deleted Column')
     }
 
+    function DroppableColumn({ col, children }) {
+        const { setNodeRef } = useDroppable({ id: col._id })
+        return (
+            <div ref={setNodeRef} key={col._id} className='row'>
+                {children}
+            </div>
+        )
+    }
+
     return (
         <Box className='big__container'>
             {message && <div>   <AlertBox /></div>}
@@ -115,21 +127,21 @@ const Show = () => {
                 <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
 
                     {columns.map((col) => (
-                        <div key={col._id} className='row'>
+                        <DroppableColumn key={col._id} col={col}>
                             <Heading col={col} handleDelete={handleDelete} setColumns={setColumns} />
                             <SortableContext
-                                items={col.cards?.map(card => card._id) || []}  // ← array of IDs
+                                items={col.cards?.map(card => card._id) || []}
                                 strategy={verticalListSortingStrategy}
                             >
                                 {col.cards?.map((card) => (
                                     <SortableCard key={card._id} card={card} setColumns={setColumns} />
-
                                 ))}
                             </SortableContext>
-
                             {isActiveColumn === col._id && <NewCard setColumns={setColumns} columnId={col._id} setisActiveColumn={setisActiveColumn} />}
-                            <Button sx={{ color: '#fff' }} onClick={() => handleClick(col._id)}><AddIcon />Add Card</Button>
-                        </div>
+                            <Button sx={{ color: '#fff' }} onClick={() => handleClick(col._id)}>
+                                <AddIcon />Add Card
+                            </Button>
+                        </DroppableColumn>
                     ))}
                 </DndContext>
                 <NewColumnModal handleChange={handleChange} formData={formData} handleSubmit={handleSubmit} />

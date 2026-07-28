@@ -19,10 +19,11 @@ export default function SortableCard({ card, setColumns }) {
     } = useSortable({ id: card._id })
 
     const style = {
-        transform: CSS.Transform.toString(transform),
+        transform: CSS.Translate.toString(transform),
         transition,
         opacity: isDragging ? 0.5 : 1,
-        cursor: 'grab'
+        cursor: 'grab',
+        willChange: 'transform'
     }
 
     const handleCardDelete = async () => {
