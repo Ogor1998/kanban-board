@@ -6,8 +6,11 @@ import { TextField, Button, Box, Typography } from '@mui/material';
 import { useSpring, animated } from '@react-spring/web';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Fade = React.forwardRef(function Fade(props, ref) {
+
     const {
         children,
         in: open,
@@ -62,8 +65,16 @@ const style = {
 };
 
 export default function NewColumnModal({ formData, handleChange, handleSubmit }) {
+    const { isLoggedIn } = useAuth();
+    const navigate = useNavigate();
     const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
+    const handleOpen = () => {
+        if (!isLoggedIn) {
+            navigate('/login')
+        } else {
+            setOpen(true)
+        }
+    };
     const handleClose = () => setOpen(false);
 
     return (

@@ -8,6 +8,11 @@ import Home from './pages/Home'
 import Show from './pages/Show'
 import Error from './utils/Error'
 import { Navigate } from 'react-router-dom'
+import NavBar from './common/NavBar'
+import { Box } from '@mui/material'
+import Login from './users/Login'
+import Register from './users/Register'
+
 
 
 function App() {
@@ -15,16 +20,20 @@ function App() {
 
   return (
     // <h1>Home</h1>
+    <Box>
+      <NavBar />
 
+      <Routes>
 
-    <Routes>
+        <Route path='/boards' element={<Home />} />
+        <Route path='/columns/:boardId' element={<Show />} />
+        <Route path='/error' element={<Error />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+        <Route path="*" element={<Navigate to="/error" state={{ statusCode: 404, message: "Page not found" }} replace />} />
+      </Routes>
 
-      <Route path='/boards' element={<Home />} />
-      <Route path='/columns/:boardId' element={<Show />} />
-      <Route path='/error' element={<Error />} />
-      <Route path="*" element={<Navigate to="/error" state={{ statusCode: 404, message: "Page not found" }} replace />} />
-    </Routes>
-
+    </Box>
   )
 }
 

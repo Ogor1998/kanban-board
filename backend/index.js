@@ -10,6 +10,8 @@ const boardRoutes = require('./routes/boardRoutes')
 const cardRoutes = require('./routes/cardRoutes')
 const columnRoutes = require('./routes/columnRoutes')
 const AppError = require('./utils/AppError')
+const User = require('./models/User')
+const bcrypt = require('bcrypt')
 
 mongoose.connect("mongodb://127.0.0.1:27017/kanban").then(() => {
     console.log(`Mongo Connection Active`)
@@ -27,6 +29,52 @@ app.use('/columns', columnRoutes)
 app.use('/cards', cardRoutes)
 app.use('/boards', boardRoutes)
 
+
+
+app.post('/register', async (req, res) => {
+    const { firstname, lastname, username, password, email } = req.body;
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds)
+    const user = new User({
+        firstname,
+        lastname,
+        username,
+        password: hashedPassword,
+        email
+    })
+    await user.save();
+    console.log('this is the new user', user)
+    res.json({
+        message: "You've registered successfully",
+        user: user
+    })
+
+})
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username })
+    console.log(user)
+    if (!user) {
+        return res.status(401).json({
+            message: "Invalid username or password",
+            isLoggedIn: false,
+        });
+    }
+    const isMatch = await bcrypt.compare(password, user.password)
+
+    if (isMatch) {
+        res.json({
+            message: 'Logged in successfully',
+            isLoggedIn: true, user: {
+                id: user._id,
+                username: user.username,
+            }
+        })
+    } else {
+        res.json({ isLoggedIn: false })
+    }
+})
 
 app.all(/(.*)/, (req, res, next) => {
     next(new AppError('Page not found', 404))

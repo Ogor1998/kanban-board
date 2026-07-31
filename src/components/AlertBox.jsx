@@ -6,10 +6,12 @@ import Collapse from '@mui/material/Collapse';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import { useNotification } from '../context/NotificationContext'
+import { useLocation } from 'react-router-dom';
 
 export default function AlertBox() {
     const [open, setOpen] = React.useState(true);
     const { message } = useNotification();
+    const location = useLocation();
     if (!message.text) return null
     return (
         <Box sx={{ width: '100%' }}>
@@ -30,7 +32,7 @@ export default function AlertBox() {
                     }
                     sx={{ mb: 2 }}
                 >
-                    {message.text}
+                    {message.text || location.state?.message}
                 </Alert>
             </Collapse>
         </Box>
