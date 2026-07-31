@@ -4,9 +4,10 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { useState } from 'react';
 import axios from 'axios';
 import { Button } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useNotification } from '../context/NotificationContext';
 
 export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
+    const { setMessage } = useNotification();
     const priority = ['low', 'medium', 'high']
     const [formData, setFormData] = useState({
         title: "",
@@ -36,6 +37,7 @@ export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
             setisActiveColumn(null)
         } catch (err) {
             console.log(err)
+            setMessage({ text: err.response?.data?.message, severity: 'error' })
         }
     }
     return (

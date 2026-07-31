@@ -3,6 +3,7 @@ const Card = require('../models/Card')
 const Column = require('../models/Column')
 
 
+
 module.exports.allColumns = async (req, res) => {
     const { boardId } = req.params;
     const board = await Board.findById(boardId)

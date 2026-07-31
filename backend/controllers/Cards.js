@@ -11,7 +11,7 @@ module.exports.createCard = async (req, res) => {
     })
     await card.save();
     res.json({
-        message: 'You add a new card',
+        message: 'You added a new card',
         card
     })
     console.log(card)

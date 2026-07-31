@@ -2,14 +2,15 @@ const express = require('express')
 const router = express.Router({ mergeParams: true });
 const { allColumns, createColumn, deleteColumn, updateColumn } = require('../controllers/Columns')
 const catchAsync = require('../utils/catchAsync')
+const { isLoggedIn } = require('../middleware/auth')
 
 router.get('/:boardId', catchAsync(allColumns))
 
-router.post('/', catchAsync(createColumn))
+router.post('/', isLoggedIn, catchAsync(createColumn))
 
-router.put('/:id', catchAsync(updateColumn))
+router.put('/:id', isLoggedIn, catchAsync(updateColumn))
 
 
-router.delete('/:id', catchAsync(deleteColumn))
+router.delete('/:id', isLoggedIn, catchAsync(deleteColumn))
 
 module.exports = router;

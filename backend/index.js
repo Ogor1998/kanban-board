@@ -1,3 +1,6 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 const express = require('express');
 const app = express();
 const port = 3000;
@@ -12,6 +15,8 @@ const columnRoutes = require('./routes/columnRoutes')
 const AppError = require('./utils/AppError')
 const User = require('./models/User')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const cookieParser = require('cookie-parser')
 
 mongoose.connect("mongodb://127.0.0.1:27017/kanban").then(() => {
     console.log(`Mongo Connection Active`)
@@ -24,11 +29,12 @@ app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true
 }));
+app.use(cookieParser());
 
 app.use('/columns', columnRoutes)
 app.use('/cards', cardRoutes)
 app.use('/boards', boardRoutes)
-
+const secret = process.env.JWT_SECRET;
 
 
 app.post('/register', async (req, res) => {
@@ -63,18 +69,57 @@ app.post('/login', async (req, res) => {
     }
     const isMatch = await bcrypt.compare(password, user.password)
 
-    if (isMatch) {
-        res.json({
-            message: 'Logged in successfully',
-            isLoggedIn: true, user: {
-                id: user._id,
-                username: user.username,
-            }
+    if (!isMatch) {
+        return res.json({
+            message: 'Invalid username or password',
+            isLoggedIn: false
         })
-    } else {
-        res.json({ isLoggedIn: false })
     }
+
+    const token = jwt.sign(
+        { userId: user._id },
+        secret,
+        {
+            expiresIn: "1h",
+        }
+    );
+
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: false,      // true in production with HTTPS
+        sameSite: "lax",
+        maxAge: 1000 * 60 * 60, // 1 hour
+    });
+    res.json({
+        message: 'Logged in successfully',
+        isLoggedIn: true,
+        user: {
+            id: user._id,
+            username: user.username,
+        }
+    });
 })
+
+app.post('/logout', (req, res) => {
+    res.clearCookie("token");
+    res.json({
+        message: "Logged out.",
+    });
+})
+
+
+app.use((req, res, next) => {
+    // get the token from the headers
+    const token = req.headers.authorization;
+    // verify the token
+    try {
+        const decoded = jwt.verify(token, secret);
+        req.user = decoded;
+        next();
+    } catch (err) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+});
 
 app.all(/(.*)/, (req, res, next) => {
     next(new AppError('Page not found', 404))

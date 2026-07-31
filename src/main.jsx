@@ -16,6 +16,7 @@ const theme = createTheme({
 axios.defaults.withCredentials = true  // ← add this
 axios.defaults.baseURL = 'http://localhost:3000'
 
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
 
