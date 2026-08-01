@@ -9,7 +9,7 @@ module.exports.allBoards = async (req, res) => {
     }
     res.json({
         board: board,
-        message: 'You are on the right track'
+        // message: 'You are on the right track'
     })
 }
 module.exports.createBoard = async (req, res) => {

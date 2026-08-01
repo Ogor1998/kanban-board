@@ -36,7 +36,6 @@ export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
                 ))
             setisActiveColumn(null)
         } catch (err) {
-            console.log(err)
             setMessage({ text: err.response?.data?.message, severity: 'error' })
         }
     }

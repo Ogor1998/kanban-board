@@ -1,5 +1,5 @@
 import React from 'react'
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 import axios from 'axios';
 import { useNotification } from './NotificationContext';
 
@@ -19,6 +19,22 @@ export function AuthProvider({ children }) {
         setCurrentUser(null)
 
     }
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const res = await axios.get("/check-auth");
+
+                setIsLoggedIn(true);
+                setCurrentUser(res.data.user);
+
+            } catch {
+                setIsLoggedIn(false);
+                setCurrentUser(null);
+            }
+        };
+
+        checkAuth();
+    }, []);
 
     return (
         <AuthContext.Provider value={{

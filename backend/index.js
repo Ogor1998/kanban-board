@@ -17,6 +17,7 @@ const User = require('./models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
+const { isLoggedIn } = require('./middleware/auth')
 
 mongoose.connect("mongodb://127.0.0.1:27017/kanban").then(() => {
     console.log(`Mongo Connection Active`)
@@ -36,6 +37,15 @@ app.use('/cards', cardRoutes)
 app.use('/boards', boardRoutes)
 const secret = process.env.JWT_SECRET;
 
+
+app.get("/check-auth", isLoggedIn, async (req, res) => {
+    const user = await User.findById(req.user.userId).select("-password");
+
+    res.json({
+        isLoggedIn: true,
+        user,
+    });
+});
 
 app.post('/register', async (req, res) => {
     const { firstname, lastname, username, password, email } = req.body;
@@ -106,20 +116,6 @@ app.post('/logout', (req, res) => {
         message: "Logged out.",
     });
 })
-
-
-app.use((req, res, next) => {
-    // get the token from the headers
-    const token = req.headers.authorization;
-    // verify the token
-    try {
-        const decoded = jwt.verify(token, secret);
-        req.user = decoded;
-        next();
-    } catch (err) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-});
 
 app.all(/(.*)/, (req, res, next) => {
     next(new AppError('Page not found', 404))

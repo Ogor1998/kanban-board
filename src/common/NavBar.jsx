@@ -16,7 +16,7 @@ export default function NavBar() {
                         <Link to={`/register`}>Register</Link></>
                 ) : (
                     <>
-                        <p>{currentUser}</p>
+                        <p>{currentUser.username}</p>
                         <Link onClick={logout}>Logout</Link></>
                 )
 

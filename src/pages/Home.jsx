@@ -10,6 +10,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { useNotification } from '../context/NotificationContext'
 import AlertBox from '../components/AlertBox'
+import NewBoardModal from '../components/NewBoardModal'
 
 
 
@@ -42,7 +43,8 @@ const Home = () => {
                 ))}
                 <div>
                 </div>
-                <BoardName setFormData={setFormData} formData={formData} setData={setData} />
+                <NewBoardModal setFormData={setFormData} formData={formData} setData={setData} />
+
             </div>
         </div>
     )

@@ -21,7 +21,7 @@ module.exports.allColumns = async (req, res) => {
     res.json({
         board: board,
         columns: columnsWithCard,
-        message: 'You are on the right track'
+        // message: 'You are on the right track'
     })
 }
 
