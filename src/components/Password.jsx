@@ -20,6 +20,7 @@ const Password = ({ formData, handleChange }) => {
             label="Password"
             variant="outlined"
             name='password'
+            fullWidth
             value={formData.password}
             onChange={handleChange}
             type={showPassword ? 'text' : 'password'}

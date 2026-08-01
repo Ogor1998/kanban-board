@@ -1,13 +1,12 @@
 .home {
     height: 100%;
     width: 1200px;
-
 }
 
 .container {
     display: flex;
     flex-direction: column;
-    border: 1px solid #000;
+    /* border: 1px solid #000; */
     justify-content: center;
     align-items: center;
     height: 100%;
@@ -18,8 +17,14 @@
 }
 
 .links {
-    text-decoration: none;
-    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: #000;
     padding: 20px
+}
+
+.links a {
+    text-decoration: none;
+    color: white;
 }

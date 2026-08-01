@@ -6,6 +6,8 @@ import { useAuth } from "../context/AuthContext"
 import { useLocation, useNavigate } from "react-router-dom";
 import AlertBox from "../components/AlertBox";
 import axios from "axios";
+import './Login.css'
+import AntigravityUsage from "../components/AntigravityUsage"
 
 
 export default function Login() {
@@ -47,11 +49,15 @@ export default function Login() {
         }
     }
     return (
-        <Box>
+        <Box className='container'>
+            <Box className='img__box'>
+                <AntigravityUsage />
+            </Box>
             <Box
                 component="form"
-                sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', width: '40ch' }}
+                className="form"
                 onSubmit={handleSubmit}
+                fullWidth
             >
                 {message && <div>   <AlertBox /></div>}
                 <TextField
@@ -61,10 +67,11 @@ export default function Login() {
                     name='username'
                     onChange={handleChange}
                     value={formData.username}
+                    fullWidth
                 />
 
                 <Password formData={formData} handleChange={handleChange} />
-                <Button type="submit" variant="outlined">Submit</Button>
+                <Button type="submit" variant="outlined" fullWidth>Submit</Button>
 
             </Box>
         </Box >

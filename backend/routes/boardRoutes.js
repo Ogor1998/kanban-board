@@ -1,11 +1,13 @@
 const express = require('express')
 const router = express.Router();
-const { allBoards, createBoard } = require('../controllers/Boards')
+const { allBoards, createBoard, deleteBoard } = require('../controllers/Boards')
 const catchAsync = require('../utils/catchAsync')
+const { isLoggedIn } = require('../middleware/auth')
 
 
 router.get('/', catchAsync(allBoards))
-router.post('/', catchAsync(createBoard))
+router.post('/', isLoggedIn, catchAsync(createBoard))
+router.delete('/:id', isLoggedIn, catchAsync(deleteBoard))
 
 
 

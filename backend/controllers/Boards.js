@@ -28,3 +28,13 @@ module.exports.createBoard = async (req, res) => {
     console.log('this is the new board', board)
     res.json({ message: 'You created a new board', board: board })
 }
+
+module.exports.deleteBoard = async (req, res) => {
+    const { id } = req.params;
+    const board = await Board.findByIdAndDelete(id)
+    res.json({
+        message: "You've deleted the board",
+        board: board
+    })
+    console.log('backend delete called')
+}
