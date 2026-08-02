@@ -19,8 +19,6 @@ module.exports.isLoggedIn = (req, res, next) => {
     try {
         const payload = jwt.verify(token, secret);
 
-        console.log("Verified payload:", payload);
-
         req.user = payload;
 
         next();

@@ -146,7 +146,7 @@ const Show = () => {
                                 strategy={verticalListSortingStrategy}
                             >
                                 {col.cards?.map((card) => (
-                                    <SortableCard key={card._id} card={card} setColumns={setColumns} />
+                                    <SortableCard key={card._id} card={card} columnId={col._id} setColumns={setColumns} />
                                 ))}
                             </SortableContext>
                             {isActiveColumn === col._id && <NewCard setColumns={setColumns} columnId={col._id} setisActiveColumn={setisActiveColumn} />}

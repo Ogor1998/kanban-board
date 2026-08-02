@@ -59,7 +59,7 @@ app.post('/register', async (req, res) => {
         email
     })
     await user.save();
-    console.log('this is the new user', user)
+    // console.log('this is the new user', user)
     res.json({
         message: "You've registered successfully",
         user: user
@@ -70,7 +70,7 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     const user = await User.findOne({ username })
-    console.log(user)
+    // console.log(user)
     if (!user) {
         return res.status(401).json({
             message: "Invalid username or password",

@@ -5,8 +5,18 @@
     justify-content: space-between;
     padding: 10px;
     margin: 10px 0px;
+    box-sizing: content-box;
 }
 
 .navbar>a {
     text-decoration: none;
+    border-bottom: 3px solid transparent
+}
+
+.navbar>a:hover {
+    border-bottom: 3px solid red;
+}
+
+.navbar>a:active {
+    border-bottom: 3px solid red;
 }

@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { useEffect } from 'react'
 import './Home.css'
 import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
-import BoardName from '../components/BoardName'
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';

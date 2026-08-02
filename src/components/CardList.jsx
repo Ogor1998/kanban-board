@@ -10,9 +10,9 @@ import { Button } from '@mui/material';
 
 const ITEM_HEIGHT = 48;
 
-export default function CardList({ handleCardDelete }) {
+export default function CardList({ handleCardDelete, handleSwitch }) {
     const options = [
-        { label: 'Edit', action: "handleCardDelete" },
+        { label: 'Edit', action: handleSwitch },
         { label: 'Delete', action: handleCardDelete }
 
     ];

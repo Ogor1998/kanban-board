@@ -1,3 +1,4 @@
+const { findByIdAndUpdate } = require('../models/Board');
 const Card = require('../models/Card')
 
 
@@ -24,6 +25,23 @@ module.exports.deleteCard = async (req, res) => {
         message: 'You deleted the card'
     })
     console.log('card deleted')
+}
+
+module.exports.updateCard = async (req, res) => {
+    const { id } = req.params;
+    const { title, priority, description, columnId } = req.body;
+    const card = await Card.findByIdAndUpdate(id, { title, priority, description, columnId },
+        {
+            returnDocument: "after",
+            runValidators: true
+        }
+    )
+    res.json({
+        message: 'You updated this card',
+        card: card
+    })
+    console.log('card updated')
+
 }
 
 module.exports.moveCard = async (req, res) => {
