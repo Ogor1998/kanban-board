@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import { useEffect } from 'react'
 import './Home.css'
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import BoardName from '../components/BoardName'
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -17,21 +17,17 @@ import Delete from '@mui/icons-material/Delete'
 
 
 const Home = () => {
-    const navigate = useNavigate();
     const [data, setData] = useState([])
     const [formData, setFormData] = useState({
         title: ""
     })
-
-    const { setMessage } = useNotification();
-    console.log(data)
-    // const { id } = useParams();
+    const { message, setMessage } = useNotification();
+    console.log("Home message:", message);
     useEffect(() => {
         const fetchData = async () => {
             const res = await axios.get('/boards');
-            console.log(res.data)
+            console.log(res.data.message)
             setData(res.data.board)
-            setMessage({ text: res.data.message, })
         }
         fetchData();
     }, [])
@@ -40,16 +36,14 @@ const Home = () => {
         setData((prev) => prev.filter(board => board._id !== id))
         console.log('frontend delete called')
     }
-    const handleShow = (id) => {
-        return navigate(`/columns/${id}`)
-    }
+
     return (
         <div className='home'>
             <AlertBox />
 
             <div className="container">
                 {data.map((item) => (
-                    <Box className='links' onClick={() => handleShow(item._id)}>
+                    <Box className='links'>
                         <Link to={`/columns/${item._id}`} key={item._id}>{item.title}</Link>
                         <Button onClick={() => handleDeleteBoard(item._id)}><Delete /></Button>
                     </Box>

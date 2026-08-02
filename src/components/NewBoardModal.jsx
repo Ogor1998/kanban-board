@@ -7,7 +7,7 @@ import { useSpring, animated } from '@react-spring/web';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useNotification } from '../context/NotificationContext';
 
@@ -73,9 +73,16 @@ export default function NewBoardModal({ setData, formData, setFormData }) {
     const { isLoggedIn } = useAuth();
     const navigate = useNavigate();
     const [open, setOpen] = React.useState(false);
+    const location = useLocation();
     const handleOpen = () => {
         if (!isLoggedIn) {
-            navigate('/login')
+
+            navigate("/login", {
+                state: {
+                    from: location,
+                    message: "Please log in to create a board",
+                },
+            });
         } else {
             setOpen(true)
         }

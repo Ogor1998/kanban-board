@@ -1,9 +1,14 @@
-import { Box, Button, TextField } from "@mui/material"
+import { Box, Button, TextField, Typography } from "@mui/material"
 import { useState } from "react"
 import Password from "../components/Password"
 import { useNotification } from "../context/NotificationContext"
 import AlertBox from "../components/AlertBox"
 import axios from "axios"
+import AntigravityUsage from "../components/AntigravityUsage"
+import './Login.css'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
+
 
 export default function Register() {
     const { message, setMessage } = useNotification();
@@ -39,51 +44,68 @@ export default function Register() {
         }
     }
     return (
-        <Box sx={{ width: '100rem', padding: '20px', backgroundColor: '#fff' }}>
+
+        <Box>
             {message && <div>   <AlertBox /></div>}
-            <Box
-                component="form"
-                sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}
-                onSubmit={handleSubmit}
-            >
-                <TextField id="outlined-basic"
-                    label="Username"
-                    variant="outlined"
-                    name='username'
-                    onChange={handleChange}
-                    value={formData.username}
+            <Box className='container' >
+                <Box className='img__box'>
+                    <AntigravityUsage />
+                </Box>
 
-                />
-                <TextField id="outlined-basic"
-                    label="Email"
-                    variant="outlined"
-                    name='email'
-                    onChange={handleChange}
-                    value={formData.email}
+                <Box
+                    component="form"
+                    className="form"
+                    sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', backgroundColor: '#fff' }}
+                    onSubmit={handleSubmit}
+                >
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <AccountCircleIcon />
+                        <Typography variant="h6" gutterBottom>
 
-                />
-                <TextField id="outlined-basic"
-                    label="Firstname"
-                    variant="outlined"
-                    name='firstname'
-                    onChange={handleChange}
-                    value={formData.firstname}
+                            Create your account
+                        </Typography>
+                    </Box>
+                    <TextField id="outlined-basic"
+                        label="Username"
+                        variant="outlined"
+                        name='username'
+                        onChange={handleChange}
+                        value={formData.username}
+                        fullWidth
 
-                />
-                <TextField id="outlined-basic"
-                    label="Lastname"
-                    variant="outlined"
-                    name='lastname'
-                    onChange={handleChange}
-                    value={formData.lastname}
+                    />
+                    <TextField id="outlined-basic"
+                        label="Email"
+                        variant="outlined"
+                        name='email'
+                        onChange={handleChange}
+                        value={formData.email}
+                        fullWidth
+                    />
+                    <TextField id="outlined-basic"
+                        label="Firstname"
+                        variant="outlined"
+                        name='firstname'
+                        onChange={handleChange}
+                        value={formData.firstname}
+                        fullWidth
+                    />
+                    <TextField id="outlined-basic"
+                        label="Lastname"
+                        variant="outlined"
+                        name='lastname'
+                        onChange={handleChange}
+                        value={formData.lastname}
+                        fullWidth
+                    />
 
-                />
+                    <Password formData={formData} handleChange={handleChange} />
+                    <Button type="submit" variant="outlined" fullWidth>Register</Button>
 
-                <Password formData={formData} handleChange={handleChange} />
-                <Button type="submit" variant="outlined">Submit</Button>
+                </Box>
+
 
             </Box>
-        </Box >
-
+        </Box>
     )
 }
