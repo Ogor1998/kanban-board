@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useEffect } from 'react'
 import './Home.css'
 import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
+
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -40,7 +41,7 @@ const Home = () => {
         <div className='home'>
             <AlertBox />
 
-            <div className="container">
+            <div className="home__container">
                 {data.map((item) => (
                     <Box className='links'>
                         <Link to={`/columns/${item._id}`} key={item._id}>{item.title}</Link>

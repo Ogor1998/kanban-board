@@ -111,10 +111,18 @@ code {
 } */
 
 
+
+
 * {
   padding: 0;
   margin: 0;
 
+
+}
+
+html,
+body {
+  min-height: 100%;
 }
 
 html {
@@ -123,9 +131,6 @@ html {
 }
 
 body {
-  height: 100%;
-  display: flex;
-  justify-content: center;
   padding: 20px;
   border-radius: 15px;
   user-select: none;
@@ -133,4 +138,13 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
+  padding: 2rem;
 }

@@ -11,6 +11,7 @@ import AntigravityUsage from "../components/AntigravityUsage"
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
+
 export default function Login() {
     const { setMessage, message } = useNotification();
     const { setCurrentUser, setIsLoggedIn, currentUser } = useAuth();
@@ -63,7 +64,8 @@ export default function Login() {
         }
     }
     return (
-        <Box className='container'>
+
+        <Box className='form__container'>
             <Box className='img__box'>
                 <AntigravityUsage />
             </Box>
@@ -95,7 +97,8 @@ export default function Login() {
                 <Button type="submit" variant="outlined" fullWidth>Login</Button>
 
             </Box>
-        </Box >
+
+        </Box>
 
     )
 }

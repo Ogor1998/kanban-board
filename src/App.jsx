@@ -12,6 +12,7 @@ import NavBar from './common/NavBar'
 import { Box } from '@mui/material'
 import Login from './users/Login'
 import Register from './users/Register'
+import './index.css'
 
 
 
@@ -20,7 +21,7 @@ function App() {
 
   return (
     // <h1>Home</h1>
-    <Box>
+    <Box className='page'>
       <NavBar />
 
       <Routes>

@@ -1,22 +1,31 @@
 .navbar {
-    background-color: #fff;
-    font-size: 3rem;
+    color: #fff;
+    font-size: clamp(1.5rem, 2vw, 1.5rem);
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 70%;
     padding: 10px;
-    margin: 10px 0px;
-    box-sizing: content-box;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .navbar>a {
     text-decoration: none;
-    border-bottom: 3px solid transparent
+    border-bottom: 3px solid transparent;
+    color: #000;
 }
 
 .navbar>a:hover {
     border-bottom: 3px solid red;
 }
 
-.navbar>a:active {
+.navbar>a.active__link {
     border-bottom: 3px solid red;
 }

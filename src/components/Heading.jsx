@@ -7,10 +7,12 @@ import './Heading.css'
 import { Typography } from '@mui/material';
 import axios from 'axios';
 import { useNotification } from '../context/NotificationContext';
+import { useAuth } from '../context/AuthContext';
 
 
 
 const Heading = ({ col, handleDelete, setColumns }) => {
+    const { isLoggedIn } = useAuth();
     const [isEditting, setIsEditting] = useState(false)
     const [title, setTitle] = useState(col.title)
     const { setMessage } = useNotification();
@@ -64,8 +66,10 @@ const Heading = ({ col, handleDelete, setColumns }) => {
 
                         {col.title}
                     </Typography>
-                    <Button variant='outlined' color='error' onClick={() => handleDelete(col._id)}><DeleteIcon /></Button>
-                    <Button variant='outlined' color='success' onClick={handleClick}><CreateIcon /></Button>
+                    {isLoggedIn ? <>
+                        <Button variant='outlined' color='error' onClick={() => handleDelete(col._id)}><DeleteIcon /></Button>
+                        <Button variant='outlined' color='success' onClick={handleClick}><CreateIcon /></Button></>
+                        : null}
                 </Box>)
             }
 

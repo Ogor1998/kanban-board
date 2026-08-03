@@ -8,22 +8,22 @@ import { useState } from "react";
 
 export default function NavBar() {
     const { currentUser, isLoggedIn, logout } = useAuth();
-    const [isActivePage, setIsActivePage] = useState(null)
-    const style = {
-        borderBottom: '3px solid red'
-    }
+
+
     return (
         <nav className="navbar">
-            <Link to={`/boards`}>Home</Link>
+            <NavLink to={`/boards`} className={({ isActive }) => isActive ? "active__link" : ""}>Home</NavLink>
             {!isLoggedIn ?
                 (
                     <>
-                        <Link to={`/login`}>Login</Link>
-                        <Link to={`/register`}>Register</Link></>
+                        <NavLink to={`/login`} className={({ isActive }) => isActive ? "active__link" : ""}>Login</NavLink>
+                        <NavLink to={`/register`} className={({ isActive }) => isActive ? "active__link" : ""}>Register</NavLink>
+                    </>
                 ) : (
                     <>
-                        <p>{currentUser.username}</p>
-                        <Link onClick={logout}>Logout</Link></>
+                        <p>{currentUser.username.toUpperCase()}</p>
+                        <NavLink onClick={logout} >Logout</NavLink>
+                    </>
                 )
 
             }

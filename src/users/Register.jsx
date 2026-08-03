@@ -45,67 +45,66 @@ export default function Register() {
     }
     return (
 
-        <Box>
-            {message && <div>   <AlertBox /></div>}
-            <Box className='container' >
-                <Box className='img__box'>
-                    <AntigravityUsage />
+        <Box className='form__container' >
+            <Box className='img__box'>
+                <AntigravityUsage />
+            </Box>
+
+            <Box
+                component="form"
+                className="form"
+                sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', backgroundColor: '#fff' }}
+                onSubmit={handleSubmit}
+            >
+                {message && <div>   <AlertBox /></div>}
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <AccountCircleIcon />
+                    <Typography variant="h6" gutterBottom>
+
+                        Create your account
+                    </Typography>
                 </Box>
+                <TextField id="outlined-basic"
+                    label="Username"
+                    variant="outlined"
+                    name='username'
+                    onChange={handleChange}
+                    value={formData.username}
+                    fullWidth
 
-                <Box
-                    component="form"
-                    className="form"
-                    sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', backgroundColor: '#fff' }}
-                    onSubmit={handleSubmit}
-                >
-                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <AccountCircleIcon />
-                        <Typography variant="h6" gutterBottom>
+                />
+                <TextField id="outlined-basic"
+                    label="Email"
+                    variant="outlined"
+                    name='email'
+                    onChange={handleChange}
+                    value={formData.email}
+                    fullWidth
+                />
+                <TextField id="outlined-basic"
+                    label="Firstname"
+                    variant="outlined"
+                    name='firstname'
+                    onChange={handleChange}
+                    value={formData.firstname}
+                    fullWidth
+                />
+                <TextField id="outlined-basic"
+                    label="Lastname"
+                    variant="outlined"
+                    name='lastname'
+                    onChange={handleChange}
+                    value={formData.lastname}
+                    fullWidth
+                />
 
-                            Create your account
-                        </Typography>
-                    </Box>
-                    <TextField id="outlined-basic"
-                        label="Username"
-                        variant="outlined"
-                        name='username'
-                        onChange={handleChange}
-                        value={formData.username}
-                        fullWidth
-
-                    />
-                    <TextField id="outlined-basic"
-                        label="Email"
-                        variant="outlined"
-                        name='email'
-                        onChange={handleChange}
-                        value={formData.email}
-                        fullWidth
-                    />
-                    <TextField id="outlined-basic"
-                        label="Firstname"
-                        variant="outlined"
-                        name='firstname'
-                        onChange={handleChange}
-                        value={formData.firstname}
-                        fullWidth
-                    />
-                    <TextField id="outlined-basic"
-                        label="Lastname"
-                        variant="outlined"
-                        name='lastname'
-                        onChange={handleChange}
-                        value={formData.lastname}
-                        fullWidth
-                    />
-
-                    <Password formData={formData} handleChange={handleChange} />
-                    <Button type="submit" variant="outlined" fullWidth>Register</Button>
-
-                </Box>
-
+                <Password formData={formData} handleChange={handleChange} />
+                <Button type="submit" variant="outlined" fullWidth>Register</Button>
 
             </Box>
+
+
         </Box>
+
     )
 }
