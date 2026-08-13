@@ -37,5 +37,7 @@
     /* height: 600px; */
     transition: 1s ease-in;
     margin-top: 20px;
-
+    border: 1px solid #000;
+    height: 100%;
+    padding: 20px;
 }

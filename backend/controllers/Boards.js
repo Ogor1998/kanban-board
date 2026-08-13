@@ -23,6 +23,7 @@ module.exports.createBoard = async (req, res) => {
 
     const board = new Board({
         title: title.trim(),
+        owner: req.user.userId,
     });
     await board.save();
     console.log('this is the new board', board)
