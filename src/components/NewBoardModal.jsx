@@ -102,6 +102,7 @@ export default function NewBoardModal({ setData, formData, setFormData }) {
             setData(prev => [...prev, formData])
             setMessage({ text: res.data.message, severity: 'success' })
             navigate('/boards')
+            setOpen(false)
 
         } catch (err) {
             console.log(err)

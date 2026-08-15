@@ -7,6 +7,7 @@ import axios from "axios"
 import AntigravityUsage from "../components/AntigravityUsage"
 import './Login.css'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useNavigate } from "react-router-dom"
 
 
 
@@ -19,6 +20,7 @@ export default function Register() {
         firstname: "",
         lastname: "",
     })
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -34,6 +36,9 @@ export default function Register() {
                 severity: 'success'
 
             })
+            setTimeout(() => {
+                navigate('/boards')
+            }, 3000);
         }
         catch (err) {
             console.log(err)

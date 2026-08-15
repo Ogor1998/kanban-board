@@ -10,7 +10,7 @@
 .home__container {
     display: flex;
     flex-direction: column;
-    border: 1px solid #000;
+    /* border: 1px solid #000; */
     justify-content: center;
     align-items: center;
     height: 100%;

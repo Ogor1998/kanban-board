@@ -1,4 +1,6 @@
 const Board = require('../models/Board')
+const { boardSchema, cardSchema, columnSchema } = require('../schemas')
+const AppError = require('../utils/AppError')
 module.exports.isAuthor = async (req, res, next) => {
     console.log('this is thhe user object', req.user)
     try {
@@ -9,7 +11,6 @@ module.exports.isAuthor = async (req, res, next) => {
                 message: 'Board not found'
             })
         }
-        console.log(!board.owner.equals(req.user.userId))
         if (!board.owner.equals(req.user.userId)) {
             return res.status(403).json({
                 message: 'You do not have permission to do that'
@@ -18,5 +19,36 @@ module.exports.isAuthor = async (req, res, next) => {
         next();
     } catch (err) {
         res.status(500).json({ error: err.message });
+    }
+}
+
+
+
+
+module.exports.validateBoard = (req, res, next) => {
+    const { error } = boardSchema.validate(req.body)
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new AppError(msg, 400)
+    } else {
+        next();
+    }
+}
+module.exports.validateColumn = (req, res, next) => {
+    const { error } = columnSchema.validate(req.body)
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new AppError(msg, 400)
+    } else {
+        next();
+    }
+}
+module.exports.validateCard = (req, res, next) => {
+    const { error } = cardSchema.validate(req.body)
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new AppError(msg, 400)
+    } else {
+        next();
     }
 }
