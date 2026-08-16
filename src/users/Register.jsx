@@ -8,11 +8,13 @@ import AntigravityUsage from "../components/AntigravityUsage"
 import './Login.css'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../context/AuthContext"
 
 
 
 export default function Register() {
     const { message, setMessage } = useNotification();
+    const [setIsLoggedIn, setCurrentUser] = useAuth();
     const [formData, setFormData] = useState({
         username: "",
         email: "",
@@ -30,15 +32,15 @@ export default function Register() {
         e.preventDefault();
         try {
             const res = await axios.post('/register', formData, { withCredentials: true })
+            setIsLoggedIn(true);
+            setCurrentUser(res.data.user);
             console.log(formData)
             setMessage({
                 text: res.data.message,
                 severity: 'success'
 
             })
-            setTimeout(() => {
-                navigate('/boards')
-            }, 3000);
+            navigate('/boards')
         }
         catch (err) {
             console.log(err)

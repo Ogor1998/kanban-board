@@ -7,7 +7,7 @@ const { isAuthor } = require('../middleware/middleware')
 const { validateBoard } = require('../middleware/middleware')
 
 
-router.get('/', catchAsync(allBoards))
+router.get('/', isLoggedIn, catchAsync(allBoards))
 router.post('/', isLoggedIn, validateBoard, catchAsync(createBoard))
 router.delete('/:boardId', isLoggedIn, isAuthor, catchAsync(deleteBoard))
 

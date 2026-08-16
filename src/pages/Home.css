@@ -34,3 +34,13 @@
     color: white;
     gap: 10px
 }
+
+.no__data {
+    height: 20rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 15px;
+}

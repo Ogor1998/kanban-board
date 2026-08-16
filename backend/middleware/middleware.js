@@ -1,5 +1,5 @@
 const Board = require('../models/Board')
-const { boardSchema, cardSchema, columnSchema } = require('../schemas')
+const { boardSchema, cardSchema, columnSchema, userSchema } = require('../schemas')
 const AppError = require('../utils/AppError')
 module.exports.isAuthor = async (req, res, next) => {
     console.log('this is thhe user object', req.user)
@@ -45,6 +45,17 @@ module.exports.validateColumn = (req, res, next) => {
 }
 module.exports.validateCard = (req, res, next) => {
     const { error } = cardSchema.validate(req.body)
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new AppError(msg, 400)
+    } else {
+        next();
+    }
+}
+
+
+module.exports.validateUser = (req, res, next) => {
+    const { error } = userSchema.validate(req.body)
     if (error) {
         const msg = error.details.map(el => el.message).join(',')
         throw new AppError(msg, 400)

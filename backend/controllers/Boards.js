@@ -3,9 +3,12 @@ const Board = require('../models/Board')
 const AppError = require('../utils/AppError')
 
 module.exports.allBoards = async (req, res) => {
-    const board = await Board.find({})
-    if (!board) {
-        return next(new AppError('Board not found', 404));
+    console.log(req.user)
+    const board = await Board.find({ owner: req.user.userId })
+    if (board.length === 0) {
+        return res.status(404).json({
+            message: "You don't have any boards yet"
+        });
     }
     res.json({
         board: board,

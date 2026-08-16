@@ -12,6 +12,14 @@ module.exports.cardSchema = Joi.object({
 })
 
 module.exports.columnSchema = Joi.object({
-    title: Joi.string().required()
+    title: Joi.string().required(),
+    boardId: Joi.string().required()
+})
+module.exports.userSchema = Joi.object({
+    email: Joi.string().email().required(),
+    username: Joi.string().required(),
+    password: Joi.string().required(),
+    firstname: Joi.string(),
+    lastname: Joi.string()
 })
 

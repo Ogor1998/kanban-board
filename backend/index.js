@@ -18,6 +18,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 const { isLoggedIn } = require('./middleware/auth')
+const { validateUser } = require('./middleware/middleware')
 
 mongoose.connect("mongodb://127.0.0.1:27017/kanban").then(() => {
     console.log(`Mongo Connection Active`)
@@ -47,7 +48,7 @@ app.get("/check-auth", isLoggedIn, async (req, res) => {
     });
 });
 
-app.post('/register', async (req, res) => {
+app.post('/register', validateUser, async (req, res) => {
     const { firstname, lastname, username, password, email } = req.body;
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds)
@@ -62,6 +63,7 @@ app.post('/register', async (req, res) => {
     // console.log('this is the new user', user)
     res.json({
         message: "You've registered successfully",
+        isLoggedIn: true,
         user: user
     })
 
