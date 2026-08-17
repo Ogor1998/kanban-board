@@ -12,6 +12,7 @@ import NavBar from './common/NavBar'
 import { Box } from '@mui/material'
 import Login from './users/Login'
 import Register from './users/Register'
+import Profile from './pages/Profile'
 import './index.css'
 
 
@@ -28,6 +29,7 @@ function App() {
 
         <Route path='/boards' element={<Home />} />
         <Route path='/columns/:boardId' element={<Show />} />
+        <Route path='/profile/:username' element={<Profile />} />
         <Route path='/error' element={<Error />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />

@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
     const { setMessage } = useNotification();
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [currentUser, setCurrentUser] = useState(null)
-    // const navigate = useNavigate();
+
 
 
     const logout = async () => {
@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
         setMessage(response.data.message)
         setIsLoggedIn(false)
         setCurrentUser(null)
-        // navigate('/login')
+
 
     }
     useEffect(() => {

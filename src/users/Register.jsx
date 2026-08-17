@@ -14,7 +14,7 @@ import { useAuth } from "../context/AuthContext"
 
 export default function Register() {
     const { message, setMessage } = useNotification();
-    const [setIsLoggedIn, setCurrentUser] = useAuth();
+    const { setIsLoggedIn, setCurrentUser } = useAuth();
     const [formData, setFormData] = useState({
         username: "",
         email: "",

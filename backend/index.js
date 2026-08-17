@@ -6,19 +6,16 @@ const app = express();
 const port = 3000;
 const mongoose = require('mongoose')
 const cors = require('cors')
-const Board = require('./models/Board')
-const Column = require('./models/Column')
-const Card = require('./models/Card')
 const boardRoutes = require('./routes/boardRoutes')
 const cardRoutes = require('./routes/cardRoutes')
 const columnRoutes = require('./routes/columnRoutes')
+const userRoutes = require('./routes/userRoutes')
 const AppError = require('./utils/AppError')
 const User = require('./models/User')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 const { isLoggedIn } = require('./middleware/auth')
-const { validateUser } = require('./middleware/middleware')
+
+
 
 mongoose.connect("mongodb://127.0.0.1:27017/kanban").then(() => {
     console.log(`Mongo Connection Active`)
@@ -36,6 +33,8 @@ app.use(cookieParser());
 app.use('/columns', columnRoutes)
 app.use('/cards', cardRoutes)
 app.use('/boards', boardRoutes)
+app.use('/', userRoutes)
+
 const secret = process.env.JWT_SECRET;
 
 
@@ -48,68 +47,17 @@ app.get("/check-auth", isLoggedIn, async (req, res) => {
     });
 });
 
-app.post('/register', validateUser, async (req, res) => {
-    const { firstname, lastname, username, password, email } = req.body;
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds)
-    const user = new User({
-        firstname,
-        lastname,
-        username,
-        password: hashedPassword,
-        email
-    })
-    await user.save();
-    // console.log('this is the new user', user)
-    res.json({
-        message: "You've registered successfully",
-        isLoggedIn: true,
-        user: user
-    })
 
-})
-
-app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username })
-    // console.log(user)
+app.get('/profile/:username', async (req, res) => {
+    const user = await User.findOne({
+        username: req.params.username
+    }).select("-password")
     if (!user) {
-        return res.status(401).json({
-            message: "Invalid username or password",
-            isLoggedIn: false,
-        });
-    }
-    const isMatch = await bcrypt.compare(password, user.password)
-
-    if (!isMatch) {
-        return res.json({
-            message: 'Invalid username or password',
-            isLoggedIn: false
+        return res.status(404).json({
+            message: 'User not found'
         })
     }
-
-    const token = jwt.sign(
-        { userId: user._id },
-        secret,
-        {
-            expiresIn: "1h",
-        }
-    );
-
-    res.cookie("token", token, {
-        httpOnly: true,
-        secure: false,      // true in production with HTTPS
-        sameSite: "lax",
-        maxAge: 1000 * 60 * 60, // 1 hour
-    });
-    res.json({
-        message: 'Logged in successfully',
-        isLoggedIn: true,
-        user: {
-            id: user._id,
-            username: user.username,
-        }
-    });
+    res.json(user)
 })
 
 app.post('/logout', (req, res) => {
