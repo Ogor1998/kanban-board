@@ -46,7 +46,7 @@ export default function Login() {
             const res = await axios.post('/login', formData, { withCredentials: true })
             console.log(res.data)
             setIsLoggedIn(true)
-            setCurrentUser(res.data.user?.username)
+            setCurrentUser(res.data.user)
             const from = location.state?.from?.pathname || "/boards";
             setMessage({
                 text: "Welcome back!",

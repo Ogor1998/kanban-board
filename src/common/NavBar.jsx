@@ -22,7 +22,7 @@ export default function NavBar() {
                     <>
 
 
-                        <NavLink to={`/profile/${currentUser?.username}`}>{currentUser?.username.toUpperCase()}</NavLink>
+                        <NavLink to={`/profile/${currentUser?.username}`}>{currentUser?.username?.toUpperCase()}</NavLink>
                         <NavLink onClick={logout} >Logout</NavLink>
                     </>
                 )

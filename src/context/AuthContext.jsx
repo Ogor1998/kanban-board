@@ -17,6 +17,7 @@ export function AuthProvider({ children }) {
 
     const logout = async () => {
         const response = await axios.post('/logout', {}, { withCredentials: true })
+        console.log('this is log out message', response.data)
         setMessage(response.data.message)
         setIsLoggedIn(false)
         setCurrentUser(null)
@@ -26,11 +27,11 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const res = await axios.get("/check-auth");
-
-                setIsLoggedIn(true);
-                setCurrentUser(res.data.user);
-
+                const res = await axios.get("/check-auth", { withCredentials: true });
+                if (res.data.isLoggedIn) {
+                    setIsLoggedIn(true);
+                    setCurrentUser(res.data.user)
+                }
 
             } catch {
                 setIsLoggedIn(false);
