@@ -3,9 +3,11 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import ProfileComponent from "../components/ProfileComponent";
 import './Profile.css'
+import ProfileEditComponent from "../components/ProfileEditComponent";
 
 export default function Profile() {
     const [profile, setProfile] = useState({});
+    const [isEditting, setIsEditting] = useState(false)
     const { username } = useParams();
     useEffect(() => {
         if (!username || username === "undefined") return;
@@ -16,7 +18,15 @@ export default function Profile() {
         }
         fetchProfile();
     }, [username])
+
+    const handleClick = () => {
+        setIsEditting(prev => !prev);
+        console.log(isEditting)
+    }
     return (
-        <ProfileComponent profile={profile} />
+        isEditting ? <ProfileEditComponent profile={profile} setProfile={setProfile} handleClick={handleClick} /> :
+            <ProfileComponent profile={profile} handleClick={handleClick} />
+
+
     )
 }

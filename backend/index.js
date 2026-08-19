@@ -10,10 +10,13 @@ const boardRoutes = require('./routes/boardRoutes')
 const cardRoutes = require('./routes/cardRoutes')
 const columnRoutes = require('./routes/columnRoutes')
 const userRoutes = require('./routes/userRoutes')
+const profileRoutes = require('./routes/profileRoutes')
 const AppError = require('./utils/AppError')
 const User = require('./models/User')
 const cookieParser = require('cookie-parser')
 const { isLoggedIn } = require('./middleware/auth')
+const { uploadToCloudinary } = require('./cloudinary')
+const { upload } = require('./cloudinary')
 
 
 
@@ -34,6 +37,7 @@ app.use('/columns', columnRoutes)
 app.use('/cards', cardRoutes)
 app.use('/boards', boardRoutes)
 app.use('/', userRoutes)
+app.use('/profile', profileRoutes)
 
 const secret = process.env.JWT_SECRET;
 
@@ -47,18 +51,6 @@ app.get("/check-auth", isLoggedIn, async (req, res) => {
     });
 });
 
-
-app.get('/profile/:username', async (req, res) => {
-    const user = await User.findOne({
-        username: req.params.username
-    }).select("-password")
-    if (!user) {
-        return res.status(404).json({
-            message: 'User not found'
-        })
-    }
-    res.json(user)
-})
 
 app.post('/logout', (req, res) => {
     res.clearCookie("token");

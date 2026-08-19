@@ -11,10 +11,9 @@ import {
 } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
 
-export default function ProfileComponent({ profile }) {
+export default function ProfileComponent({ profile, handleClick }) {
     const { currentUser } = useAuth();
     const allowedToEditProfile = profile._id === currentUser?._id;
-    console.log('this is updated time:', profile.updatedAt)
 
     if (!profile) {
         return (
@@ -46,7 +45,7 @@ export default function ProfileComponent({ profile }) {
                         }}
                         elevation={3}
                     >
-                        {allowedToEditProfile && <Button color='alert' variant="outlined" sx={{ marginBottom: '10px' }}>Edit Profile</Button>}
+                        {allowedToEditProfile && <Button color='alert' variant="outlined" onClick={handleClick} sx={{ marginBottom: '10px' }}>Edit Profile</Button>}
                         <Avatar
                             src={profile.image}
                             alt={profile.username}
