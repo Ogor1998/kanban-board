@@ -1,5 +1,6 @@
 
 const Card = require('../models/Card')
+const { uploadToCloudinary } = require('../cloudinary')
 
 
 module.exports.createCard = async (req, res) => {
@@ -10,6 +11,19 @@ module.exports.createCard = async (req, res) => {
         priority,
         columnId
     })
+
+    if (req.files && req.files.length > 0) {
+
+        const imageUrls = await Promise.all(
+            req.files.map(async (file) => {
+                const result = await uploadToCloudinary(file.buffer);
+                return result.secure_url;
+            })
+        );
+
+        card.images = imageUrls;
+    }
+
     await card.save();
     res.json({
         message: 'You added a new card',
@@ -30,7 +44,25 @@ module.exports.deleteCard = async (req, res) => {
 module.exports.updateCard = async (req, res) => {
     const { id } = req.params;
     const { title, priority, description, columnId } = req.body;
-    const card = await Card.findByIdAndUpdate(id, { title, priority, description, columnId },
+    const card = await Card.findById(id);
+    const updatedCard = {
+        title,
+        priority,
+        description,
+        columnId
+    }
+    if (req.files && req.files.length > 0) {
+
+        const imageUrls = await Promise.all(
+            req.files.map(async (file) => {
+                const result = await uploadToCloudinary(file.buffer);
+                return result.secure_url;
+            })
+        );
+
+        updatedCard.images = [...(card.images || []), ...imageUrls];
+    }
+    const updateCard = await Card.findByIdAndUpdate(id, updatedCard,
         {
             returnDocument: "after",
             runValidators: true
@@ -38,7 +70,7 @@ module.exports.updateCard = async (req, res) => {
     )
     res.json({
         message: 'You updated this card',
-        card: card
+        card: updateCard
     })
     console.log('card updated')
 

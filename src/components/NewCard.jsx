@@ -5,6 +5,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import { Button } from '@mui/material';
 import { useNotification } from '../context/NotificationContext';
+import FileUpload from './FileUpload';
+import Delete from '@mui/icons-material/Delete';
 
 export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
     const { setMessage } = useNotification();
@@ -16,14 +18,32 @@ export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
         columnId
     })
     const [value, setValue] = useState("")
+    const [file, setFile] = useState([])
+    const [previews, setPreviews] = useState([])
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }))
     }
+    const handleDelete = (idx) => {
+        console.log('getting clicked')
+        setPreviews(prev =>
+            prev.filter((_, index) => index !== idx))
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(`/cards`, formData)
+            const form = new FormData();
+            form.append("columnId", columnId)
+            form.append("title", formData.title)
+            form.append("description", formData.description)
+            form.append("priority", formData.priority)
+
+            file.forEach((image) => {
+                form.append("images", image);
+            });
+
+            const res = await axios.post(`/cards`, form)
             const newCard = res.data.card
             setColumns(prev =>
                 prev.map(column =>
@@ -87,6 +107,21 @@ export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
                     onChange={handleChange}
                     value={formData.description}
                 />
+                <Box sx={{ display: "flex", gap: 2, overflowX: 'scroll', width: '250px' }}>
+                    {previews.map((src, index) => (
+                        <div key={index}>
+                            <label htmlFor={index}></label>
+                            <img
+                                src={src}
+                                alt={`preview-${index}`}
+                                width="100"
+                                height='100'
+                            />
+                            <Delete onClick={() => handleDelete(index)} />
+                        </div>
+                    ))}
+                </Box>
+                <FileUpload setFile={setFile} setPreviews={setPreviews} />
                 <Button type='submit'>Submit</Button>
             </Box>
 

@@ -11,6 +11,7 @@ const cardSchema = new Schema({
     },
     order: Number,
     priority: String,
+    images: [String],
     createdAt: { type: Date, default: Date.now }
 })
 
