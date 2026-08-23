@@ -99,7 +99,8 @@ export default function NewBoardModal({ setData, formData, setFormData }) {
         try {
             const res = await axios.post('/boards', formData);
             console.log(res.data)
-            setData(prev => [...prev, formData])
+            console.log('this is the board', res.data.board)
+            setData(prev => [...prev, res.data.board])
             setMessage({ text: res.data.message, severity: 'success' })
             navigate('/boards')
             setOpen(false)

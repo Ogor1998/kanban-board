@@ -34,8 +34,8 @@ module.exports.createBoard = async (req, res) => {
 }
 
 module.exports.deleteBoard = async (req, res) => {
-    const { id } = req.params;
-    const board = await Board.findByIdAndDelete(id)
+    const { boardId } = req.params;
+    const board = await Board.findByIdAndDelete(boardId)
     res.json({
         message: "You've deleted the board",
         board: board

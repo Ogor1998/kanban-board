@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import AlertBox from "../components/AlertBox";
 import axios from "axios";
 import './Login.css'
-import AntigravityUsage from "../components/AntigravityUsage"
+import AntigravityUsage from "../components/reuseable/AntigravityUsage"
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 

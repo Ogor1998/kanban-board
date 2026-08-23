@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AvatarUpload from "./AvatarUpload";
+
 import {
     Box,
     TextField,
     Button,
     Typography,
 } from "@mui/material";
-import { useNotification } from "../context/NotificationContext";
+import { useNotification } from "../../context/NotificationContext";
 
 
 export default function ProfileEditComponent({ profile, setProfile, handleClick }) {

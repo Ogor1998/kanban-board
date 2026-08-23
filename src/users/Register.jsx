@@ -4,7 +4,7 @@ import Password from "../components/Password"
 import { useNotification } from "../context/NotificationContext"
 import AlertBox from "../components/AlertBox"
 import axios from "axios"
-import AntigravityUsage from "../components/AntigravityUsage"
+import AntigravityUsage from "../components/reuseable/AntigravityUsage"
 import './Login.css'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from "react-router-dom"

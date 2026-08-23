@@ -12,7 +12,7 @@ import NavBar from './common/NavBar'
 import { Box } from '@mui/material'
 import Login from './users/Login'
 import Register from './users/Register'
-import Profile from './pages/Profile'
+import Profile from './pages/Profile/Profile'
 import './index.css'
 
 

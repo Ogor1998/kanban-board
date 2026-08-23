@@ -1,7 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Box, Button } from '@mui/material'
-import '../pages/Show.css'
+import '../../pages/Show.css'
 import { Typography } from '@mui/material'
 import CardList from './CardList'
 import DragIndicator from '@mui/icons-material/DragIndicator'
@@ -11,7 +11,8 @@ import { TextField, Autocomplete } from '@mui/material'
 import { useParams } from 'react-router-dom'
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from 'react-responsive-carousel';
-import FileUpload from './FileUpload';
+import FileUpload from '../reuseable/FileUpload';
+
 import Delete from '@mui/icons-material/Delete'
 
 

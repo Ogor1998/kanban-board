@@ -4,8 +4,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { useState } from 'react';
 import axios from 'axios';
 import { Button } from '@mui/material';
-import { useNotification } from '../context/NotificationContext';
-import FileUpload from './FileUpload';
+import { useNotification } from '../../context/NotificationContext';
+import FileUpload from '../reuseable/FileUpload';
 import Delete from '@mui/icons-material/Delete';
 
 export default function NewCard({ setColumns, columnId, setisActiveColumn }) {

@@ -9,7 +9,7 @@ import {
     Button,
     Paper
 } from "@mui/material";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 export default function ProfileComponent({ profile, handleClick }) {
     const { currentUser } = useAuth();

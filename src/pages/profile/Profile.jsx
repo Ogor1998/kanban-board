@@ -1,9 +1,9 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import ProfileComponent from "../components/ProfileComponent";
+import ProfileComponent from "./ProfileComponent"
 import './Profile.css'
-import ProfileEditComponent from "../components/ProfileEditComponent";
+import ProfileEditComponent from "./ProfileEditComponent";
 
 export default function Profile() {
     const [profile, setProfile] = useState({});

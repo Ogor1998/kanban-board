@@ -26,7 +26,7 @@ export default function AlertBox() {
     }, [message, setMessage])
     if (!message.text) return null
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%', marginTop: '5rem' }}>
             <Collapse in={open}>
                 <Alert
                     severity={message.severity || "success"}
