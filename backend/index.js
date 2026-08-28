@@ -17,6 +17,7 @@ const cookieParser = require('cookie-parser')
 const { isLoggedIn } = require('./middleware/auth')
 const { uploadToCloudinary } = require('./cloudinary')
 const { upload } = require('./cloudinary')
+const Comment = require('./models/Comment')
 
 
 
@@ -57,6 +58,37 @@ app.post('/logout', (req, res) => {
     res.json({
         message: "Logged out.",
     });
+})
+
+
+app.get('/comments/:cardID', async (req, res) => {
+    const { cardID } = req.params;
+    const comment = await Comment.find({ cardID }).populate({
+        path: "author",
+        select: "username image"
+    });
+
+    res.json(comment)
+})
+
+app.get('/comments/:cardID/count', async (req, res) => {
+    const { cardID } = req.params;
+    const count = await Comment.countDocuments({ cardID })
+    res.json({ count })
+})
+
+app.post('/comments', isLoggedIn, async (req, res) => {
+    const { content, cardID } = req.body;
+    console.log('this is the user  making comment', req.user)
+    const comment = new Comment({
+        content,
+        cardID,
+        author: req.user.userId
+    })
+    await comment.save();
+    res.json({ message: 'Created comment successfully', comment })
+    console.log('comment created')
+
 })
 
 app.all(/(.*)/, (req, res, next) => {

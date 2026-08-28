@@ -3,6 +3,7 @@
     /* width: 60vw; */
     display: flex;
     /* justify-content: center; */
+    align-items: center;
     flex-direction: column;
 }
 
@@ -82,4 +83,16 @@
 
 .low {
     background-color: #4CAF50;
+}
+
+
+.board__top {
+    height: 30px;
+    min-width: 40rem;
+    width: 100%;
+    margin-top: 10px;
+    /* width: clamp(40rem, 100%, 60rem); */
+    background-color: #000;
+    border: 1px solid #fff;
+    border-radius: 15px;
 }

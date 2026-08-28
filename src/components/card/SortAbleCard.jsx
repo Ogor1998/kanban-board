@@ -12,8 +12,8 @@ import { useParams } from 'react-router-dom'
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from 'react-responsive-carousel';
 import FileUpload from '../reuseable/FileUpload';
-
 import Delete from '@mui/icons-material/Delete'
+import CommentsModal from '../comments/CommentsModal'
 
 
 export default function SortableCard({ card, setColumns, columnId }) {
@@ -29,7 +29,6 @@ export default function SortableCard({ card, setColumns, columnId }) {
         columnId
     })
 
-    console.log('this is the card object', card)
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -220,6 +219,8 @@ export default function SortableCard({ card, setColumns, columnId }) {
                 <Typography variant="body2" gutterBottom>
                     {card.description}
                 </Typography>
+
+                <CommentsModal card={card} />
             </Box >
 
         )

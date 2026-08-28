@@ -15,6 +15,7 @@ import AlertBox from '../components/AlertBox'
 import NewColumnModal from '../components/NewColumnModal'
 import { arrayMove } from '@dnd-kit/sortable'
 import { useDroppable } from '@dnd-kit/core'
+import ConfirmationModal from '../components/ConfirmationModal'
 
 
 const Show = () => {
@@ -133,6 +134,9 @@ const Show = () => {
     return (
         <Box className='big__container'>
             {message && <div>   <AlertBox /></div>}
+            <Box className='board__top'>
+                <ConfirmationModal handleDelete={handleDelete} />
+            </Box>
 
             <div className='board'>
 

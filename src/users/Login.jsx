@@ -41,7 +41,6 @@ export default function Login() {
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData)
         try {
             const res = await axios.post('/login', formData, { withCredentials: true })
             console.log(res.data)
