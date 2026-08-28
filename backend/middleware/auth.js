@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 
-const secret = process.env.JWT_SECRET || 'my-house-moves';
+const secret = process.env.JWT_SECRET;
 
 
 

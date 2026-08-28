@@ -18,7 +18,10 @@ export function AuthProvider({ children }) {
     const logout = async () => {
         const response = await axios.post('/logout', {}, { withCredentials: true })
         console.log('this is log out message', response.data)
-        setMessage(response.data.message)
+        setMessage({
+            text: response.data?.message,
+            severity: 'error'
+        })
         setIsLoggedIn(false)
         setCurrentUser(null)
 

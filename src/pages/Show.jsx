@@ -122,6 +122,7 @@ const Show = () => {
         console.log('Deleted Column')
     }
 
+
     function DroppableColumn({ col, children }) {
         const { setNodeRef } = useDroppable({ id: col._id })
         return (
@@ -135,7 +136,7 @@ const Show = () => {
         <Box className='big__container'>
             {message && <div>   <AlertBox /></div>}
             <Box className='board__top'>
-                <ConfirmationModal handleDelete={handleDelete} />
+                <ConfirmationModal boardId={boardId} />
             </Box>
 
             <div className='board'>

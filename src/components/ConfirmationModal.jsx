@@ -3,6 +3,8 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const style = {
     position: 'absolute',
@@ -16,10 +18,23 @@ const style = {
     textAlign: 'center'
 };
 
-export default function ConfirmationModal({ handleDelete }) {
+export default function ConfirmationModal({ boardId }) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const navigate = useNavigate();
+
+    const handleDeleteBoard = async (id) => {
+        await axios.delete(`/boards/${id}`)
+        // setData((prev) => prev.filter(board => board._id !== id))
+        navigate('/boards', {
+            state: {
+                message: "Board deleted successfully"
+            }
+        });
+        console.log('frontend delete called')
+    }
+
 
     return (
         <div>
@@ -39,7 +54,7 @@ export default function ConfirmationModal({ handleDelete }) {
                     </Typography>
                     <Box sx={{ display: 'flex', gap: '10px', m: 1, justifyContent: 'center' }}>
                         <Button variant='outlined' color='success' onClick={handleClose}>Cancel</Button>
-                        <Button variant='outlined' color='error' onClick={handleDelete}>Yes, Delete Board</Button>
+                        <Button variant='outlined' color='error' onClick={() => handleDeleteBoard(boardId)}>Yes, Delete Board</Button>
                     </Box>
                 </Box>
             </Modal>

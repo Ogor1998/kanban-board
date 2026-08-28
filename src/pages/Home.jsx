@@ -34,7 +34,10 @@ const Home = () => {
                 console.log(res.data.message)
                 setData(res.data.board)
             } catch (err) {
-                setMessage(err.response?.data?.message)
+                setMessage({
+                    text: err.response?.data?.message,
+                    severity: 'error'
+                })
             } finally {
                 setLoading(false)
             }
