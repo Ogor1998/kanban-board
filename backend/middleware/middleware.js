@@ -1,5 +1,6 @@
 const Board = require('../models/Board')
-const { boardSchema, cardSchema, columnSchema, userSchema } = require('../schemas')
+const Comment = require('../models/Comment')
+const { boardSchema, cardSchema, columnSchema, userSchema, commentSchema } = require('../schemas')
 const AppError = require('../utils/AppError')
 module.exports.isAuthor = async (req, res, next) => {
     console.log('this is thhe user object', req.user)
@@ -22,6 +23,27 @@ module.exports.isAuthor = async (req, res, next) => {
     }
 }
 
+
+module.exports.isCommentAuthor = async (req, res, next) => {
+    try {
+        const { commentID } = req.params;
+        const comment = await Comment.findById(commentID)
+        if (!comment) {
+            res.status(404).json({
+                message: 'Comment not found'
+            })
+        }
+        if (!comment.author._id.equals(req.user.userId)) {
+            return res.status(403).json({
+                message: 'You do not have permission to do that'
+            })
+        }
+        next();
+
+    } catch (err) {
+        res.status(500).json({ error: err.message })
+    }
+}
 
 
 
@@ -56,6 +78,16 @@ module.exports.validateCard = (req, res, next) => {
 
 module.exports.validateUser = (req, res, next) => {
     const { error } = userSchema.validate(req.body)
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new AppError(msg, 400)
+    } else {
+        next();
+    }
+}
+
+module.exports.validateComment = (req, res, next) => {
+    const { error } = commentSchema.validate(req.body);
     if (error) {
         const msg = error.details.map(el => el.message).join(',')
         throw new AppError(msg, 400)

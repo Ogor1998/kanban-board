@@ -11,6 +11,7 @@ const cardRoutes = require('./routes/cardRoutes')
 const columnRoutes = require('./routes/columnRoutes')
 const userRoutes = require('./routes/userRoutes')
 const profileRoutes = require('./routes/profileRoutes')
+const commentRoutes = require('./routes/commentRoutes')
 const AppError = require('./utils/AppError')
 const User = require('./models/User')
 const cookieParser = require('cookie-parser')
@@ -39,6 +40,7 @@ app.use('/cards', cardRoutes)
 app.use('/boards', boardRoutes)
 app.use('/', userRoutes)
 app.use('/profile', profileRoutes)
+app.use('/comments', commentRoutes)
 
 const secret = process.env.JWT_SECRET;
 
@@ -61,35 +63,7 @@ app.post('/logout', (req, res) => {
 })
 
 
-app.get('/comments/:cardID', async (req, res) => {
-    const { cardID } = req.params;
-    const comment = await Comment.find({ cardID }).populate({
-        path: "author",
-        select: "username image"
-    });
 
-    res.json(comment)
-})
-
-app.get('/comments/:cardID/count', async (req, res) => {
-    const { cardID } = req.params;
-    const count = await Comment.countDocuments({ cardID })
-    res.json({ count })
-})
-
-app.post('/comments', isLoggedIn, async (req, res) => {
-    const { content, cardID } = req.body;
-    console.log('this is the user  making comment', req.user)
-    const comment = new Comment({
-        content,
-        cardID,
-        author: req.user.userId
-    })
-    await comment.save();
-    res.json({ message: 'Created comment successfully', comment })
-    console.log('comment created')
-
-})
 
 app.all(/(.*)/, (req, res, next) => {
     next(new AppError('Page not found', 404))

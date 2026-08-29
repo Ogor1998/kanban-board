@@ -32,8 +32,12 @@ export function AuthProvider({ children }) {
             try {
                 const res = await axios.get("/check-auth", { withCredentials: true });
                 if (res.data.isLoggedIn) {
+                    console.log("CHECK AUTH RESPONSE:", res.data);
                     setIsLoggedIn(true);
-                    setCurrentUser(res.data.user)
+                    setCurrentUser(res.data.user);
+                } else {
+                    setIsLoggedIn(false);
+                    setCurrentUser(null);
                 }
 
             } catch {

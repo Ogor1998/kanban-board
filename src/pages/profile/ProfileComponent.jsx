@@ -13,7 +13,10 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function ProfileComponent({ profile, handleClick }) {
     const { currentUser } = useAuth();
-    const allowedToEditProfile = profile._id === currentUser?._id;
+    // console.log('this profile', profile._id)
+    // console.log('this currentUser', currentUser._id)
+    // const allowedToEditProfile = profile._id === currentUser?._id;
+    // console.log('this is the allowed boolean', allowedToEditProfile)
 
     if (!profile) {
         return (
@@ -22,7 +25,12 @@ export default function ProfileComponent({ profile, handleClick }) {
             </Box>
         );
     }
+    const allowedToEditProfile =
+        profile._id === currentUser?._id;
 
+    console.log('profile:', profile);
+    console.log('currentUser:', currentUser);
+    console.log('allowed:', allowedToEditProfile);
 
     return (
         <Box

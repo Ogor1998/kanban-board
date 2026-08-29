@@ -40,7 +40,6 @@ export default function CommentsModal({ card }) {
     useEffect(() => {
         const fetchCommentsCount = async () => {
             const res = await axios.get(`/comments/${card._id}/count`)
-            console.log('this is the count object', res.data)
             setCount(res.data.count)
         }
         fetchCommentsCount();
@@ -147,7 +146,7 @@ export default function CommentsModal({ card }) {
                         />
 
                         {comments.map(comment => (
-                            <CommentComponent comment={comment} key={comment._id} />
+                            <CommentComponent comment={comment} key={comment._id} setComments={setComments} />
                             // console.log('these are the comments', comment)
                         )
                         )}

@@ -63,7 +63,7 @@ module.exports.login = async (req, res) => {
         message: 'Logged in successfully',
         isLoggedIn: true,
         user: {
-            id: user._id,
+            _id: user._id,
             username: user.username,
         }
     });

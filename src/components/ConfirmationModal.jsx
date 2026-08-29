@@ -5,6 +5,9 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Create, Delete } from '@mui/icons-material';
+import { useNotification } from '../context/NotificationContext';
+
 
 const style = {
     position: 'absolute',
@@ -23,22 +26,26 @@ export default function ConfirmationModal({ boardId }) {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const navigate = useNavigate();
+    const { setMessage } = useNotification();
 
     const handleDeleteBoard = async (id) => {
-        await axios.delete(`/boards/${id}`)
-        // setData((prev) => prev.filter(board => board._id !== id))
-        navigate('/boards', {
-            state: {
-                message: "Board deleted successfully"
-            }
-        });
+        const res = await axios.delete(`/boards/${id}`)
+        navigate('/boards')
+        console.log(res.data)
+        setMessage({
+            text: res.data?.message,
+            severity: 'error'
+        })
         console.log('frontend delete called')
     }
 
 
     return (
         <div>
-            <Button onClick={handleOpen}>Open modal</Button>
+            <Box>
+                <Button color='primary'><Create /></Button>
+                <Button onClick={handleOpen}><Delete /></Button>
+            </Box>
             <Modal
                 open={open}
                 onClose={handleClose}

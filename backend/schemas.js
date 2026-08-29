@@ -23,3 +23,7 @@ module.exports.userSchema = Joi.object({
     lastname: Joi.string()
 })
 
+module.exports.commentSchema = Joi.object({
+    content: Joi.string().required(),
+    cardID: Joi.string().required(),
+})
