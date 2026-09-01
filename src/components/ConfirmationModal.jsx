@@ -26,6 +26,7 @@ export default function ConfirmationModal({ boardId }) {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const navigate = useNavigate();
+    const [board, setBoard] = React.useState(null)
     const { setMessage } = useNotification();
 
     const handleDeleteBoard = async (id) => {
@@ -39,10 +40,23 @@ export default function ConfirmationModal({ boardId }) {
         console.log('frontend delete called')
     }
 
+    React.useEffect(() => {
+        const fetchboards = async () => {
+            const res = await axios.get(`/boards/${boardId}`)
+            console.log('this is the board object', res.data)
+            setBoard(res.data)
+        }
+        fetchboards();
+    }, [boardId])
+
+    console.log('this is board', board)
 
     return (
         <div>
-            <Box>
+            <Box sx={{ display: 'flex', flexDirection: 'row', justifyItems: 'center', width: '100%' }}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                    {board?.title}
+                </Typography>
                 <Button color='primary'><Create /></Button>
                 <Button onClick={handleOpen}><Delete /></Button>
             </Box>

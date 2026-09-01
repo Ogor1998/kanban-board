@@ -15,6 +15,18 @@ module.exports.allBoards = async (req, res) => {
         // message: 'You are on the right track'
     })
 }
+
+module.exports.findBoard = async (req, res) => {
+    const { boardId } = req.params;
+    const board = await Board.findById(boardId)
+    if (!board) {
+        res.status(404).json({
+            message: 'Board not found'
+        })
+    }
+    console.log('this board', board)
+    res.json(board)
+}
 module.exports.createBoard = async (req, res) => {
     console.log(req.body)
     const { title } = req.body;

@@ -84,7 +84,9 @@ export default function CommentsModal({ card }) {
             console.log(res.data)
             setComments(prev => [...prev, res.data.comment])
             console.log('these are comments', comments)
-            // setComments(res.card.comments)
+            setFormData({
+                content: ""
+            })
         }
         catch (err) {
             setMessage({
