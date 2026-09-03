@@ -7,6 +7,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Create, Delete } from '@mui/icons-material';
 import { useNotification } from '../context/NotificationContext';
+import InviteComponent from './InviteComponent';
+import { Share } from '@mui/icons-material';
 
 
 const style = {
@@ -23,11 +25,14 @@ const style = {
 
 export default function ConfirmationModal({ boardId }) {
     const [open, setOpen] = React.useState(false);
+    const [openInvite, setInviteOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const navigate = useNavigate();
     const [board, setBoard] = React.useState(null)
     const { setMessage } = useNotification();
+    const openInviteModal = () => setInviteOpen(true);
+    const closeInviteModal = () => setInviteOpen(false);
 
     const handleDeleteBoard = async (id) => {
         const res = await axios.delete(`/boards/${id}`)
@@ -57,9 +62,11 @@ export default function ConfirmationModal({ boardId }) {
                 <Typography id="modal-modal-title" variant="h6" component="h2">
                     {board?.title}
                 </Typography>
+                <Button onClick={openInviteModal}><Share /></Button>
                 <Button color='primary'><Create /></Button>
                 <Button onClick={handleOpen}><Delete /></Button>
             </Box>
+            <InviteComponent closeInviteModal={closeInviteModal} openInvite={openInvite} />
             <Modal
                 open={open}
                 onClose={handleClose}

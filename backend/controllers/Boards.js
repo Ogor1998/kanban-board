@@ -1,5 +1,6 @@
 
 const Board = require('../models/Board')
+const User = require('../models/User')
 const AppError = require('../utils/AppError')
 
 module.exports.allBoards = async (req, res) => {
@@ -53,4 +54,32 @@ module.exports.deleteBoard = async (req, res) => {
         board: board
     })
     console.log('backend delete called')
+}
+
+module.exports.inviteMember = async (req, res) => {
+    const { memberID } = req.body;
+    const { boardId } = req.params;
+    const board = await Board.findById(boardId)
+    const user = await User.findById(memberID)
+    const alreadyMember = board.members.some(m => m.equals(memberID))
+    if (alreadyMember) return res.status(400).json({
+        message: 'User already a member'
+    });
+    if (!user) {
+        return res.status(404).json({
+            message: 'User not found'
+        })
+    }
+    if (!board) {
+        return res.json({
+            message: 'Board not found'
+        })
+    }
+
+    board.members.push(memberID)
+    board.save();
+    res.json({
+        message: 'Permisson Granted',
+        board
+    })
 }

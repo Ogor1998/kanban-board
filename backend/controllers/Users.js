@@ -5,6 +5,13 @@ const jwt = require('jsonwebtoken')
 
 const secret = process.env.JWT_SECRET;
 
+module.exports.findUsers = async (req, res) => {
+    const users = await User.find().select('-password').populate();
+    ;
+    console.log(users)
+    res.json(users)
+}
+
 
 module.exports.register = async (req, res) => {
     const { firstname, lastname, username, password, email } = req.body;

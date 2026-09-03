@@ -17,6 +17,7 @@ import { arrayMove } from '@dnd-kit/sortable'
 import { useDroppable } from '@dnd-kit/core'
 import ConfirmationModal from '../components/ConfirmationModal'
 import { getColumns, createColumn, deleteColumn } from '../api/columns'
+import InviteComponent from '../components/InviteComponent'
 
 
 const Show = () => {
@@ -134,7 +135,7 @@ const Show = () => {
             <Box className='board__top'>
                 <ConfirmationModal boardId={boardId} />
             </Box>
-
+            <InviteComponent />
             <div className='board'>
 
                 <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
