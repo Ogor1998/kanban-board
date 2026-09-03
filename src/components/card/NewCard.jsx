@@ -7,6 +7,7 @@ import { Button } from '@mui/material';
 import { useNotification } from '../../context/NotificationContext';
 import FileUpload from '../reuseable/FileUpload';
 import Delete from '@mui/icons-material/Delete';
+import { createCard } from '../../api/cards'
 
 export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
     const { setMessage } = useNotification();
@@ -43,7 +44,7 @@ export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
                 form.append("images", image);
             });
 
-            const res = await axios.post(`/cards`, form)
+            const res = await createCard(form)
             const newCard = res.data.card
             setColumns(prev =>
                 prev.map(column =>

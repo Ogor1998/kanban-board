@@ -51,7 +51,7 @@ const Home = () => {
     }
 
     if (loading) {
-        return <Box sx={{ display: 'flex', height: '100vh', justifyContent: 'center' }}>
+        return <Box sx={{ display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center' }}>
             <CircularProgress aria-label="Loading…" />
         </Box>;
     }

@@ -1,8 +1,9 @@
 import { useState } from "react"
 import { Box, Button, Autocomplete, Typography, TextField } from "@mui/material"
 import FileUpload from '../reuseable/FileUpload';
+import { updateACard } from '../../api/cards'
 
-export default function EditCard({ card, columnId, handleSwitch }) {
+export default function EditCard({ card, columnId, handleSwitch, setColumns }) {
     const [formData, setFormData] = useState({
         title: card.title,
         priority: card.priority,
@@ -29,7 +30,7 @@ export default function EditCard({ card, columnId, handleSwitch }) {
         file.forEach((image) => {
             form.append('images', image)
         })
-        const res = await axios.put(`/cards/${card._id}`, form)
+        const res = await updateACard(card._id, form)
         const updateCard = res.data.card;
         setColumns((prev) => prev.map(column => ({
             ...column, cards: column.cards.map(card => card._id === updateCard._id ? updateCard : card)
@@ -40,14 +41,14 @@ export default function EditCard({ card, columnId, handleSwitch }) {
 
     }
 
-    const handleDelete = (idx) => {
+    const handlePreviewDelete = (idx) => {
         console.log('getting clicked')
         setPreviews(prev =>
             prev.filter((_, index) => index !== idx))
     }
 
 
-
+    console.log('this is teh value', value)
 
     return (
         <Box sx={{
@@ -95,6 +96,7 @@ export default function EditCard({ card, columnId, handleSwitch }) {
             />
 
 
+
             <TextField
                 id="outlined-multiline-static"
                 label="Description"
@@ -115,7 +117,7 @@ export default function EditCard({ card, columnId, handleSwitch }) {
                             width="100"
                             height='100'
                         />
-                        <Delete onClick={() => handleDelete(index)} />
+                        <Delete onClick={() => handlePreviewDelete(index)} />
                     </div>
                 ))}
             </Box>

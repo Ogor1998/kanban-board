@@ -15,6 +15,7 @@ import FileUpload from '../reuseable/FileUpload';
 import Delete from '@mui/icons-material/Delete'
 import CommentsModal from '../comments/CommentsModal'
 import EditCard from './EditCard'
+import { deleteCard } from '../../api/cards'
 
 
 
@@ -40,7 +41,7 @@ export default function SortableCard({ card, setColumns, columnId }) {
     }
     const handleCardDelete = async () => {
         try {
-            await axios.delete(`/cards/${card._id}`)
+            await deleteCard(card._id)
             setColumns(prev =>
                 prev.map(column =>
                 ({
@@ -62,7 +63,7 @@ export default function SortableCard({ card, setColumns, columnId }) {
 
         isEditting ? (
 
-            <EditCard card={card} handleSwitch={handleSwitch} columnId={columnId} />
+            <EditCard card={card} handleSwitch={handleSwitch} columnId={columnId} setColumns={setColumns} />
         ) : (
 
             <Box

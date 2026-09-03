@@ -12,6 +12,7 @@ import DeleteComponent from '../reuseable/DeleteComponent';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
+import { deleteComments } from '../../api/comments'
 
 export default function CommentComponent({ comment, setComments }) {
 
@@ -25,7 +26,7 @@ export default function CommentComponent({ comment, setComments }) {
     }
 
     const handleDelete = async (id) => {
-        await axios.delete(`/comments/${id}`)
+        await deleteComments(id)
         setComments(prev => prev.filter(comment => comment._id !== id))
         console.log('Frontend Deleted Comment')
     }

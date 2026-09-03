@@ -8,6 +8,7 @@ import { Typography } from '@mui/material';
 import axios from 'axios';
 import { useNotification } from '../context/NotificationContext';
 import { useAuth } from '../context/AuthContext';
+import { updateColumn } from '../api/columns'
 
 
 
@@ -24,7 +25,7 @@ const Heading = ({ col, handleDelete, setColumns }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.put(`/columns/${col._id}`, { title, });
+            const res = await updateColumn(col._id, { title })
             const updatedColumn = res.data.column;
             console.log(res.data)
             setColumns((prev) => prev.map(column =>
@@ -67,8 +68,8 @@ const Heading = ({ col, handleDelete, setColumns }) => {
                         {col.title}
                     </Typography>
                     {isLoggedIn ? <>
-                        <Button variant='outlined' color='error' onClick={() => handleDelete(col._id)}><DeleteIcon /></Button>
-                        <Button variant='outlined' color='success' onClick={handleClick}><CreateIcon /></Button></>
+                        <Button variant='outlined' color='success' onClick={handleClick}><CreateIcon /></Button>
+                        <Button variant='outlined' color='error' onClick={() => handleDelete(col._id)}><DeleteIcon /></Button></>
                         : null}
                 </Box>)
             }

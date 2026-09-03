@@ -16,6 +16,7 @@ import NewColumnModal from '../components/NewColumnModal'
 import { arrayMove } from '@dnd-kit/sortable'
 import { useDroppable } from '@dnd-kit/core'
 import ConfirmationModal from '../components/ConfirmationModal'
+import { getColumns, createColumn, deleteColumn } from '../api/columns'
 
 
 const Show = () => {
@@ -31,8 +32,7 @@ const Show = () => {
     useEffect(() => {
         const fetchColumns = async () => {
             try {
-                const res = await axios.get(`/columns/${boardId}`)
-                console.log('this is the full data object', res.data)
+                const res = await getColumns(boardId)
                 setColumns(res.data.columns)
 
             } catch (err) {
@@ -57,11 +57,7 @@ const Show = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(`/columns`, {
-                title: formData.title,
-                boardId,
-
-            })
+            const res = await createColumn({ title: formData.title, boardId })
             setMessage({ text: res.data.message, severity: 'success' })
             setColumns((prev) => [...prev, { ...res.data.column, cards: [] }])
         } catch (err) {
@@ -116,7 +112,7 @@ const Show = () => {
     }
 
     const handleDelete = async (id) => {
-        const res = await axios.delete(`/columns/${id}/`)
+        const res = await deleteColumn(id)
         setColumns((prev) => prev.filter(col => col._id !== id))
         setMessage({ text: res.data.message, severity: 'error' })
         console.log('Deleted Column')

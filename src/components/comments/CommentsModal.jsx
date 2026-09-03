@@ -12,7 +12,7 @@ import { useNotification } from '../../context/NotificationContext';
 import CommentIcon from '@mui/icons-material/Comment';
 import CommentComponent from './CommentsComponent';
 import { TrendingUpSharp } from '@mui/icons-material';
-
+import { createComments, getComments, commentsCount } from '../../api/comments'
 
 const style = {
     position: 'absolute',
@@ -31,6 +31,7 @@ const style = {
 
 export default function CommentsModal({ card }) {
     // console.log('CommentsModal RENDER');
+    const [comments, setComments] = useState([])
     const [open, setOpen] = React.useState(false);
     const [formData, setFormData] = useState({
         content: '',
@@ -39,22 +40,19 @@ export default function CommentsModal({ card }) {
     const [count, setCount] = useState(0)
     useEffect(() => {
         const fetchCommentsCount = async () => {
-            const res = await axios.get(`/comments/${card._id}/count`)
+            const res = await commentsCount(card._id)
             setCount(res.data.count)
         }
         fetchCommentsCount();
     }, [card._id])
-    // const handleOpen = () => setOpen(true)
+
     const handleOpen = async () => {
         setOpen(true)
-        console.log(open)
         try {
-            const res = await axios.get(`/comments/${card._id}`)
-            console.log(res.data)
+            const res = await getComments(card._id)
+            console.log('GET comments response:', res.data)
             setComments(res.data)
-            setFormData({
-                content: ''
-            })
+            setFormData(prev => ({ ...prev, content: '' }))
         }
         catch (err) {
             setMessage({
@@ -65,7 +63,7 @@ export default function CommentsModal({ card }) {
     }
 
     const handleClose = () => setOpen(false);
-    const [comments, setComments] = useState([])
+
     const { setMessage } = useNotification();
 
 
@@ -78,15 +76,10 @@ export default function CommentsModal({ card }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('/comments', formData, {
-                withCredentials: true
-            })
-            console.log(res.data)
+            const res = await createComments(formData)
             setComments(prev => [...prev, res.data.comment])
-            console.log('these are comments', comments)
-            setFormData({
-                content: ""
-            })
+            setCount(prev => prev + 1);
+            setFormData(prev => ({ ...prev, content: '' }))
         }
         catch (err) {
             setMessage({
