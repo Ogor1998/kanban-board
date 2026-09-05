@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { Share, Close } from '@mui/icons-material';
 import { Autocomplete } from '@mui/material';
+import { useNotification } from '../context/NotificationContext';
 
 const style = {
     position: 'absolute',
@@ -28,11 +29,11 @@ const style = {
 
 const permissions = ['admin', 'member', 'public']
 
-const InviteComponent = ({ closeInviteModal, openInvite }) => {
+const InviteComponent = ({ closeInviteModal, openInvite, boardId }) => {
+    const [selectedUser, setSelectedUser] = useState(null)
+    const { setMessage } = useNotification();
     const [value, setValue] = useState("")
-    const [formData, setFormData] = useState({
-        firstname: ''
-    })
+    const [formData, setFormData] = useState({})
     const [users, setUsers] = useState([]);
     const [isShare, setIshare] = useState(false)
 
@@ -41,6 +42,7 @@ const InviteComponent = ({ closeInviteModal, openInvite }) => {
         setFormData(prev => ({ ...prev, [name]: value }))
     }
     const handleShowShare = (user) => {
+        setSelectedUser(user)
         setFormData(prev => ({
             ...prev, firstname: user.firstname
         }))
@@ -50,8 +52,26 @@ const InviteComponent = ({ closeInviteModal, openInvite }) => {
         setIshare(false)
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        try {
+            const res = await axios.post(`/boards/${boardId}/invite`, {
+                memberID: selectedUser._id,
+                permissions: formData.permissions
+            })
+            console.log('this is the message', res.data.message)
+            setMessage({
+                text: res.data.message,
+                severity: 'success'
+            })
+            closeInviteModal();
+            console.log(res.data)
+        } catch (err) {
+            setMessage({
+                text: err.response?.data?.message,
+                severity: 'error'
+            })
+        }
     }
 
     useEffect(() => {
@@ -59,6 +79,7 @@ const InviteComponent = ({ closeInviteModal, openInvite }) => {
             try {
                 const res = await axios.get('/users');
                 setUsers(res.data);
+                console.log('these are the users', res.data)
             } catch (err) {
                 console.log(err);
             }
@@ -159,7 +180,7 @@ const InviteComponent = ({ closeInviteModal, openInvite }) => {
                                             permissions: newValue,
                                         }));
                                     }}
-                                    value={value.toUpperCase()}
+                                    value={value ? value.toUpperCase() : ''}
                                 />
 
                                 <Button type='submit' variant='outlined'>Invite User</Button>

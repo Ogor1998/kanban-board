@@ -9,8 +9,17 @@ const boardSchema = new Schema({
         ref: 'User'
     },
     members:
-        [{ type: Schema.Types.ObjectId, ref: 'User' }],
-
+        [{
+            user: {
+                type: Schema.Types.ObjectId,
+                ref: 'User'
+            },
+            role: {
+                type: String,
+                enum: ['admin', 'member'],
+                default: 'member'
+            }
+        }],
     createdAt: { type: Date, default: Date.now }
 })
 

@@ -28,7 +28,7 @@ module.exports.isBoardMemeber = async (req, res, next) => {
         const { boardId } = req.params;
         const board = await Board.findById(boardId)
         const isOwner = board.owner.equals(req.user.userId)
-        const isMember = board.members.some(m => m.equals(req.user.userId))
+        const isMember = board.members.some(m => m.user.equals(req.user.userId))
         if (!isOwner && !isMember) {
             return res.status(403).json({ message: "Access denied" })
         }

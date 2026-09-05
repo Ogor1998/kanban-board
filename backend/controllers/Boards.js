@@ -19,7 +19,8 @@ module.exports.allBoards = async (req, res) => {
 
 module.exports.findBoard = async (req, res) => {
     const { boardId } = req.params;
-    const board = await Board.findById(boardId)
+    const board = await Board.findById(boardId).populate('owner', 'firstname lastname username image')
+        .populate('members.user', 'firstname lastname username email image')
     if (!board) {
         res.status(404).json({
             message: 'Board not found'
@@ -57,27 +58,27 @@ module.exports.deleteBoard = async (req, res) => {
 }
 
 module.exports.inviteMember = async (req, res) => {
-    const { memberID } = req.body;
+    const { memberID, permissions } = req.body;
     const { boardId } = req.params;
     const board = await Board.findById(boardId)
     const user = await User.findById(memberID)
-    const alreadyMember = board.members.some(m => m.equals(memberID))
+    const alreadyMember = board.members.some(m => m.user.equals(memberID))
     if (alreadyMember) return res.status(400).json({
         message: 'User already a member'
     });
-    if (!user) {
-        return res.status(404).json({
-            message: 'User not found'
-        })
-    }
     if (!board) {
         return res.json({
             message: 'Board not found'
         })
     }
+    if (!user) {
+        return res.status(404).json({
+            message: 'User not found'
+        })
+    }
 
-    board.members.push(memberID)
-    board.save();
+    board.members.push({ user: memberID, role: permissions || 'member' })
+    await board.save();
     res.json({
         message: 'Permisson Granted',
         board

@@ -9,6 +9,9 @@ import { Create, Delete } from '@mui/icons-material';
 import { useNotification } from '../context/NotificationContext';
 import InviteComponent from './InviteComponent';
 import { Share } from '@mui/icons-material';
+import { Stack, Avatar } from '@mui/material';
+import '../pages/Show.css'
+import './ConfirmationModal.css'
 
 
 const style = {
@@ -29,7 +32,7 @@ export default function ConfirmationModal({ boardId }) {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const navigate = useNavigate();
-    const [board, setBoard] = React.useState(null)
+    const [board, setBoard] = React.useState([])
     const { setMessage } = useNotification();
     const openInviteModal = () => setInviteOpen(true);
     const closeInviteModal = () => setInviteOpen(false);
@@ -54,19 +57,36 @@ export default function ConfirmationModal({ boardId }) {
         fetchboards();
     }, [boardId])
 
-    console.log('this is board', board)
+    const visitProfile = (username) => {
+        return navigate(`/profile/${username}`)
+    }
+
+    console.log('this is board members', board)
 
     return (
         <div>
-            <Box sx={{ display: 'flex', flexDirection: 'row', justifyItems: 'center', width: '100%' }}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', p: 1 }}>
+                <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ marginRight: 'auto' }} className='heading__board'>
                     {board?.title}
                 </Typography>
+
+
+                <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ marginRight: '5px' }}>
+                    Members {board?.members?.length}
+                </Typography>
+                {board?.members?.map(member => (
+                    <Box key={member._id}>
+                        <Stack direction="row" spacing={3}>
+                            <Avatar alt={member.user.username} src={member.user.image} className={`${member.role}`}
+                                onClick={() => visitProfile(member.user?.username)} />
+                        </Stack>
+                    </Box>
+                ))}
                 <Button onClick={openInviteModal}><Share /></Button>
                 <Button color='primary'><Create /></Button>
                 <Button onClick={handleOpen}><Delete /></Button>
             </Box>
-            <InviteComponent closeInviteModal={closeInviteModal} openInvite={openInvite} />
+            <InviteComponent closeInviteModal={closeInviteModal} openInvite={openInvite} boardId={boardId} />
             <Modal
                 open={open}
                 onClose={handleClose}

@@ -22,6 +22,7 @@ const Heading = ({ col, handleDelete, setColumns }) => {
         setIsEditting(prev => !prev)
     }
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
