@@ -1,54 +1,25 @@
-import axios from 'axios'
-import React, { useState } from 'react'
-import { useEffect } from 'react'
+import { useState } from 'react'
 import './Home.css'
-import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
-
+import { Link } from 'react-router-dom'
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { useNotification } from '../context/NotificationContext'
 import AlertBox from '../components/AlertBox'
 import NewBoardModal from '../components/NewBoardModal'
 import { Box, Button } from '@mui/material'
 import Delete from '@mui/icons-material/Delete'
 import CircularProgress from '@mui/material/CircularProgress';
 import { Typography } from '@mui/material'
+import { useBoard } from '../context/BoardContext'
 
 
 
 const Home = () => {
-    const [data, setData] = useState([])
-    const [loading, setLoading] = useState(true)
+    const { board, setBoard, deleteBoard, loading } = useBoard();
     const [formData, setFormData] = useState({
         title: ""
     })
-    const { message, setMessage } = useNotification();
-
-    console.log("Home message:", message);
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await axios.get('/boards');
-                console.log(res.data.message)
-                setData(res.data.board)
-            } catch (err) {
-                setMessage({
-                    text: err.response?.data?.message,
-                    severity: 'error'
-                })
-            } finally {
-                setLoading(false)
-            }
-        }
-        fetchData();
-    }, [])
-    const handleDeleteBoard = async (id) => {
-        await axios.delete(`/boards/${id}`)
-        setData((prev) => prev.filter(board => board._id !== id))
-        console.log('frontend delete called')
-    }
 
     if (loading) {
         return <Box sx={{ display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center' }}>
@@ -56,7 +27,7 @@ const Home = () => {
         </Box>;
     }
 
-    if (data.length === 0) {
+    if (board.length === 0) {
         return (
             <Box sx={{ m: 1, }} className='no__data'>
                 <Typography variant="h6" gutterBottom sx={{ fontSize: '3rem' }}>
@@ -76,18 +47,16 @@ const Home = () => {
     return (
         <div className='home'>
             <AlertBox />
-
             <div className="home__container">
-                {data.map((item) => (
+                {board.map((item) => (
                     <Box className='links' key={item._id}>
                         <Link to={`/columns/${item._id}`} >{item.title}</Link>
-                        <Button onClick={() => handleDeleteBoard(item._id)}><Delete /></Button>
+                        <Button onClick={() => deleteBoard(item._id)}><Delete /></Button>
                     </Box>
                 ))}
                 <div>
                 </div>
-                <NewBoardModal setFormData={setFormData} formData={formData} setData={setData} />
-
+                <NewBoardModal setFormData={setFormData} formData={formData} setBoard={setBoard} />
             </div>
         </div>
     )

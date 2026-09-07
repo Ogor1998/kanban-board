@@ -12,6 +12,7 @@ import { Share } from '@mui/icons-material';
 import { Stack, Avatar } from '@mui/material';
 import '../pages/Show.css'
 import './ConfirmationModal.css'
+import { useBoard } from '../context/BoardContext';
 
 
 const style = {
@@ -33,20 +34,9 @@ export default function ConfirmationModal({ boardId }) {
     const handleClose = () => setOpen(false);
     const navigate = useNavigate();
     const [board, setBoard] = React.useState([])
-    const { setMessage } = useNotification();
     const openInviteModal = () => setInviteOpen(true);
     const closeInviteModal = () => setInviteOpen(false);
-
-    const handleDeleteBoard = async (id) => {
-        const res = await axios.delete(`/boards/${id}`)
-        navigate('/boards')
-        console.log(res.data)
-        setMessage({
-            text: res.data?.message,
-            severity: 'error'
-        })
-        console.log('frontend delete called')
-    }
+    const { deleteBoard } = useBoard();
 
     React.useEffect(() => {
         const fetchboards = async () => {
@@ -102,7 +92,7 @@ export default function ConfirmationModal({ boardId }) {
                     </Typography>
                     <Box sx={{ display: 'flex', gap: '10px', m: 1, justifyContent: 'center' }}>
                         <Button variant='outlined' color='success' onClick={handleClose}>Cancel</Button>
-                        <Button variant='outlined' color='error' onClick={() => handleDeleteBoard(boardId)}>Yes, Delete Board</Button>
+                        <Button variant='outlined' color='error' onClick={() => deleteBoard(boardId)}>Yes, Delete Board</Button>
                     </Box>
                 </Box>
             </Modal>

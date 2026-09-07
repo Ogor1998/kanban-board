@@ -124,8 +124,10 @@ const InviteComponent = ({ closeInviteModal, openInvite, boardId }) => {
                                     display: 'flex',
                                     justifyContent: 'space-between',
                                     alignItems: 'center',
-                                    border: '1px solid #000',
+                                    // border: '1px solid #000',
                                     borderRadius: 2,
+                                    backgroundColor: '#00000082',
+                                    color: '#fff',
                                     p: 1,
                                     mb: 1
                                 }}
@@ -134,7 +136,7 @@ const InviteComponent = ({ closeInviteModal, openInvite, boardId }) => {
                                     {user.firstname}
                                 </Typography>
 
-                                <Button variant="outlined" onClick={() => handleShowShare(user)}>
+                                <Button variant="contained" onClick={() => handleShowShare(user)}>
                                     <Share sx={{ mr: 1 }} />
                                     Invite
                                 </Button>
@@ -183,7 +185,7 @@ const InviteComponent = ({ closeInviteModal, openInvite, boardId }) => {
                                     value={value ? value.toUpperCase() : ''}
                                 />
 
-                                <Button type='submit' variant='outlined'>Invite User</Button>
+                                <Button type='submit' variant='contained'>Invite User</Button>
 
                             </Box>
                         </>

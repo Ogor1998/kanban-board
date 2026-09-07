@@ -1,9 +1,17 @@
 .member {
     border: 1px solid #000;
     border-radius: 50%;
+    cursor: pointer;
+
 }
 
 .admin {
     border: 1px solid red;
     border-radius: 50%;
+    cursor: pointer;
+}
+
+.member,
+.admin:hover {
+    transform: scale(1.05);
 }

@@ -11,7 +11,6 @@ import axios from 'axios';
 import { useNotification } from '../../context/NotificationContext';
 import CommentIcon from '@mui/icons-material/Comment';
 import CommentComponent from './CommentsComponent';
-import { TrendingUpSharp } from '@mui/icons-material';
 import { createComments, getComments, commentsCount } from '../../api/comments'
 
 const style = {
@@ -22,15 +21,14 @@ const style = {
     // width: 400,
     bgcolor: 'background.paper',
     boxShadow: 24,
-    p: 4,
+    p: 2,
     textAlign: 'center',
-    maxHeight: '30rem',
+    minHeight: '30rem',
     overflowY: 'scroll',
     borderRadius: '15px'
 };
 
 export default function CommentsModal({ card }) {
-    // console.log('CommentsModal RENDER');
     const [comments, setComments] = useState([])
     const [open, setOpen] = React.useState(false);
     const [formData, setFormData] = useState({

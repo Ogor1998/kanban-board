@@ -7,6 +7,7 @@ import axios from 'axios'
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { NotificationProvider } from "./context/NotificationContext";
 import { AuthProvider } from './context/AuthContext.jsx'
+import { BoardProvider } from './context/BoardContext.jsx'
 
 const theme = createTheme({
   typography: {
@@ -19,15 +20,16 @@ axios.defaults.baseURL = 'http://localhost:3000'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-
     <NotificationProvider>
-      <AuthProvider>
-        <ThemeProvider theme={theme}>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </ThemeProvider>
-      </AuthProvider>
+      <BoardProvider>
+        <AuthProvider>
+          <ThemeProvider theme={theme}>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </ThemeProvider>
+        </AuthProvider>
+      </BoardProvider>
     </NotificationProvider>
 
   </StrictMode>,

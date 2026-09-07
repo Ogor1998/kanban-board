@@ -69,7 +69,7 @@ const style = {
     alignItems: 'center'
 };
 
-export default function NewBoardModal({ setData, formData, setFormData }) {
+export default function NewBoardModal({ setBoard, formData, setFormData }) {
     const { isLoggedIn } = useAuth();
     const navigate = useNavigate();
     const [open, setOpen] = React.useState(false);
@@ -100,7 +100,7 @@ export default function NewBoardModal({ setData, formData, setFormData }) {
             const res = await axios.post('/boards', formData);
             console.log(res.data)
             console.log('this is the board', res.data.board)
-            setData(prev => [...prev, res.data.board])
+            setBoard(prev => [...prev, res.data.board])
             setMessage({ text: res.data.message, severity: 'success' })
             navigate('/boards')
             setOpen(false)
