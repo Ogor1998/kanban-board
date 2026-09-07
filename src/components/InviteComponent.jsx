@@ -147,16 +147,19 @@ const InviteComponent = ({ closeInviteModal, openInvite, boardId }) => {
 
                     : (
                         <>
-                            <Button onClick={closeShowShare}><Close /></Button>
-                            <Typography sx={{ textAlign: 'center', m: 1 }}>
-                                Invite this user
-                            </Typography>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', m: 1 }}>
+                                <Typography sx={{ textAlign: 'center', m: 1, fontSize: '2.5rem' }}>
+                                    Invite this user
+                                </Typography>
+                                <Button onClick={closeShowShare}><Close /></Button>
+                            </Box>
                             <Box
                                 component='form'
                                 sx={{
                                     display: 'flex',
                                     flexDirection: 'row',
-                                    fontSize: '2.5rem'
+                                    fontSize: '2.5rem',
+                                    gap: '5px'
                                 }}
                                 onSubmit={handleSubmit}>
 

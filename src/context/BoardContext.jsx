@@ -2,15 +2,21 @@ import React from 'react'
 import axios from 'axios'
 import { createContext, useContext, useState, useEffect } from 'react'
 import { useNotification } from './NotificationContext';
+import { useAuth } from './AuthContext';
 
 
 const BoardContext = createContext();
 export const BoardProvider = ({ children }) => {
+    const { isLoggedIn } = useAuth();
     const [board, setBoard] = useState([])
     const [loading, setLoading] = useState(true)
     const { setMessage } = useNotification();
     useEffect(() => {
         const fetchboards = async () => {
+            if (!isLoggedIn) {
+                setBoard([])
+                return
+            }
             try {
                 const res = await axios.get('/boards')
                 setBoard(res.data.board)
@@ -24,7 +30,7 @@ export const BoardProvider = ({ children }) => {
             }
         }
         fetchboards();
-    }, [])
+    }, [isLoggedIn])
 
     const deleteBoard = async (id) => {
         const res = axios.delete(`/boards/${id}`, { withCredentials: true })

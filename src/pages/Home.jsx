@@ -12,11 +12,13 @@ import Delete from '@mui/icons-material/Delete'
 import CircularProgress from '@mui/material/CircularProgress';
 import { Typography } from '@mui/material'
 import { useBoard } from '../context/BoardContext'
+import { useAuth } from '../context/AuthContext';
 
 
 
 const Home = () => {
     const { board, setBoard, deleteBoard, loading } = useBoard();
+    const { currentUser } = useAuth();
     const [formData, setFormData] = useState({
         title: ""
     })
@@ -37,7 +39,6 @@ const Home = () => {
                 <NewBoardModal
                     setFormData={setFormData}
                     formData={formData}
-                    setData={setData}
                 />
             </Box>
 
@@ -48,12 +49,15 @@ const Home = () => {
         <div className='home'>
             <AlertBox />
             <div className="home__container">
-                {board.map((item) => (
-                    <Box className='links' key={item._id}>
-                        <Link to={`/columns/${item._id}`} >{item.title}</Link>
-                        <Button onClick={() => deleteBoard(item._id)}><Delete /></Button>
-                    </Box>
-                ))}
+                {board.map((board) => {
+                    const canDelete = currentUser?._id.toString() === board.owner?.toString();
+                    return (
+                        <Box className='links' key={board._id}>
+                            <Link to={`/columns/${board._id}`} >{board.title}</Link>
+                            {canDelete && <Button onClick={() => deleteBoard(board._id)}><Delete /></Button>}
+                        </Box>
+                    )
+                })}
                 <div>
                 </div>
                 <NewBoardModal setFormData={setFormData} formData={formData} setBoard={setBoard} />

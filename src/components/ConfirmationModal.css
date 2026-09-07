@@ -11,6 +11,11 @@
     cursor: pointer;
 }
 
+/* .admin,
+.member {
+    margin-right: 10px;
+} */
+
 .member,
 .admin:hover {
     transform: scale(1.05);

@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Box, Button, Autocomplete, Typography, TextField } from "@mui/material"
 import FileUpload from '../reuseable/FileUpload';
 import { updateACard } from '../../api/cards'
+import { Delete } from "@mui/icons-material";
 
 export default function EditCard({ card, columnId, handleSwitch, setColumns }) {
     const [formData, setFormData] = useState({

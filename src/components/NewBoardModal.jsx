@@ -10,6 +10,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useNotification } from '../context/NotificationContext';
+import { useBoard } from '../context/BoardContext';
 
 const Fade = React.forwardRef(function Fade(props, ref) {
 
@@ -69,7 +70,8 @@ const style = {
     alignItems: 'center'
 };
 
-export default function NewBoardModal({ setBoard, formData, setFormData }) {
+export default function NewBoardModal({ formData, setFormData }) {
+    const { board, setBoard } = useBoard();
     const { isLoggedIn } = useAuth();
     const navigate = useNavigate();
     const [open, setOpen] = React.useState(false);

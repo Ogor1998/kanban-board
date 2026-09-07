@@ -13,6 +13,8 @@ import { Stack, Avatar } from '@mui/material';
 import '../pages/Show.css'
 import './ConfirmationModal.css'
 import { useBoard } from '../context/BoardContext';
+import { findBoard } from '../api/boards';
+import { useAuth } from '../context/AuthContext';
 
 
 const style = {
@@ -37,10 +39,11 @@ export default function ConfirmationModal({ boardId }) {
     const openInviteModal = () => setInviteOpen(true);
     const closeInviteModal = () => setInviteOpen(false);
     const { deleteBoard } = useBoard();
+    const { currentUser, isLoggedIn } = useAuth();
 
     React.useEffect(() => {
         const fetchboards = async () => {
-            const res = await axios.get(`/boards/${boardId}`)
+            const res = await findBoard(boardId)
             console.log('this is the board object', res.data)
             setBoard(res.data)
         }
@@ -51,17 +54,22 @@ export default function ConfirmationModal({ boardId }) {
         return navigate(`/profile/${username}`)
     }
 
-    console.log('this is board members', board)
+    const isBoardOwner = isLoggedIn && currentUser?._id === board.owner?._id;
+    const isAdmin = board?.members?.some(
+        m => m.user?._id === currentUser?._id && m.role === 'admin'
+    )
+    const canEditOrDelete = isAdmin || isBoardOwner;
+    console.log('this is board owner', isBoardOwner)
 
     return (
         <div>
-            <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', p: 1 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'row', minWidth: '0', alignItems: 'center', p: 1 }}>
                 <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ marginRight: 'auto' }} className='heading__board'>
                     {board?.title}
                 </Typography>
 
 
-                <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ marginRight: '5px' }}>
+                <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ marginRight: '5px' }} className='members'>
                     Members {board?.members?.length}
                 </Typography>
                 {board?.members?.map(member => (
@@ -72,9 +80,13 @@ export default function ConfirmationModal({ boardId }) {
                         </Stack>
                     </Box>
                 ))}
-                <Button onClick={openInviteModal}><Share /></Button>
-                <Button color='primary'><Create /></Button>
-                <Button onClick={handleOpen}><Delete /></Button>
+                {isBoardOwner && <Button onClick={openInviteModal}><Share /></Button>}
+                {canEditOrDelete &&
+
+                    <>
+                        <Button color='primary'><Create /></Button>
+                        <Button onClick={handleOpen}><Delete /></Button></>
+                }
             </Box>
             <InviteComponent closeInviteModal={closeInviteModal} openInvite={openInvite} boardId={boardId} />
             <Modal

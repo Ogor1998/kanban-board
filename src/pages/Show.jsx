@@ -18,18 +18,21 @@ import { useDroppable } from '@dnd-kit/core'
 import ConfirmationModal from '../components/ConfirmationModal'
 import { getColumns, createColumn, deleteColumn } from '../api/columns'
 import InviteComponent from '../components/InviteComponent'
+import { useAuth } from '../context/AuthContext'
 
 
 const Show = () => {
     const { boardId } = useParams();
     const { message, setMessage } = useNotification();
     const navigate = useNavigate();
+    const { currentUser, isLoggedIn } = useAuth();
 
     const [columns, setColumns] = useState([])
 
     const [formData, setFormData] = useState({ title: "", boardId })
     const [activeCard, setActiveCard] = useState(null)
     const [isActiveColumn, setisActiveColumn] = useState(null)
+
     useEffect(() => {
         const fetchColumns = async () => {
             try {
@@ -118,7 +121,7 @@ const Show = () => {
         setMessage({ text: res.data.message, severity: 'error' })
         console.log('Deleted Column')
     }
-
+    // const canDeleteColumn = isLoggedIn && c
 
     function DroppableColumn({ col, children }) {
         const { setNodeRef } = useDroppable({ id: col._id })
@@ -142,7 +145,7 @@ const Show = () => {
 
                     {columns.map((col) => (
                         <DroppableColumn key={col._id} col={col}>
-                            <Heading col={col} handleDelete={handleDelete} setColumns={setColumns} />
+                            <Heading col={col} handleDelete={handleDelete} setColumns={setColumns} boardId={boardId} />
                             <SortableContext
                                 items={col.cards?.map(card => card._id) || []}
                                 strategy={verticalListSortingStrategy}

@@ -9,11 +9,12 @@ import axios from 'axios';
 import { useNotification } from '../context/NotificationContext';
 import { useAuth } from '../context/AuthContext';
 import { updateColumn } from '../api/columns'
+import { findBoard } from '../api/boards';
 
 
 
-const Heading = ({ col, handleDelete, setColumns }) => {
-    const { isLoggedIn } = useAuth();
+const Heading = ({ col, handleDelete, setColumns, boardId }) => {
+    const { isLoggedIn, currentUser } = useAuth();
     const [isEditting, setIsEditting] = useState(false)
     const [title, setTitle] = useState(col.title)
     const { setMessage } = useNotification();
@@ -21,6 +22,19 @@ const Heading = ({ col, handleDelete, setColumns }) => {
         setTitle(title);
         setIsEditting(prev => !prev)
     }
+    const [singleBoard, setSingleBoard] = useState(null)
+    console.log('this is the column', col)
+
+    React.useEffect(() => {
+        const fetchboard = async () => {
+            const res = await findBoard(boardId)
+            setSingleBoard(res.data)
+        }
+        fetchboard();
+    }, [boardId])
+
+    const canDeleteCol = isLoggedIn && currentUser?._id === singleBoard?.owner?._id;
+    console.log(canDeleteCol)
 
 
     const handleSubmit = async (e) => {
@@ -60,7 +74,7 @@ const Heading = ({ col, handleDelete, setColumns }) => {
                         value={title}
                     />
                     <Button type='submit' variant='outlined'>Update</Button>
-                    <Button type='submit' variant='outlined' color='error' onClick={handleClick}>Cancel</Button>
+                    <Button variant='outlined' color='error' onClick={handleClick}>Cancel</Button>
                 </Box>) :
 
                 (<Box sx={{ display: 'flex', border: '0.4px solid #fff', width: '100%', padding: '0px 10px', borderRadius: '15px', alignItems: 'center' }}>
@@ -68,7 +82,7 @@ const Heading = ({ col, handleDelete, setColumns }) => {
 
                         {col.title}
                     </Typography>
-                    {isLoggedIn ? <>
+                    {canDeleteCol ? <>
                         <Button variant='outlined' color='success' onClick={handleClick}><CreateIcon /></Button>
                         <Button variant='outlined' color='error' onClick={() => handleDelete(col._id)}><DeleteIcon /></Button></>
                         : null}

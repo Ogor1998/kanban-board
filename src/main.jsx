@@ -21,15 +21,15 @@ axios.defaults.baseURL = 'http://localhost:3000'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <NotificationProvider>
-      <BoardProvider>
-        <AuthProvider>
+      <AuthProvider>
+        <BoardProvider>
           <ThemeProvider theme={theme}>
             <BrowserRouter>
               <App />
             </BrowserRouter>
           </ThemeProvider>
-        </AuthProvider>
-      </BoardProvider>
+        </BoardProvider>
+      </AuthProvider>
     </NotificationProvider>
 
   </StrictMode>,
