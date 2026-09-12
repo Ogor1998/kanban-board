@@ -1,5 +1,6 @@
 
 const Card = require('../models/Card')
+const User = require('../models/User')
 const { uploadToCloudinary } = require('../cloudinary')
 
 
@@ -84,5 +85,43 @@ module.exports.moveCard = async (req, res) => {
         runValidators: true
     })
     res.json(card)
+}
 
+module.exports.addMember = async (req, res) => {
+    const { cardId } = req.params;
+    const { memberID } = req.body;
+    const card = await Card.findById(cardId)
+    const user = await User.findById(memberID)
+    if (!card) {
+        return res.status(404).json({
+            message: 'Card not found'
+        })
+    }
+    if (!user) {
+        return res.status(404).json({
+            message: 'Card not found'
+        })
+    }
+    card.members.push(memberID)
+    await card.save();
+    await card.populate('members');
+    res.json({
+        message: 'You added this member to the card',
+        card
+    })
+    console.log('You added this memebr to the card')
+
+}
+
+module.exports.deleteMember = async (req, res) => {
+    const { cardId, memberID } = req.params;
+    const card = await Card.findByIdAndUpdate(cardId, {
+        $pull: {
+            members: memberID
+        }
+    }, { new: true })
+    res.json({
+        message: "You've removed this user from card",
+        card
+    })
 }

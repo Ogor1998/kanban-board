@@ -23,7 +23,7 @@ const Heading = ({ col, handleDelete, setColumns, boardId }) => {
         setIsEditting(prev => !prev)
     }
     const [singleBoard, setSingleBoard] = useState(null)
-    console.log('this is the column', col)
+    // console.log('this is the column', col)
 
     React.useEffect(() => {
         const fetchboard = async () => {
@@ -34,7 +34,7 @@ const Heading = ({ col, handleDelete, setColumns, boardId }) => {
     }, [boardId])
 
     const canDeleteCol = isLoggedIn && currentUser?._id === singleBoard?.owner?._id;
-    console.log(canDeleteCol)
+
 
 
     const handleSubmit = async (e) => {
@@ -70,6 +70,7 @@ const Heading = ({ col, handleDelete, setColumns, boardId }) => {
                         label="Column-Title"
                         variant="outlined"
                         name='title'
+                        size='small'
                         onChange={(e) => setTitle(e.target.value)}
                         value={title}
                     />

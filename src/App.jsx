@@ -1,19 +1,18 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { lazy, Suspense } from 'react'
 import './App.css'
 import { Link, Routes, Route } from 'react-router-dom'
-import Home from './pages/Home'
-import Show from './pages/Show'
+const Home = lazy(() => import('./pages/Home'))
+const Show = lazy(() => import('./pages/Show'))
+const Login = lazy(() => import('./users/Login'))
+const Register = lazy(() => import('./users/Register'))
 import Error from './utils/Error'
 import { Navigate } from 'react-router-dom'
 import NavBar from './common/NavBar'
 import { Box } from '@mui/material'
-import Login from './users/Login'
-import Register from './users/Register'
 import Profile from './pages/Profile/Profile'
 import './index.css'
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 
@@ -25,16 +24,18 @@ function App() {
     <Box className='page'>
       <NavBar />
 
-      <Routes>
+      <Suspense fallback={<CircularProgress thickness={3.6} />}>
 
-        <Route path='/boards' element={<Home />} />
-        <Route path='/columns/:boardId' element={<Show />} />
-        <Route path='/profile/:username' element={<Profile />} />
-        <Route path='/error' element={<Error />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-        <Route path="*" element={<Navigate to="/error" state={{ statusCode: 404, message: "Page not found" }} replace />} />
-      </Routes>
+        <Routes>
+          <Route path='/boards' element={<Home />} />
+          <Route path='/columns/:boardId' element={<Show />} />
+          <Route path='/profile/:username' element={<Profile />} />
+          <Route path='/error' element={<Error />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+          <Route path="*" element={<Navigate to="/error" state={{ statusCode: 404, message: "Page not found" }} replace />} />
+        </Routes>
+      </Suspense>
 
     </Box>
   )

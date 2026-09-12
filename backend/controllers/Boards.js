@@ -26,7 +26,6 @@ module.exports.findBoard = async (req, res) => {
             message: 'Board not found'
         })
     }
-    console.log('this board', board)
     res.json(board)
 }
 module.exports.createBoard = async (req, res) => {
@@ -45,6 +44,25 @@ module.exports.createBoard = async (req, res) => {
     await board.save();
     console.log('this is the new board', board)
     res.json({ message: 'You created a new board', board: board })
+}
+
+module.exports.updateBoard = async (req, res) => {
+    const { boardId } = req.params;
+    const { title } = req.body;
+    const board = await Board.findByIdAndUpdate(boardId, { title }, {
+        new: true,
+        runValidators: true // Ensures the updates adhere to your Mongoose schema
+    })
+    if (!board) {
+        return res.status(404).json({
+            message: 'Board not found'
+        })
+    }
+    res.json({
+        message: "You've updated this board title",
+        board
+    })
+    console.log('board updated')
 }
 
 module.exports.deleteBoard = async (req, res) => {

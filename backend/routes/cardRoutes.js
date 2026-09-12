@@ -1,7 +1,7 @@
 
 const express = require('express')
 const router = express.Router({ mergeParams: true });
-const { createCard, deleteCard, moveCard, updateCard } = require('../controllers/Cards')
+const { createCard, deleteCard, moveCard, updateCard, addMember, deleteMember } = require('../controllers/Cards')
 const catchAsync = require('../utils/catchAsync');
 const { isLoggedIn } = require('../middleware/auth');
 const { validateCard } = require('../middleware/middleware')
@@ -13,6 +13,9 @@ router.post('/', isLoggedIn, validateCard, upload.array('images', 10), catchAsyn
 router.delete('/:id', isLoggedIn, catchAsync(deleteCard))
 
 router.put('/:id', validateCard, upload.array('images', 10), catchAsync(updateCard))
+
+router.put('/:cardId/invite', isLoggedIn, catchAsync(addMember))
+router.delete('/:cardId/member/:memberID', isLoggedIn, catchAsync(deleteMember))
 
 router.patch('/:id/move', isLoggedIn, catchAsync(moveCard))
 

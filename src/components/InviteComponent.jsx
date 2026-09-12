@@ -79,7 +79,6 @@ const InviteComponent = ({ closeInviteModal, openInvite, boardId }) => {
             try {
                 const res = await axios.get('/users');
                 setUsers(res.data);
-                console.log('these are the users', res.data)
             } catch (err) {
                 console.log(err);
             }

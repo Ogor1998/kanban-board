@@ -15,6 +15,7 @@ export const BoardProvider = ({ children }) => {
         const fetchboards = async () => {
             if (!isLoggedIn) {
                 setBoard([])
+                setLoading(false)
                 return
             }
             try {

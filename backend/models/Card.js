@@ -11,6 +11,10 @@ const cardSchema = new Schema({
     },
     order: Number,
     priority: String,
+    members: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     images: [String],
     createdAt: { type: Date, default: Date.now }
 })

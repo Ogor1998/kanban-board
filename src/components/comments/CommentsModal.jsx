@@ -12,6 +12,7 @@ import { useNotification } from '../../context/NotificationContext';
 import CommentIcon from '@mui/icons-material/Comment';
 import CommentComponent from './CommentsComponent';
 import { createComments, getComments, commentsCount } from '../../api/comments'
+import CardInviteComponent from '../CardInviteComponent';
 
 const style = {
     position: 'absolute',
@@ -28,7 +29,7 @@ const style = {
     borderRadius: '15px'
 };
 
-export default function CommentsModal({ card }) {
+export default function CommentsModal({ card, setColumns }) {
     const [comments, setComments] = useState([])
     const [open, setOpen] = React.useState(false);
     const [formData, setFormData] = useState({
@@ -36,6 +37,9 @@ export default function CommentsModal({ card }) {
         cardID: card?._id
     })
     const [count, setCount] = useState(0)
+    const [openInvite, setInviteOpen] = useState(false);
+    const openInviteModal = () => setInviteOpen(true);
+    const closeInviteModal = () => setInviteOpen(false);
     useEffect(() => {
         const fetchCommentsCount = async () => {
             const res = await commentsCount(card._id)
@@ -89,7 +93,10 @@ export default function CommentsModal({ card }) {
 
     return (
         <div>
-            <Button onClick={handleOpen}>{count}<CommentIcon /></Button>
+            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                <Button onClick={handleOpen}>{count}<CommentIcon /></Button>
+                <CardInviteComponent card={card} openInvite={openInvite} closeInviteModal={closeInviteModal} openInviteModal={openInviteModal} setColumns={setColumns} />
+            </Box>
             <Modal
                 open={open}
                 onClose={handleClose}

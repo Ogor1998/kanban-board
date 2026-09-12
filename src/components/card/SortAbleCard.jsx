@@ -5,24 +5,19 @@ import '../../pages/Show.css'
 import { Typography } from '@mui/material'
 import CardList from './CardList'
 import DragIndicator from '@mui/icons-material/DragIndicator'
-import axios from 'axios'
 import { useState } from 'react'
-import { TextField, Autocomplete } from '@mui/material'
-import { useParams } from 'react-router-dom'
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from 'react-responsive-carousel';
-import FileUpload from '../reuseable/FileUpload';
-import Delete from '@mui/icons-material/Delete'
 import CommentsModal from '../comments/CommentsModal'
 import EditCard from './EditCard'
 import { deleteCard } from '../../api/cards'
-
-
+import CardInviteComponent from '../CardInviteComponent'
+import { Stack, Avatar, AvatarGroup } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
 export default function SortableCard({ card, setColumns, columnId }) {
-
     const [isEditting, setIsEditting] = useState(false)
-
+    const navigate = useNavigate();
     const {
         attributes,
         listeners,
@@ -57,7 +52,9 @@ export default function SortableCard({ card, setColumns, columnId }) {
     const handleSwitch = () => {
         setIsEditting((prev => !prev))
     }
-
+    const visitProfile = (username) => {
+        return navigate(`/profile/${username}`)
+    }
 
     return (
 
@@ -108,11 +105,23 @@ export default function SortableCard({ card, setColumns, columnId }) {
                         ))}
                     </Carousel>
                 }
+                {
+                    <Box  >
+                        <AvatarGroup spacing="small" max={3}>
+                            {card.members.map((member) => (
+                                <Avatar key={member._id} alt={member.username || 'Member'} src={member.image}
+                                    onClick={() => visitProfile(member.username)} />
+                            ))}
+                        </AvatarGroup>
+                    </Box>
+                }
                 <Typography variant="body2" gutterBottom>
                     {card.description}
                 </Typography>
 
-                <CommentsModal card={card} />
+
+
+                <CommentsModal card={card} setColumns={setColumns} />
             </Box >
 
         )

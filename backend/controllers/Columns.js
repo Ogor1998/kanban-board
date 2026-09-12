@@ -14,7 +14,7 @@ module.exports.allColumns = async (req, res) => {
 
     const columnsWithCard = await Promise.all(
         columns.map(async (col) => {
-            const cards = await Card.find({ columnId: col._id }).sort('order')
+            const cards = await Card.find({ columnId: col._id }).sort('order').populate('members')
             return { ...col.toObject(), cards }
         })
     )
