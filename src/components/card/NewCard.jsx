@@ -8,6 +8,7 @@ import { useNotification } from '../../context/NotificationContext';
 import FileUpload from '../reuseable/FileUpload';
 import Delete from '@mui/icons-material/Delete';
 import { createCard } from '../../api/cards'
+import DateSelector from '../reuseable/DateSelector';
 
 export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
     const { setMessage } = useNotification();
@@ -18,6 +19,7 @@ export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
         description: "",
         columnId
     })
+    const [dateValue, setDateValue] = useState(null);
     const [value, setValue] = useState("")
     const [file, setFile] = useState([])
     const [previews, setPreviews] = useState([])
@@ -30,6 +32,7 @@ export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
         setPreviews(prev =>
             prev.filter((_, index) => index !== idx))
     }
+    console.log('this is the due date', dateValue)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -37,13 +40,21 @@ export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
             const form = new FormData();
             form.append("columnId", columnId)
             form.append("title", formData.title)
-            form.append("description", formData.description)
-            form.append("priority", formData.priority)
+            form.append("description", formData.description || '')
+            form.append("priority", formData.priority || '')
+            if (dateValue) {
+                const isoDate = typeof dateValue.toISOString === 'function'
+                    ? dateValue.toISOString()
+                    : dateValue;
+                form.append('dueDate', isoDate);
+            }
+
+
 
             file.forEach((image) => {
                 form.append("images", image);
             });
-
+            console.log('this is the form object', form)
             const res = await createCard(form)
             const newCard = res.data.card
             setColumns(prev =>
@@ -103,7 +114,6 @@ export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
                     label="Description"
                     multiline
                     rows={4}
-                    defaultValue="Description"
                     name='description'
                     onChange={handleChange}
                     value={formData.description}
@@ -122,6 +132,8 @@ export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
                         </div>
                     ))}
                 </Box>
+                <DateSelector dateValue={dateValue} setDateValue={setDateValue} />
+
                 <FileUpload setFile={setFile} setPreviews={setPreviews} />
                 <Button type='submit'>Submit</Button>
             </Box>

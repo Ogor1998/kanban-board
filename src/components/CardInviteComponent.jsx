@@ -86,18 +86,24 @@ const CardInviteComponent = ({ closeInviteModal, openInvite, openInviteModal, ca
     }
 
     const removeMember = async (cardId, memberID) => {
-        const res = await axios.delete(`/cards/${cardId}/member/${memberID}`);
-        const updatedCard = res.data.card;
-        setColumns(prev => {
-            return prev.map(column => ({
-                ...column, cards: column.cards.map(c => c._id === updatedCard._id ? updatedCard : c)
-            }))
-        })
-        setMessage({
-            text: res.data.message,
-            severity: 'error'
-        })
-
+        try {
+            const res = await axios.delete(`/cards/${cardId}/member/${memberID}`);
+            const updatedCard = res.data.card;
+            setColumns(prev => {
+                return prev.map(column => ({
+                    ...column, cards: column.cards.map(c => c._id === updatedCard._id ? updatedCard : c)
+                }))
+            })
+            setMessage({
+                text: res.data.message,
+                severity: 'error'
+            })
+        } catch (err) {
+            setMessage({
+                text: err.response?.data?.message,
+                severity: 'error'
+            })
+        }
     }
 
     useEffect(() => {
@@ -206,7 +212,7 @@ const CardInviteComponent = ({ closeInviteModal, openInvite, openInviteModal, ca
                                         value={formData.firstname || ''}
 
                                     />
-                                    {isAlreadyMember ? <Button variant='contained' onClick={() => removeMember(card._id, selectedUser._id)}>Remove User<Delete /></Button> :
+                                    {isAlreadyMember ? <Button variant='contained' color='error' onClick={() => removeMember(card._id, selectedUser._id)}>Remove User<Delete /></Button> :
                                         <Button type='submit' variant='contained'><PersonAddIcon /> Add User</Button>
 
                                     }

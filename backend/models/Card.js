@@ -11,6 +11,9 @@ const cardSchema = new Schema({
     },
     order: Number,
     priority: String,
+    dueDate: {
+        type: Date
+    },
     members: [{
         type: Schema.Types.ObjectId,
         ref: 'User'

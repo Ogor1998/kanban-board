@@ -5,12 +5,13 @@ const { uploadToCloudinary } = require('../cloudinary')
 
 
 module.exports.createCard = async (req, res) => {
-    const { title, description, priority, columnId } = req.body;
+    const { title, description, priority, columnId, dueDate } = req.body;
     const card = new Card({
         title,
         description,
         priority,
-        columnId
+        columnId,
+        dueDate
     })
 
     if (req.files && req.files.length > 0) {

@@ -11,9 +11,9 @@ import { Carousel } from 'react-responsive-carousel';
 import CommentsModal from '../comments/CommentsModal'
 import EditCard from './EditCard'
 import { deleteCard } from '../../api/cards'
-import CardInviteComponent from '../CardInviteComponent'
 import { Stack, Avatar, AvatarGroup } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import DateFormatComponent from '../DateFormatComponent'
 
 export default function SortableCard({ card, setColumns, columnId }) {
     const [isEditting, setIsEditting] = useState(false)
@@ -55,6 +55,8 @@ export default function SortableCard({ card, setColumns, columnId }) {
     const visitProfile = (username) => {
         return navigate(`/profile/${username}`)
     }
+
+    const dueDate = new Date(card.dueDate);
 
     return (
 
@@ -118,7 +120,7 @@ export default function SortableCard({ card, setColumns, columnId }) {
                 <Typography variant="body2" gutterBottom>
                     {card.description}
                 </Typography>
-
+                <DateFormatComponent dueDate={dueDate} />
 
 
                 <CommentsModal card={card} setColumns={setColumns} />
