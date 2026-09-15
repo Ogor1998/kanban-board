@@ -20,3 +20,47 @@
 .admin:hover {
     transform: scale(1.05);
 }
+
+
+/* Opt-in the select and its dropdown picker to be fully styleable */
+select,
+::picker(select) {
+    appearance: base-select;
+}
+
+/* Style the closed select field (the button) */
+select {
+    padding: 0.5rem 1rem;
+    border: 0.4px solid #3b82f6;
+    border-radius: 8px;
+    background-color: #ffffff;
+    font-family: inherit;
+    cursor: pointer;
+    font-size: 1.7rem;
+    margin-right: 10px;
+}
+
+/* Style the open dropdown container */
+::picker(select) {
+    border: 2px solid #3b82f6;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 4px;
+}
+
+/* Style individual options inside the picker */
+select option {
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Style the option when hovered or focused */
+select option:hover {
+    background-color: #eff6ff;
+}
+
+/* Customize the native dropdown arrow icon */
+select::picker-icon {
+    color: #3b82f6;
+}

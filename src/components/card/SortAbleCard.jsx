@@ -11,12 +11,13 @@ import { Carousel } from 'react-responsive-carousel';
 import CommentsModal from '../comments/CommentsModal'
 import EditCard from './EditCard'
 import { deleteCard } from '../../api/cards'
-import { Stack, Avatar, AvatarGroup } from '@mui/material'
+import { Avatar, AvatarGroup } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import DateFormatComponent from '../DateFormatComponent'
 
 export default function SortableCard({ card, setColumns, columnId }) {
     const [isEditting, setIsEditting] = useState(false)
+
     const navigate = useNavigate();
     const {
         attributes,
@@ -85,7 +86,7 @@ export default function SortableCard({ card, setColumns, columnId }) {
                     </Typography>
 
                     <h4 className={`${card.priority}`}>{card.priority.toUpperCase()}</h4>
-                    <CardList handleCardDelete={handleCardDelete} handleSwitch={handleSwitch} />
+                    <CardList handleCardDelete={handleCardDelete} handleSwitch={handleSwitch} card={card} />
                 </Box>
                 {card.images?.length > 0 &&
                     <Carousel showThumbs={false}      // ← removes bottom thumbnails

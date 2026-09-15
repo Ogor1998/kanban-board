@@ -4,7 +4,7 @@ const router = express.Router({ mergeParams: true });
 const { createCard, deleteCard, moveCard, updateCard, addMember, deleteMember } = require('../controllers/Cards')
 const catchAsync = require('../utils/catchAsync');
 const { isLoggedIn } = require('../middleware/auth');
-const { validateCard } = require('../middleware/middleware')
+const { validateCard, isCardMember } = require('../middleware/middleware')
 const { upload } = require('../cloudinary')
 
 router.post('/', isLoggedIn, validateCard, upload.array('images', 10), catchAsync(createCard))
@@ -14,7 +14,7 @@ router.delete('/:id', isLoggedIn, catchAsync(deleteCard))
 
 router.put('/:id', validateCard, upload.array('images', 10), catchAsync(updateCard))
 
-router.put('/:cardId/invite', isLoggedIn, catchAsync(addMember))
+router.put('/:cardId/invite', isLoggedIn, isCardMember, catchAsync(addMember))
 router.delete('/:cardId/member/:memberID', isLoggedIn, catchAsync(deleteMember))
 
 router.patch('/:id/move', isLoggedIn, catchAsync(moveCard))

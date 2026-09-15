@@ -5,12 +5,17 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Button } from '@mui/material';
+import { useAuth } from '../../context/AuthContext';
+import { useBoard } from '../../context/BoardContext'
+
 
 
 
 const ITEM_HEIGHT = 48;
 
-export default function CardList({ handleCardDelete, handleSwitch }) {
+export default function CardList({ handleCardDelete, handleSwitch, card }) {
+    const { currentUser } = useAuth()
+    const { singleBoard } = useBoard();
     const options = [
         { label: 'Edit', action: handleSwitch },
         { label: 'Delete', action: handleCardDelete }
@@ -25,41 +30,55 @@ export default function CardList({ handleCardDelete, handleSwitch }) {
         setAnchorEl(null);
     };
 
+    const IsCardOwner = currentUser?._id === singleBoard?.owner?._id
+    // console.log('this is the board owner ', singleBoard)
+    // console.log('this is the board currentUser ', currentUser?._id)
+
     return (
         <div>
-            <IconButton
-                aria-label="more"
-                id="long-button"
-                aria-controls={open ? 'long-menu' : undefined}
-                aria-expanded={open}
-                aria-haspopup="true"
-                onClick={handleClick}
-            >
-                <MoreVertIcon />
-            </IconButton>
-            <Menu
-                id="long-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                slotProps={{
-                    paper: {
-                        style: {
-                            maxHeight: ITEM_HEIGHT * 4.5,
-                            width: '20ch',
-                        },
-                    },
-                    list: {
-                        'aria-labelledby': 'long-button',
-                    },
-                }}
-            >
-                {options.map((option) => (
-                    <MenuItem key={option.label} onClick={handleClose}>
-                        <Button onClick={option.action}>{option.label}</Button>
-                    </MenuItem>
-                ))}
-            </Menu>
+            {IsCardOwner ? (
+                <>
+                    <IconButton
+                        aria-label="more"
+                        id="long-button"
+                        aria-controls={open ? 'long-menu' : undefined}
+                        aria-expanded={open}
+                        aria-haspopup="true"
+                        onClick={handleClick}
+                    >
+                        <MoreVertIcon />
+                    </IconButton>
+
+                    <Menu
+                        id="long-menu"
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        slotProps={{
+                            paper: {
+                                style: {
+                                    maxHeight: ITEM_HEIGHT * 4.5,
+                                    width: '20ch',
+                                },
+                            },
+                            list: {
+                                'aria-labelledby': 'long-button',
+                            },
+                        }}
+                    >
+                        {options.map((option) => (
+                            <MenuItem
+                                key={option.label}
+                                onClick={handleClose}
+                            >
+                                <Button onClick={option.action}>
+                                    {option.label}
+                                </Button>
+                            </MenuItem>
+                        ))}
+                    </Menu>
+                </>
+            ) : null}
         </div>
     );
 }

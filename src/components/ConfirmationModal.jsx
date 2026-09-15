@@ -26,7 +26,7 @@ const style = {
     textAlign: 'center'
 };
 
-export default function ConfirmationModal({ boardId }) {
+export default function ConfirmationModal({ boardId, setPriorityFilter, priorityFilter }) {
     const [open, setOpen] = React.useState(false);
     const [openInvite, setInviteOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -53,7 +53,6 @@ export default function ConfirmationModal({ boardId }) {
     const [title, setTitle] = React.useState({
         title: ''
     })
-    console.log('this is board title', board.title)
     const handleEdit = () => {
         setTitle(board.title || '');
         setIsEditting(prev => !prev)
@@ -88,7 +87,7 @@ export default function ConfirmationModal({ boardId }) {
     )
 
     const canEditOrDelete = isAdmin || isBoardOwner;
-    console.log('this is board owner', isBoardOwner)
+
 
     return (
         <div>
@@ -123,6 +122,14 @@ export default function ConfirmationModal({ boardId }) {
                         {board.title}
                     </Typography>
                 )}
+                {/* <div className='custom-select'> */}
+                <select name="priority" id="" onChange={(e) => setPriorityFilter(e.target.value)} value={priorityFilter}>
+                    <option value=''>Select Priority</option>
+                    <option value='low'>Low</option>
+                    <option value='medium'>Medium</option>
+                    <option value='high'>High</option>
+                </select>
+                {/* </div> */}
 
                 <Typography
                     id="modal-modal-title"
@@ -141,6 +148,7 @@ export default function ConfirmationModal({ boardId }) {
                         </Stack>
                     </Box>
                 ))}
+
                 {isBoardOwner && <Button onClick={openInviteModal}><Share /></Button>}
                 {canEditOrDelete &&
 
@@ -149,7 +157,7 @@ export default function ConfirmationModal({ boardId }) {
                         <Button onClick={handleOpen}><Delete /></Button></>
                 }
             </Box>
-            <InviteComponent closeInviteModal={closeInviteModal} openInvite={openInvite} boardId={boardId} />
+            <InviteComponent closeInviteModal={closeInviteModal} openInvite={openInvite} boardId={boardId} isBoardOwner={isBoardOwner} />
             <Modal
                 open={open}
                 onClose={handleClose}

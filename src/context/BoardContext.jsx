@@ -9,12 +9,14 @@ const BoardContext = createContext();
 export const BoardProvider = ({ children }) => {
     const { isLoggedIn } = useAuth();
     const [board, setBoard] = useState([])
+    const [singleBoard, setSingleBoard] = useState({})
     const [loading, setLoading] = useState(true)
     const { setMessage } = useNotification();
     useEffect(() => {
         const fetchboards = async () => {
             if (!isLoggedIn) {
                 setBoard([])
+                setSingleBoard({})
                 setLoading(false)
                 return
             }
@@ -34,13 +36,26 @@ export const BoardProvider = ({ children }) => {
     }, [isLoggedIn])
 
     const deleteBoard = async (id) => {
-        const res = axios.delete(`/boards/${id}`, { withCredentials: true })
+        const res = await axios.delete(`/boards/${id}`, { withCredentials: true })
         setBoard(prev => prev.filter(board => board._id !== id))
         setMessage({
             text: res.data?.message,
             severity: 'error'
         })
         console.log('frontend delete called')
+    }
+
+    const findBoard = async (id) => {
+        try {
+            const res = await axios.get(`/boards/${id}`)
+            setSingleBoard(res.data)
+        }
+        catch (err) {
+            setMessage({
+                text: err.response?.data?.message,
+                severity: 'error'
+            })
+        }
     }
     return (
         <BoardContext.Provider value={
@@ -49,7 +64,9 @@ export const BoardProvider = ({ children }) => {
                 setBoard,
                 deleteBoard,
                 loading,
-                setLoading
+                setLoading,
+                findBoard,
+                singleBoard
             }
         }>
             {children}

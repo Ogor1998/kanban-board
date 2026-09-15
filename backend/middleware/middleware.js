@@ -1,5 +1,6 @@
 const Board = require('../models/Board')
 const Comment = require('../models/Comment')
+const Card = require('../models/Card')
 const { boardSchema, cardSchema, columnSchema, userSchema, commentSchema } = require('../schemas')
 const AppError = require('../utils/AppError')
 module.exports.isBoardOwner = async (req, res, next) => {
@@ -39,6 +40,29 @@ module.exports.isBoardMemeber = async (req, res, next) => {
     }
 }
 
+
+module.exports.isCardMember = async (req, res, next) => {
+    try {
+        const { cardId } = req.params;
+        const card = await Card.findById(cardId)
+        if (!card) {
+            return res.status(404).json({
+                message: 'Card not found'
+            })
+        }
+        const isMember = card.members.some(m => m._id.equals(req.user.userId))
+        if (isMember) {
+            return res.status(403).json({
+                message: 'This user is already a member'
+            })
+        }
+        next();
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+        next(err)
+    }
+}
 
 module.exports.isCommentAuthor = async (req, res, next) => {
     try {

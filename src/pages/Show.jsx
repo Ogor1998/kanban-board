@@ -32,6 +32,8 @@ const Show = () => {
     const [formData, setFormData] = useState({ title: "", boardId })
     const [activeCard, setActiveCard] = useState(null)
     const [isActiveColumn, setisActiveColumn] = useState(null)
+    const [priorityFilter, setPriorityFilter] = useState("")
+    console.log('this is the priority filter', priorityFilter)
 
     useEffect(() => {
         const fetchColumns = async () => {
@@ -136,30 +138,37 @@ const Show = () => {
         <Box className='big__container'>
             {message && <div>   <AlertBox /></div>}
             <Box className='board__top'>
-                <ConfirmationModal boardId={boardId} />
+                <ConfirmationModal boardId={boardId} setPriorityFilter={setPriorityFilter} priorityFilter={priorityFilter} />
             </Box>
             <InviteComponent />
             <div className='board'>
 
                 <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
 
-                    {columns.map((col) => (
-                        <DroppableColumn key={col._id} col={col}>
-                            <Heading col={col} handleDelete={handleDelete} setColumns={setColumns} boardId={boardId} />
-                            <SortableContext
-                                items={col.cards?.map(card => card._id) || []}
-                                strategy={verticalListSortingStrategy}
-                            >
-                                {col.cards?.map((card) => (
-                                    <SortableCard key={card._id} card={card} columnId={col._id} setColumns={setColumns} />
-                                ))}
-                            </SortableContext>
-                            {isActiveColumn === col._id && <NewCard setColumns={setColumns} columnId={col._id} setisActiveColumn={setisActiveColumn} />}
-                            <Button sx={{ color: '#fff' }} onClick={() => handleClick(col._id)}>
-                                <AddIcon />Add Card
-                            </Button>
-                        </DroppableColumn>
-                    ))}
+                    {columns.map((col) => {
+                        const filteredCards = col.cards?.filter(card => {
+                            if (!priorityFilter) return true;
+                            return card.priority === priorityFilter.toLowerCase();
+                        }) || [];
+                        return (
+                            <DroppableColumn key={col._id} col={col}>
+                                <Heading col={col} handleDelete={handleDelete} setColumns={setColumns} boardId={boardId} />
+                                <SortableContext
+                                    items={col.cards?.map(card => card._id) || []}
+                                    strategy={verticalListSortingStrategy}
+                                >
+
+                                    {filteredCards.map((card) => (
+                                        <SortableCard key={card._id} card={card} columnId={col._id} setColumns={setColumns} />
+                                    ))}
+                                </SortableContext>
+                                {isActiveColumn === col._id && <NewCard setColumns={setColumns} columnId={col._id} setisActiveColumn={setisActiveColumn} />}
+                                <Button sx={{ color: '#fff' }} onClick={() => handleClick(col._id)}>
+                                    <AddIcon />Add Card
+                                </Button>
+                            </DroppableColumn>
+                        )
+                    })}
                 </DndContext>
                 <NewColumnModal handleChange={handleChange} formData={formData} handleSubmit={handleSubmit} />
 

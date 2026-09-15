@@ -10,6 +10,7 @@ import {
 import { Share, Close } from '@mui/icons-material';
 import { Autocomplete } from '@mui/material';
 import { useNotification } from '../context/NotificationContext';
+// import { useAuth } from '../context/AuthContext';
 
 const style = {
     position: 'absolute',
@@ -29,13 +30,14 @@ const style = {
 
 const permissions = ['admin', 'member', 'public']
 
-const InviteComponent = ({ closeInviteModal, openInvite, boardId }) => {
+const InviteComponent = ({ closeInviteModal, openInvite, boardId, isBoardOwner }) => {
     const [selectedUser, setSelectedUser] = useState(null)
     const { setMessage } = useNotification();
     const [value, setValue] = useState("")
     const [formData, setFormData] = useState({})
     const [users, setUsers] = useState([]);
     const [isShare, setIshare] = useState(false)
+    // const { currentUser } = useAuth();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -176,6 +178,7 @@ const InviteComponent = ({ closeInviteModal, openInvite, boardId }) => {
                                     disablePortal
                                     options={permissions}
                                     sx={{ width: 170 }}
+                                    disabled={!isBoardOwner ? true : false}
                                     renderInput={(params) => <TextField {...params} label="Permissions" />}
                                     onChange={(event, newValue) => {
                                         setValue(newValue)
