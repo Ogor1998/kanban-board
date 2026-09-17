@@ -15,10 +15,11 @@ import AlertBox from '../components/AlertBox'
 import NewColumnModal from '../components/NewColumnModal'
 import { arrayMove } from '@dnd-kit/sortable'
 import { useDroppable } from '@dnd-kit/core'
-import ConfirmationModal from '../components/ConfirmationModal'
+import BoardHeading from '../components/BoardHeading'
 import { getColumns, createColumn, deleteColumn } from '../api/columns'
 import InviteComponent from '../components/InviteComponent'
 import { useAuth } from '../context/AuthContext'
+
 
 
 const Show = () => {
@@ -26,6 +27,7 @@ const Show = () => {
     const { message, setMessage } = useNotification();
     const navigate = useNavigate();
     const { currentUser, isLoggedIn } = useAuth();
+    const [search, setSearch] = useState("")
 
     const [columns, setColumns] = useState([])
 
@@ -55,6 +57,8 @@ const Show = () => {
         }
         fetchColumns();
     }, [boardId])
+
+    console.log('this is search field', search)
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -138,7 +142,7 @@ const Show = () => {
         <Box className='big__container'>
             {message && <div>   <AlertBox /></div>}
             <Box className='board__top'>
-                <ConfirmationModal boardId={boardId} setPriorityFilter={setPriorityFilter} priorityFilter={priorityFilter} />
+                <BoardHeading boardId={boardId} setPriorityFilter={setPriorityFilter} priorityFilter={priorityFilter} setSearch={setSearch} />
             </Box>
             <InviteComponent />
             <div className='board'>
@@ -146,9 +150,10 @@ const Show = () => {
                 <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
 
                     {columns.map((col) => {
-                        const filteredCards = col.cards?.filter(card => {
-                            if (!priorityFilter) return true;
-                            return card.priority === priorityFilter.toLowerCase();
+                        const updateCards = col.cards?.filter(card => {
+                            const matchesPriority = !priorityFilter || card?.priority === priorityFilter.toLowerCase();
+                            const matchesSearch = !search || card?.title?.toLowerCase().includes(search.toLowerCase())
+                            return matchesPriority && matchesSearch
                         }) || [];
                         return (
                             <DroppableColumn key={col._id} col={col}>
@@ -158,7 +163,7 @@ const Show = () => {
                                     strategy={verticalListSortingStrategy}
                                 >
 
-                                    {filteredCards.map((card) => (
+                                    {updateCards.map((card) => (
                                         <SortableCard key={card._id} card={card} columnId={col._id} setColumns={setColumns} />
                                     ))}
                                 </SortableContext>

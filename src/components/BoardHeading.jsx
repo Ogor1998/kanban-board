@@ -8,10 +8,12 @@ import InviteComponent from './InviteComponent';
 import { Share } from '@mui/icons-material';
 import { Stack, Avatar } from '@mui/material';
 import '../pages/Show.css'
-import './ConfirmationModal.css'
+import './BoardHeading.css'
 import { useBoard } from '../context/BoardContext';
 import { findBoard } from '../api/boards';
 import { useAuth } from '../context/AuthContext';
+import SearchField from './reuseable/SearchField';
+import ActivityModal from './ActivityModal';
 
 
 const style = {
@@ -26,7 +28,7 @@ const style = {
     textAlign: 'center'
 };
 
-export default function ConfirmationModal({ boardId, setPriorityFilter, priorityFilter }) {
+export default function BoardHeading({ boardId, setPriorityFilter, priorityFilter, setSearch }) {
     const [open, setOpen] = React.useState(false);
     const [openInvite, setInviteOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -39,6 +41,7 @@ export default function ConfirmationModal({ boardId, setPriorityFilter, priority
     const { currentUser, isLoggedIn } = useAuth();
     const [isEditting, setIsEditting] = React.useState(false)
     const { setMessage } = useNotification();
+    const [openActivity, setOpenActivity] = React.useState(false)
 
 
     React.useEffect(() => {
@@ -57,6 +60,8 @@ export default function ConfirmationModal({ boardId, setPriorityFilter, priority
         setTitle(board.title || '');
         setIsEditting(prev => !prev)
     }
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -111,35 +116,38 @@ export default function ConfirmationModal({ boardId, setPriorityFilter, priority
                         <Button variant='outlined' color='error' onClick={handleEdit}>Cancel</Button>
                     </Box>
                 ) : (
-
-                    <Typography
-                        id="modal-modal-title"
-                        variant="h6"
-                        component="h2"
-                        sx={{ marginRight: 'auto' }}
-                        className='heading__board'
-                    >
-                        {board.title}
-                    </Typography>
+                    <>
+                        <Typography
+                            id="modal-modal-title"
+                            variant="h6"
+                            component="h2"
+                            sx={{ marginRight: 'auto' }}
+                            className='heading__board'
+                        >
+                            {board.title}
+                        </Typography>
+                        <SearchField setSearch={setSearch} />
+                    </>
                 )}
-                {/* <div className='custom-select'> */}
+
                 <select name="priority" id="" onChange={(e) => setPriorityFilter(e.target.value)} value={priorityFilter}>
                     <option value=''>Select Priority</option>
                     <option value='low'>Low</option>
                     <option value='medium'>Medium</option>
                     <option value='high'>High</option>
                 </select>
-                {/* </div> */}
 
-                <Typography
-                    id="modal-modal-title"
-                    variant="h6"
-                    component="h2"
-                    sx={{ marginRight: '5px' }}
-                    className='members'
-                >
-                    Members {board?.members?.length}
-                </Typography>
+                {
+                    board?.members?.length > 0 && <Typography
+                        id="modal-modal-title"
+                        variant="h6"
+                        component="h2"
+                        sx={{ marginRight: '5px' }}
+                        className='members'
+                    >
+                        Members {board?.members?.length}
+                    </Typography>
+                }
                 {board?.members?.map(member => (
                     <Box key={member._id}>
                         <Stack direction="row" spacing={3}>
@@ -157,6 +165,13 @@ export default function ConfirmationModal({ boardId, setPriorityFilter, priority
                         <Button onClick={handleOpen}><Delete /></Button></>
                 }
             </Box>
+            <ActivityModal
+                boardId={boardId}
+                open={openActivity}
+                setOpenActivity={setOpenActivity}
+                onClose={() => setOpenActivity(false)}
+
+            />
             <InviteComponent closeInviteModal={closeInviteModal} openInvite={openInvite} boardId={boardId} isBoardOwner={isBoardOwner} />
             <Modal
                 open={open}

@@ -11,6 +11,7 @@ const cardRoutes = require('./routes/cardRoutes')
 const columnRoutes = require('./routes/columnRoutes')
 const userRoutes = require('./routes/userRoutes')
 const profileRoutes = require('./routes/profileRoutes')
+const activityRoutes = require('./routes/activityRoutes')
 const commentRoutes = require('./routes/commentRoutes')
 const AppError = require('./utils/AppError')
 const User = require('./models/User')
@@ -41,6 +42,7 @@ app.use('/boards', boardRoutes)
 app.use('/', userRoutes)
 app.use('/profile', profileRoutes)
 app.use('/comments', commentRoutes)
+app.use('/activity', activityRoutes)
 
 const secret = process.env.JWT_SECRET;
 

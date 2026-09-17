@@ -1,6 +1,7 @@
 const Board = require('../models/Board')
 const Card = require('../models/Card')
 const Column = require('../models/Column')
+const Activity = require('../models/Activity')
 
 
 
@@ -35,6 +36,13 @@ module.exports.createColumn = async (req, res) => {
 
     })
     await newColumn.save();
+    await Activity.create({
+        board: newColumn.boardId,
+        user: req.user.userId,
+        action: 'Created a column',
+        target: newColumn.title
+    })
+
     res.json({
         message: 'You have added a column',
         column: { ...newColumn.toObject(), cards: [] }
@@ -44,15 +52,22 @@ module.exports.createColumn = async (req, res) => {
 
 module.exports.updateColumn = async (req, res) => {
     const { id } = req.params;
-    const { title } = req.body;
+    const { title, boardId } = req.body;
     const column = await Column.findByIdAndUpdate(id, { title }, {
-        returnDocument: "after",     // Returns the modified document instead of the old one
+        new: true,
         runValidators: true // Ensures the updates adhere to your Mongoose schema
     });
 
     if (!column) {
         return res.status(404).json({ message: 'Column not found' });
     }
+    await Activity.create({
+        board: boardId,
+        user: req.user.userId,
+        action: 'Updated a column title',
+        target: column.title
+    })
+
     res.json({
         message: 'You updated this column title',
         column
@@ -63,6 +78,13 @@ module.exports.updateColumn = async (req, res) => {
 module.exports.deleteColumn = async (req, res) => {
     const { id } = req.params;
     const columns = await Column.findByIdAndDelete(id);
+    await Activity.create({
+        board: columns.boardId,
+        user: req.user.userId,
+        action: 'Deleted a column',
+        target: columns.title
+    })
+
     res.json({
         message: 'You deleted the column',
         columns: columns

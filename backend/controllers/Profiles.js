@@ -27,7 +27,7 @@ module.exports.updateProfile = async (req, res) => {
         updateData.image = result.secure_url
     }
     console.log('this is the body', updateData)
-    const updatedUser = await User.findOneAndUpdate({ _id: req.user.userId }, updateData, { new: true, runValidators: true }).select("-password")
+    const updatedUser = await User.findOneAndUpdate({ _id: req.user.userId }, updateData, { returnDocument: 'after', runValidators: true }).select("-password")
     if (!updatedUser) return res.status(404).json({ message: "User not found" })
     res.json({
         message: "Profile updated successfully",

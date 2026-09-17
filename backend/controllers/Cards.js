@@ -1,11 +1,14 @@
 
 const Card = require('../models/Card')
 const User = require('../models/User')
+const Column = require('../models/Column')
+const Activity = require('../models/Activity')
 const { uploadToCloudinary } = require('../cloudinary')
 
 
 module.exports.createCard = async (req, res) => {
     const { title, description, priority, columnId, dueDate } = req.body;
+    const column = await Column.findById(columnId)
     const card = new Card({
         title,
         description,
@@ -27,6 +30,12 @@ module.exports.createCard = async (req, res) => {
     }
 
     await card.save();
+    await Activity.create({
+        board: column.boardId,
+        user: req.user.userId,
+        action: 'Created a card',
+        target: card.title
+    })
     res.json({
         message: 'You added a new card',
         card
@@ -36,7 +45,14 @@ module.exports.createCard = async (req, res) => {
 }
 module.exports.deleteCard = async (req, res) => {
     const { id } = req.params;
-    await Card.findByIdAndDelete(id);
+    const card = await Card.findByIdAndDelete(id);
+    const column = await Column.findById(card.columnId)
+    await Activity.create({
+        board: column.boardId,
+        user: req.user.userId,
+        action: 'Deleted a card',
+        target: card.title
+    })
     res.json({
         message: 'You deleted the card'
     })
@@ -47,6 +63,8 @@ module.exports.updateCard = async (req, res) => {
     const { id } = req.params;
     const { title, priority, description, columnId } = req.body;
     const card = await Card.findById(id);
+    const column = await Column.findById(columnId)
+    if (!card) return res.status(404).json({ message: 'Card not found' })
     const updatedCard = {
         title,
         priority,
@@ -64,12 +82,20 @@ module.exports.updateCard = async (req, res) => {
 
         updatedCard.images = [...(card.images || []), ...imageUrls];
     }
+
     const updateCard = await Card.findByIdAndUpdate(id, updatedCard,
         {
-            returnDocument: "after",
+            returnDocument: 'after',
             runValidators: true
         }
     )
+    await Activity.create({
+        board: column.boardId,
+        user: req.user.userId,
+        action: 'Updated a card',
+        target: card.title
+    })
+
     res.json({
         message: 'You updated this card',
         card: updateCard
@@ -81,10 +107,19 @@ module.exports.updateCard = async (req, res) => {
 module.exports.moveCard = async (req, res) => {
     const { activeId } = req.params;
     const { columnId } = req.body;
+    const column = await Column.findById(columnId)
+    const thisCard = await Card.findById(activeId)
     const card = await Card.findByIdAndUpdate(activeId, { columnId }, {
-        returnDocument: "after",
+        returnDocument: 'after',
         runValidators: true
     })
+    await Activity.create({
+        board: column.boardId,
+        user: req.user.userId,
+        action: 'Moved a card',
+        target: thisCard.title
+    })
+    console.log('moved card')
     res.json(card)
 }
 
@@ -103,9 +138,16 @@ module.exports.addMember = async (req, res) => {
             message: 'Card not found'
         })
     }
+    const column = await Column.findById(card.columnId)
     card.members.push(memberID)
     await card.save();
     await card.populate('members');
+    await Activity.create({
+        board: column.boardId,
+        user: req.user.userId,
+        action: 'Invited a member',
+        target: user.username
+    })
     res.json({
         message: 'You added this member to the card',
         card
@@ -120,7 +162,16 @@ module.exports.deleteMember = async (req, res) => {
         $pull: {
             members: memberID
         }
-    }, { new: true })
+    }, { returnDocument: 'after' })
+    const user = await User.findById(memberID)
+    const column = await Column.findById(card.columnId)
+
+    await Activity.create({
+        board: column.boardId,
+        user: req.user.userId,
+        action: 'Deleted a member',
+        target: user?.username || memberID
+    })
     res.json({
         message: "You've removed this user from card",
         card

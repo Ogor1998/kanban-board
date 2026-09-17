@@ -12,12 +12,12 @@ router.post('/', isLoggedIn, validateCard, upload.array('images', 10), catchAsyn
 
 router.delete('/:id', isLoggedIn, catchAsync(deleteCard))
 
-router.put('/:id', validateCard, upload.array('images', 10), catchAsync(updateCard))
+router.put('/:id', isLoggedIn, validateCard, upload.array('images', 10), catchAsync(updateCard))
 
 router.put('/:cardId/invite', isLoggedIn, isCardMember, catchAsync(addMember))
 router.delete('/:cardId/member/:memberID', isLoggedIn, catchAsync(deleteMember))
 
-router.patch('/:id/move', isLoggedIn, catchAsync(moveCard))
+router.patch('/:activeId/move', isLoggedIn, catchAsync(moveCard))
 
 
 module.exports = router;

@@ -38,7 +38,7 @@ const Heading = ({ col, handleDelete, setColumns, boardId }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await updateColumn(col._id, { title })
+            const res = await updateColumn(col._id, { title, boardId })
             const updatedColumn = res.data.column;
             console.log(res.data)
             setColumns((prev) => prev.map(column =>
@@ -47,8 +47,8 @@ const Heading = ({ col, handleDelete, setColumns, boardId }) => {
                     ...updatedColumn,   // overwrite title, order, etc.
                 } : column
             ))
-            setIsEditting(false)
             setMessage({ text: res.data.message, severity: 'success' })
+            setIsEditting(false)
         } catch (err) {
             setMessage({ text: err.response?.data?.message || "Something went wrong", severity: 'error' })
             console.log('it failed because', err)

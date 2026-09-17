@@ -2,6 +2,7 @@
 const Board = require('../models/Board')
 const User = require('../models/User')
 const AppError = require('../utils/AppError')
+const Activity = require('../models/Activity')
 
 module.exports.allBoards = async (req, res) => {
     console.log(req.user)
@@ -42,6 +43,13 @@ module.exports.createBoard = async (req, res) => {
         owner: req.user.userId,
     });
     await board.save();
+    await Activity.create({
+        board: board._id,
+        user: req.user.userId,
+        action: 'Created a board title',
+        target: board.title
+    })
+
     console.log('this is the new board', board)
     res.json({ message: 'You created a new board', board: board })
 }
@@ -50,7 +58,7 @@ module.exports.updateBoard = async (req, res) => {
     const { boardId } = req.params;
     const { title } = req.body;
     const board = await Board.findByIdAndUpdate(boardId, { title }, {
-        new: true,
+        returnDocument: 'after',
         runValidators: true // Ensures the updates adhere to your Mongoose schema
     })
     if (!board) {
@@ -58,6 +66,14 @@ module.exports.updateBoard = async (req, res) => {
             message: 'Board not found'
         })
     }
+    await Activity.create({
+        board: board._id,
+        user: req.user.userId,
+        action: 'Updated a board title',
+        target: board.title
+    })
+
+
     res.json({
         message: "You've updated this board title",
         board
@@ -68,6 +84,13 @@ module.exports.updateBoard = async (req, res) => {
 module.exports.deleteBoard = async (req, res) => {
     const { boardId } = req.params;
     const board = await Board.findByIdAndDelete(boardId)
+    await Activity.create({
+        board: board._id,
+        user: req.user.userId,
+        action: 'Deleted a board',
+        target: board.title
+    })
+
     res.json({
         message: "You've deleted the board",
         board: board
@@ -97,6 +120,13 @@ module.exports.inviteMember = async (req, res) => {
 
     board.members.push({ user: memberID, role: permissions || 'member' })
     await board.save();
+    await Activity.create({
+        board: boardId,
+        user: req.user.userId,
+        action: 'Invited a board member',
+        target: memberID
+    })
+
     res.json({
         message: 'Permisson Granted',
         board
