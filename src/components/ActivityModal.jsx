@@ -7,6 +7,7 @@ import {
 import { Close } from '@mui/icons-material'
 import { formatDistanceToNow } from 'date-fns'
 import { getActionColor } from '../utils/getActionColor'
+import HistoryIcon from '@mui/icons-material/History';
 
 const style = {
     position: 'absolute',
@@ -47,7 +48,7 @@ export default function ActivityModal({ boardId, open, setOpenActivity, onClose 
 
     return (
         <div>
-            <Button onClick={() => setOpenActivity(true)}>Activity</Button>
+            <Button onClick={() => setOpenActivity(true)}><HistoryIcon /></Button>
 
             <Modal open={open} onClose={onClose}>
                 <Box sx={style}>

@@ -67,7 +67,8 @@ const style = {
     display: 'flex',
     justifyContent: 'center',
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderRadius: '15px'
 };
 
 export default function NewBoardModal({ formData, setFormData }) {
@@ -154,37 +155,38 @@ export default function NewBoardModal({ formData, setFormData }) {
                         </Typography>
                         <Box
                             component="form"
-                            sx={{ '& > :not(style)': { m: 1, display: 'flex', flexDirection: 'column' } }}
+                            sx={{ '& > :not(style)': { m: 1, display: 'flex', flexDirection: 'column', width: '30rem' } }}
                             noValidate
                             autoComplete="off"
                             onSubmit={handleSubmit}
                         >
-                            <Box>
-
-                                <TextField
-                                    id="outlined-basic"
-                                    variant="outlined"
-                                    name='title'
-                                    value={formData.title}
-                                    onChange={handleChange}
-                                    label="Board Name"
-                                    sx={{
-                                        width: "25rem",
-
-                                        "& .MuiOutlinedInput-root": {
-                                            fontSize: "1.6rem",
-                                            paddingY: "0.8rem",
-                                        },
-
-                                        "& .MuiInputLabel-root": {
-                                            fontSize: "1.6rem",
-                                        },
-                                    }}
-                                />
 
 
-                                <Button type='submit' sx={{ fontSize: '1.5rem', m: 1 }} variant='outlined'>Submit</Button>
-                            </Box>
+                            <TextField
+                                fullWidth
+                                id="outlined-basic"
+                                variant="outlined"
+                                name='title'
+                                value={formData.title}
+                                onChange={handleChange}
+                                label="Board Name"
+                                sx={{
+                                    width: "25rem",
+
+                                    "& .MuiOutlinedInput-root": {
+                                        fontSize: "1.6rem",
+                                        paddingY: "0.8rem",
+                                    },
+
+                                    "& .MuiInputLabel-root": {
+                                        fontSize: "1.6rem",
+                                    },
+                                }}
+                            />
+
+
+                            <Button type='submit' sx={{ fontSize: '1.5rem', m: 1 }} variant='outlined'>Submit</Button>
+
                         </Box >
                     </Box>
                 </Fade>

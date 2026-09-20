@@ -6,11 +6,11 @@ const Home = lazy(() => import('./pages/Home'))
 const Show = lazy(() => import('./pages/Show'))
 const Login = lazy(() => import('./users/Login'))
 const Register = lazy(() => import('./users/Register'))
+const Profile = lazy(() => import('./pages/Profile/Profile'))
 import Error from './utils/Error'
 import { Navigate } from 'react-router-dom'
 import NavBar from './common/NavBar'
 import { Box } from '@mui/material'
-import Profile from './pages/Profile/Profile'
 import './index.css'
 import CircularProgress from '@mui/material/CircularProgress';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -22,7 +22,6 @@ function App() {
 
 
   return (
-    // <h1>Home</h1>
     <Box className='page'>
       <NavBar />
 

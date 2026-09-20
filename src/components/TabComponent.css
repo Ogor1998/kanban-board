@@ -1,0 +1,16 @@
+.links {
+    text-decoration: none;
+    color: #000;
+    cursor: pointer;
+    border: 1px solid #000;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+}
+
+.links:hover {
+    background-color: #000;
+    color: #fff
+}

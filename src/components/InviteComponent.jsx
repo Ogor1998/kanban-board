@@ -175,7 +175,6 @@ const InviteComponent = ({ closeInviteModal, openInvite, boardId, isBoardOwner }
 
 
                                 <Autocomplete
-                                    disablePortal
                                     options={permissions}
                                     sx={{ width: 170 }}
                                     disabled={!isBoardOwner ? true : false}
@@ -187,7 +186,7 @@ const InviteComponent = ({ closeInviteModal, openInvite, boardId, isBoardOwner }
                                             permissions: newValue,
                                         }));
                                     }}
-                                    value={value ? value.toUpperCase() : ''}
+                                    value={value}
                                 />
 
                                 <Button type='submit' variant='contained'>Invite User</Button>

@@ -60,7 +60,7 @@ const style = {
     transform: 'translate(-50%, -50%)',
     width: 400,
     bgcolor: 'background.paper',
-    border: '2px solid #000',
+    borderRadius: '15px',
     boxShadow: 24,
     p: 4,
     display: 'flex', justifyContent: 'center',
@@ -122,7 +122,7 @@ export default function NewColumnModal({ formData, handleChange, handleSubmit })
                     <Box sx={style}>
                         <Box
                             component="form"
-                            sx={{ '& > :not(style)': { m: 1, width: '40ch', backgroundColor: '#fff', p: 1 } }}
+                            sx={{ '& > :not(style)': { m: 1, width: '30rem', backgroundColor: '#fff', p: 1, textAlign: 'center' } }}
                             noValidate
                             autoComplete="off"
                             onSubmit={handleSubmit}
@@ -134,6 +134,7 @@ export default function NewColumnModal({ formData, handleChange, handleSubmit })
                                     Add a new Column
                                 </Typography>
                                 <TextField
+                                    fullWidth
                                     id="outlined-basic"
                                     label="Column-Title"
                                     variant="outlined"
@@ -141,7 +142,7 @@ export default function NewColumnModal({ formData, handleChange, handleSubmit })
                                     value={formData.title}
                                     onChange={handleChange}
                                 />
-                                <Button type='submit'>Submit</Button>
+                                <Button type='submit' variant='contained'>Submit</Button>
                             </Box>
                         </Box >
                     </Box>

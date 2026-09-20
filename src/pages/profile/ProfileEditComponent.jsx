@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AvatarUpload from "./AvatarUpload";
-
 import {
     Box,
     TextField,
@@ -86,7 +85,8 @@ export default function ProfileEditComponent({ profile, setProfile, handleClick 
                 display: "flex",
                 flexDirection: "column",
                 gap: 2,
-                maxWidth: 500,
+                // maxWidth: 500,
+                width: '30rem',
                 margin: "auto",
                 mt: 5,
                 backgroundColor: '#fff',
@@ -100,6 +100,7 @@ export default function ProfileEditComponent({ profile, setProfile, handleClick 
 
             <AvatarUpload setFile={setFile} currentImage={profile?.image} />
             <TextField
+                fullWidth
                 label="Username"
                 name="username"
                 value={formData.username}
@@ -108,6 +109,7 @@ export default function ProfileEditComponent({ profile, setProfile, handleClick 
             />
 
             <TextField
+                fullWidth
                 label="Email"
                 name="email"
                 value={formData.email}
@@ -115,6 +117,7 @@ export default function ProfileEditComponent({ profile, setProfile, handleClick 
             />
 
             <TextField
+                fullWidth
                 label="First Name"
                 name="firstname"
                 value={formData.firstname}
@@ -122,6 +125,7 @@ export default function ProfileEditComponent({ profile, setProfile, handleClick 
             />
 
             <TextField
+                fullWidth
                 label="Last Name"
                 name="lastname"
                 value={formData.lastname}
@@ -147,6 +151,11 @@ export default function ProfileEditComponent({ profile, setProfile, handleClick 
                     Cancel
                 </Button>
             </Box>
+
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                Last Profile Edit{" "}
+                {new Date(profile.updatedAt).toLocaleDateString()}
+            </Typography>
         </Box>
     );
 }

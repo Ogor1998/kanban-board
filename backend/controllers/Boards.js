@@ -3,6 +3,8 @@ const Board = require('../models/Board')
 const User = require('../models/User')
 const AppError = require('../utils/AppError')
 const Activity = require('../models/Activity')
+const Comment = require('../models/Comment')
+
 
 module.exports.allBoards = async (req, res) => {
     console.log(req.user)
@@ -23,11 +25,39 @@ module.exports.findBoard = async (req, res) => {
     const board = await Board.findById(boardId).populate('owner', 'firstname lastname username image')
         .populate('members.user', 'firstname lastname username email image')
     if (!board) {
-        res.status(404).json({
+        return res.status(404).json({
             message: 'Board not found'
         })
     }
     res.json(board)
+}
+module.exports.findUserBoard = async (req, res) => {
+    const { username } = req.params;
+    const user = await User.findOne({ username })
+    if (!user) {
+        return res.status(404).json({
+            message: 'User not found'
+        });
+    }
+    // console.log('this is the user', user)
+    const board = await Board.find({
+        $or: [
+            { owner: user._id },
+            { 'members.user': user._id }
+        ]
+    })
+    const boardCount = await Board.countDocuments({ owner: user._id })
+    const commentsCount = await Comment.countDocuments({ author: user._id })
+    if (!board) {
+        return res.status(404).json({
+            message: 'Board not found'
+        })
+    }
+    res.json({
+        board,
+        boardCount,
+        commentsCount
+    })
 }
 module.exports.createBoard = async (req, res) => {
     console.log(req.body)

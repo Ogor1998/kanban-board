@@ -24,7 +24,7 @@ const style = {
     boxShadow: 24,
     p: 2,
     textAlign: 'center',
-    minHeight: '30rem',
+    maxHeight: '35rem',
     overflowY: 'scroll',
     borderRadius: '15px'
 };

@@ -157,6 +157,13 @@ export default function BoardHeading({ boardId, setPriorityFilter, priorityFilte
                     </Box>
                 ))}
 
+                <ActivityModal
+                    boardId={boardId}
+                    open={openActivity}
+                    setOpenActivity={setOpenActivity}
+                    onClose={() => setOpenActivity(false)}
+
+                />
                 {isBoardOwner && <Button onClick={openInviteModal}><Share /></Button>}
                 {canEditOrDelete &&
 
@@ -165,13 +172,6 @@ export default function BoardHeading({ boardId, setPriorityFilter, priorityFilte
                         <Button onClick={handleOpen}><Delete /></Button></>
                 }
             </Box>
-            <ActivityModal
-                boardId={boardId}
-                open={openActivity}
-                setOpenActivity={setOpenActivity}
-                onClose={() => setOpenActivity(false)}
-
-            />
             <InviteComponent closeInviteModal={closeInviteModal} openInvite={openInvite} boardId={boardId} isBoardOwner={isBoardOwner} />
             <Modal
                 open={open}
