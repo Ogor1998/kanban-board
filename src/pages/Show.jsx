@@ -19,6 +19,7 @@ import BoardHeading from '../components/BoardHeading'
 import { getColumns, createColumn, deleteColumn } from '../api/columns'
 import InviteComponent from '../components/InviteComponent'
 import { useAuth } from '../context/AuthContext'
+import { kanbanBackgrounds } from '../utils/kanbanBackgrounds'
 
 
 
@@ -28,14 +29,24 @@ const Show = () => {
     const navigate = useNavigate();
     const { currentUser, isLoggedIn } = useAuth();
     const [search, setSearch] = useState("")
-
     const [columns, setColumns] = useState([])
-
     const [formData, setFormData] = useState({ title: "", boardId })
     const [activeCard, setActiveCard] = useState(null)
     const [isActiveColumn, setisActiveColumn] = useState(null)
     const [priorityFilter, setPriorityFilter] = useState("")
-    console.log('this is the priority filter', priorityFilter)
+    const [boardBackground, setBoardBackground] = useState(null)
+
+    const selectedBackground = kanbanBackgrounds[boardBackground]
+    const returnSave = localStorage.getItem('columns')
+    const [isHiddenColumns, setIsHiddenColumns] = useState(returnSave)
+
+    const hideColumns = (id) => {
+        // setIsHidden(prev => prev === id ? null : id)
+        setIsHiddenColumns(prev => prev.includes(id) ? prev.filter(colId => colId !== id) : [...prev, id])
+    }
+
+    localStorage.setItem('columns', isHiddenColumns)
+
 
     useEffect(() => {
         const fetchColumns = async () => {
@@ -76,6 +87,7 @@ const Show = () => {
     }
 
     const handleClick = (id) => {
+        console.log('this is specified id', id)
         setisActiveColumn(prev => prev === id ? null : id)
     }
 
@@ -137,12 +149,24 @@ const Show = () => {
             </div>
         )
     }
+    console.log('this is the current', boardBackground)
 
     return (
-        <Box className='big__container'>
+        <Box className='big__container' style={{
+            "--board-background": selectedBackground?.css,
+            "--board-text": selectedBackground?.textColor,
+            "--board-glass": selectedBackground?.glass,
+            "--board-glass-border": selectedBackground?.glassBorder,
+        }}>
             {message && <div>   <AlertBox /></div>}
             <Box className='board__top'>
-                <BoardHeading boardId={boardId} setPriorityFilter={setPriorityFilter} priorityFilter={priorityFilter} setSearch={setSearch} />
+                <BoardHeading boardId={boardId}
+                    setPriorityFilter={setPriorityFilter}
+                    priorityFilter={priorityFilter}
+                    setSearch={setSearch}
+                    setBoardBackground={setBoardBackground}
+                    boardBackground={boardBackground}
+                />
             </Box>
             <InviteComponent />
             <div className='board'>
@@ -155,6 +179,7 @@ const Show = () => {
                             const matchesSearch = !search || card?.title?.toLowerCase().includes(search.toLowerCase())
                             return matchesPriority && matchesSearch
                         }) || [];
+                        const isHidden = isHiddenColumns.includes(col._id);
                         return (
                             <DroppableColumn key={col._id} col={col}>
                                 <Heading col={col} handleDelete={handleDelete} setColumns={setColumns} boardId={boardId} />
@@ -163,9 +188,12 @@ const Show = () => {
                                     strategy={verticalListSortingStrategy}
                                 >
 
-                                    {updateCards.map((card) => (
-                                        <SortableCard key={card._id} card={card} columnId={col._id} setColumns={setColumns} />
-                                    ))}
+                                    <Button onClick={() => hideColumns(col._id)}>{isHidden ? 'Show' : 'Hide'}</Button>
+                                    {isHidden && <Box>
+                                        {updateCards.map((card) => (
+                                            <SortableCard key={card._id} card={card} columnId={col._id} setColumns={setColumns} />
+                                        ))}
+                                    </Box>}
                                 </SortableContext>
                                 {isActiveColumn === col._id && <NewCard setColumns={setColumns} columnId={col._id} setisActiveColumn={setisActiveColumn} />}
                                 <Button sx={{ color: '#fff' }} onClick={() => handleClick(col._id)}>

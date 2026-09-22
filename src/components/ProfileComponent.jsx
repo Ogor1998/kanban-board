@@ -24,6 +24,7 @@ export default function ProfileComponent({ profile, handleClick }) {
     const [commentsCount, setCommentsCount] = useState(0)
     const [cardsCount, setCardsCount] = useState(0)
     const [boardsCount, setboardsCount] = useState(0)
+    const [loading, setLoading] = useState(true)
 
     if (!profile) {
         return (
@@ -47,6 +48,8 @@ export default function ProfileComponent({ profile, handleClick }) {
                     // console.log('this is the board', res.data)
                 } catch (err) {
                     console.log(err)
+                } finally {
+                    setLoading(false)
                 }
             }
             fetchBoards();
@@ -63,6 +66,15 @@ export default function ProfileComponent({ profile, handleClick }) {
         mb: 5,
         p: 3
     }
+
+    if (loading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 4, height: '100%' }}>
+                <CircularProgress size={30} />
+            </Box>
+        );
+    }
+
 
     return (
         <Box

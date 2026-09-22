@@ -14,6 +14,7 @@ import { findBoard } from '../api/boards';
 import { useAuth } from '../context/AuthContext';
 import SearchField from './reuseable/SearchField';
 import ActivityModal from './ActivityModal';
+import { kanbanBackgrounds } from '../utils/kanbanBackgrounds';
 
 
 const style = {
@@ -28,7 +29,7 @@ const style = {
     textAlign: 'center'
 };
 
-export default function BoardHeading({ boardId, setPriorityFilter, priorityFilter, setSearch }) {
+export default function BoardHeading({ boardId, setPriorityFilter, priorityFilter, setSearch, setBoardBackground, boardBackground }) {
     const [open, setOpen] = React.useState(false);
     const [openInvite, setInviteOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -42,6 +43,7 @@ export default function BoardHeading({ boardId, setPriorityFilter, priorityFilte
     const [isEditting, setIsEditting] = React.useState(false)
     const { setMessage } = useNotification();
     const [openActivity, setOpenActivity] = React.useState(false)
+
 
 
     React.useEffect(() => {
@@ -129,12 +131,19 @@ export default function BoardHeading({ boardId, setPriorityFilter, priorityFilte
                         <SearchField setSearch={setSearch} />
                     </>
                 )}
-
+                <label htmlFor="priority" style={{ fontSize: '2rem', marginRight: '1.05rem', fontWeight: '300' }}>GROUP BY</label>
                 <select name="priority" id="" onChange={(e) => setPriorityFilter(e.target.value)} value={priorityFilter}>
-                    <option value=''>Select Priority</option>
+                    <option value=''>None</option>
                     <option value='low'>Low</option>
                     <option value='medium'>Medium</option>
                     <option value='high'>High</option>
+                </select>
+
+                <select name="background" id="" onChange={(e) => setBoardBackground(e.target.value)} value={boardBackground} >
+                    <option value=''>Select A Background</option>
+                    {Object.entries(kanbanBackgrounds).map(([key, value]) => (
+                        <option value={key} key={key}>{value.name}</option>
+                    ))}
                 </select>
 
                 {
