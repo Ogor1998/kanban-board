@@ -1,8 +1,7 @@
 .navbar {
-    color: #fff;
-    font-size: clamp(1.5rem, 2vw, 1.5rem);
+    font-size: clamp(1rem, 2vw, 1.5rem);
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
@@ -17,16 +16,19 @@
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
+.navbar> :first-child {
+    margin-right: auto;
+}
+
 .navbar>a {
     text-decoration: none;
     border-bottom: 3px solid transparent;
     color: #000;
+    transition: border-color 0.2s ease-in-out;
 }
 
-.navbar>a:hover {
-    border-bottom: 3px solid red;
-}
 
+.navbar>a:hover,
 .navbar>a.active__link {
     border-bottom: 3px solid red;
 }

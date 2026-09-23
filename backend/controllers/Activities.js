@@ -24,7 +24,8 @@ module.exports.getUserActivities = async (req, res) => {
         const activities = await Activity.find({ user: user._id })
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .populate('user', 'firstname image');
 
         // 3. Count total to know if there's more
         const total = await Activity.countDocuments({ user: user._id });

@@ -2,6 +2,7 @@
 import './NavBar.css'
 import { useAuth } from "../context/AuthContext"
 import { NavLink } from "react-router-dom";
+import NotificationBell from './NotificationBell';
 
 
 
@@ -22,6 +23,7 @@ export default function NavBar() {
                     <>
 
 
+                        <NotificationBell username={currentUser?.username} />
                         <NavLink to={`/profile/${currentUser?.username}`}>{currentUser?.username?.toUpperCase()}</NavLink>
                         <NavLink onClick={logout} >Logout</NavLink>
                     </>

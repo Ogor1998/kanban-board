@@ -34,7 +34,9 @@ const Show = () => {
     const [activeCard, setActiveCard] = useState(null)
     const [isActiveColumn, setisActiveColumn] = useState(null)
     const [priorityFilter, setPriorityFilter] = useState("")
-    const [boardBackground, setBoardBackground] = useState(null)
+
+
+    const [boardBackground, setBoardBackground] = useState(localStorage.getItem('backgrounds'))
 
     const selectedBackground = kanbanBackgrounds[boardBackground]
     const returnSave = localStorage.getItem('columns')
@@ -47,7 +49,7 @@ const Show = () => {
 
     localStorage.setItem('columns', isHiddenColumns)
 
-
+    localStorage.setItem('backgrounds', boardBackground)
     useEffect(() => {
         const fetchColumns = async () => {
             try {

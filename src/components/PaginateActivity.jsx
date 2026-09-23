@@ -44,7 +44,7 @@ const PaginateActivity = ({ itemsPerPage, username }) => {
                     params: { page, limit: itemsPerPage }
                 })
                 const { activities, pagination } = res.data
-
+                console.log('Activity Payload Item:', activities?.[0]);
 
                 setItems(prev => (page === 1 ? activities : [...prev, ...activities]))
                 setHasMore(pagination.hasMore);
@@ -76,7 +76,7 @@ const PaginateActivity = ({ itemsPerPage, username }) => {
     }
 
     return (
-        <div style={{ height: '30rem', overflowY: 'auto' }}>
+        <div style={{ overflowY: 'auto' }}>
             <List dense>
                 {items.map((item, index) => (
                     <Box key={item._id}>
