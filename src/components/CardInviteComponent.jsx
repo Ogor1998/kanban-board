@@ -60,9 +60,6 @@ const CardInviteComponent = ({ closeInviteModal, openInvite, openInviteModal, ca
                 memberID: selectedUser._id,
             })
             const updatedCard = res.data.card;
-            console.log("Check if members are objects here:", updatedCard.members);
-
-
             setColumns(prev => {
                 return prev.map(column => ({
                     ...column,
@@ -76,7 +73,6 @@ const CardInviteComponent = ({ closeInviteModal, openInvite, openInviteModal, ca
                 severity: 'success'
             })
             closeInviteModal();
-            console.log(res.data)
         } catch (err) {
             setMessage({
                 text: err.response?.data?.message,

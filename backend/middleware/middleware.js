@@ -44,23 +44,32 @@ module.exports.isBoardMemeber = async (req, res, next) => {
 module.exports.isCardMember = async (req, res, next) => {
     try {
         const { cardId } = req.params;
+        const { memberID } = req.body
         const card = await Card.findById(cardId)
+        if (!memberID) {
+            return res.status(400).json({ message: 'Target member ID is required' });
+        }
         if (!card) {
             return res.status(404).json({
                 message: 'Card not found'
             })
         }
+        const isTheSameUser = req.user.userId.toString() === memberID.toString();
         const isMember = card.members.some(m => m._id.equals(req.user.userId))
         if (isMember) {
-            return res.status(403).json({
+            return res.status(409).json({
                 message: 'This user is already a member'
+            })
+        }
+        if (isTheSameUser) {
+            return res.status(403).json({
+                message: "You can't add yourself to card"
             })
         }
         next();
     }
     catch (err) {
         res.status(500).json({ error: err.message });
-        next(err)
     }
 }
 

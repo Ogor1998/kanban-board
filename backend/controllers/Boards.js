@@ -4,6 +4,7 @@ const User = require('../models/User')
 const AppError = require('../utils/AppError')
 const Activity = require('../models/Activity')
 const Comment = require('../models/Comment')
+const Notification = require('../models/Notification')
 
 
 module.exports.allBoards = async (req, res) => {
@@ -155,6 +156,15 @@ module.exports.inviteMember = async (req, res) => {
         user: req.user.userId,
         action: 'Invited a board member',
         target: memberID
+    })
+
+    await Notification.create({
+        recipient: memberID,
+        sender: req.user.userId,
+        message: 'Invited you to joined board',
+        link: `/columns/${boardId}`,
+        type: 'BOARD_INVITE',
+        isRead: false,
     })
 
     res.json({

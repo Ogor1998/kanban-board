@@ -3,6 +3,7 @@ const Card = require('../models/Card')
 const User = require('../models/User')
 const Column = require('../models/Column')
 const Activity = require('../models/Activity')
+const Notification = require('../models/Notification')
 const { uploadToCloudinary } = require('../cloudinary')
 
 
@@ -128,6 +129,7 @@ module.exports.addMember = async (req, res) => {
     const { memberID } = req.body;
     const card = await Card.findById(cardId)
     const user = await User.findById(memberID)
+    const column = await Column.findById(card.columnId)
     if (!card) {
         return res.status(404).json({
             message: 'Card not found'
@@ -138,8 +140,13 @@ module.exports.addMember = async (req, res) => {
             message: 'Card not found'
         })
     }
-    const column = await Column.findById(card.columnId)
+    if (!column) {
+        return res.status(404).json({
+            message: 'Column not found'
+        })
+    }
     card.members.push(memberID)
+
     await card.save();
     await card.populate('members');
     await Activity.create({
@@ -148,11 +155,23 @@ module.exports.addMember = async (req, res) => {
         action: 'Invited a member',
         target: user.username
     })
+
+
+    await Notification.create({
+        recipient: memberID,
+        sender: req.user.userId,
+        message: 'Invited you to join this card',
+        link: `/cards/${cardId}`,
+        type: 'CARD_ASSIGNED',
+        isRead: false,
+    })
+
+
     res.json({
         message: 'You added this member to the card',
         card
     })
-    console.log('You added this memebr to the card')
+    console.log('You added this member to the card')
 
 }
 
@@ -172,6 +191,15 @@ module.exports.deleteMember = async (req, res) => {
         action: 'Deleted a member',
         target: user?.username || memberID
     })
+    await Notification.create({
+        recipient: memberID,
+        sender: req.user.userId,
+        message: 'Removed you from this card',
+        link: `/cards/${cardId}`,
+        type: 'MEMBER_REMOVED',
+        isRead: false,
+    })
+
     res.json({
         message: "You've removed this user from card",
         card

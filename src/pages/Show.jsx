@@ -39,17 +39,29 @@ const Show = () => {
     const [boardBackground, setBoardBackground] = useState(localStorage.getItem('backgrounds'))
 
     const selectedBackground = kanbanBackgrounds[boardBackground]
-    const returnSave = localStorage.getItem('columns')
-    const [isHiddenColumns, setIsHiddenColumns] = useState(returnSave)
+    const [isHiddenColumns, setIsHiddenColumns] = useState(() => {
+        try {
+            const saved = localStorage.getItem('columns')
+            return saved ? JSON.parse(saved) : []
+        } catch {
+            return [];
+        }
+    })
 
+    useEffect(() => {
+        localStorage.setItem('columns', JSON.stringify(isHiddenColumns))
+
+    }, [isHiddenColumns])
+
+    useEffect(() => {
+        if (boardBackground) {
+            localStorage.setItem('backgrounds', boardBackground);
+        }
+    }, [boardBackground]);
     const hideColumns = (id) => {
         // setIsHidden(prev => prev === id ? null : id)
         setIsHiddenColumns(prev => prev.includes(id) ? prev.filter(colId => colId !== id) : [...prev, id])
     }
-
-    localStorage.setItem('columns', isHiddenColumns)
-
-    localStorage.setItem('backgrounds', boardBackground)
     useEffect(() => {
         const fetchColumns = async () => {
             try {
@@ -186,21 +198,22 @@ const Show = () => {
                             <DroppableColumn key={col._id} col={col}>
                                 <Heading col={col} handleDelete={handleDelete} setColumns={setColumns} boardId={boardId} />
                                 <SortableContext
-                                    items={col.cards?.map(card => card._id) || []}
+                                    items={updateCards?.map(card => card._id) || []}
                                     strategy={verticalListSortingStrategy}
                                 >
 
                                     <Button onClick={() => hideColumns(col._id)}>{isHidden ? 'Show' : 'Hide'}</Button>
-                                    {isHidden && <Box>
+                                    {!isHidden && <Box>
                                         {updateCards.map((card) => (
                                             <SortableCard key={card._id} card={card} columnId={col._id} setColumns={setColumns} />
                                         ))}
                                     </Box>}
                                 </SortableContext>
-                                {isActiveColumn === col._id && <NewCard setColumns={setColumns} columnId={col._id} setisActiveColumn={setisActiveColumn} />}
-                                <Button sx={{ color: '#fff' }} onClick={() => handleClick(col._id)}>
-                                    <AddIcon />Add Card
-                                </Button>
+                                {!isHidden && <>
+                                    {isActiveColumn === col._id && <NewCard setColumns={setColumns} columnId={col._id} setisActiveColumn={setisActiveColumn} />}
+                                    <Button sx={{ color: '#fff' }} onClick={() => handleClick(col._id)}>
+                                        <AddIcon />Add Card
+                                    </Button></>}
                             </DroppableColumn>
                         )
                     })}
