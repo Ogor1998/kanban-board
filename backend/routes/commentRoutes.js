@@ -3,7 +3,7 @@ const router = express.Router();
 const { allComments, commentCount, createComment, deleteComment } = require('../controllers/Comments')
 const { isLoggedIn } = require('../middleware/auth')
 const { isCommentAuthor } = require('../middleware/middleware')
-const catchAsync = require('../utils/catchAsync')
+const { catchAsync } = require('../utils/catchAsync')
 
 router.get('/:cardID', catchAsync(allComments))
 

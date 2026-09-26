@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
 const { allBoards, findBoard, createBoard, deleteBoard, inviteMember, updateBoard, findUserBoard } = require('../controllers/Boards')
-const catchAsync = require('../utils/catchAsync')
+const { catchAsync } = require('../utils/catchAsync')
 const { isLoggedIn } = require('../middleware/auth')
 const { isBoardOwner, validateBoard, isBoardMemeber } = require('../middleware/middleware')
 

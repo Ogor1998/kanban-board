@@ -13,6 +13,7 @@ const userRoutes = require('./routes/userRoutes')
 const profileRoutes = require('./routes/profileRoutes')
 const activityRoutes = require('./routes/activityRoutes')
 const commentRoutes = require('./routes/commentRoutes')
+const notificationRoutes = require('./routes/notificationRoutes')
 const AppError = require('./utils/AppError')
 const User = require('./models/User')
 const cookieParser = require('cookie-parser')
@@ -43,6 +44,7 @@ app.use('/', userRoutes)
 app.use('/profile', profileRoutes)
 app.use('/comments', commentRoutes)
 app.use('/activity', activityRoutes)
+app.use('/notifications', notificationRoutes)
 
 const secret = process.env.JWT_SECRET;
 

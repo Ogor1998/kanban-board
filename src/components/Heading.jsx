@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react'
-import { Box, Button, TextField } from '@mui/material'
+import { Box, Button, IconButton, TextField } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete';
 import CreateIcon from '@mui/icons-material/Create';
 import './Heading.css'
@@ -10,11 +10,13 @@ import { useNotification } from '../context/NotificationContext';
 import { useAuth } from '../context/AuthContext';
 import { updateColumn } from '../api/columns'
 import { useBoard } from '../context/BoardContext';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 
 
 
 
-const Heading = ({ col, handleDelete, setColumns, boardId }) => {
+const Heading = ({ col, handleDelete, setColumns, boardId, isHidden, hideColumns }) => {
     const { isLoggedIn, currentUser } = useAuth();
     const [isEditting, setIsEditting] = useState(false)
     const { singleBoard, findBoard } = useBoard();
@@ -84,9 +86,10 @@ const Heading = ({ col, handleDelete, setColumns, boardId }) => {
                         Cards  ({col.cards.length})
                     </Typography>
                     {canDeleteCol ? <>
-                        <Button variant='outlined' color='success' onClick={handleClick}><CreateIcon /></Button>
-                        <Button variant='outlined' color='error' onClick={() => handleDelete(col._id)}><DeleteIcon /></Button></>
+                        <IconButton variant='outlined' color='success' onClick={handleClick}><CreateIcon /></IconButton>
+                        <IconButton variant='outlined' color='error' onClick={() => handleDelete(col._id)}><DeleteIcon /></IconButton></>
                         : null}
+                    <IconButton sx={{ fontSize: '2rem' }} onClick={() => hideColumns(col._id)}>{isHidden ? <ArrowDropDownIcon /> : <ArrowDropUpIcon />}</IconButton>
                 </Box>)
             }
 

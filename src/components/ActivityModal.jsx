@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import {
     Modal, Box, Typography, Avatar, List, ListItem,
-    ListItemAvatar, ListItemText, Divider, CircularProgress, Button
+    ListItemAvatar, ListItemText, Divider, CircularProgress, Button, IconButton
 } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import { formatDistanceToNow } from 'date-fns'
 import { getActionColor } from '../utils/getActionColor'
 import HistoryIcon from '@mui/icons-material/History';
+
 
 const style = {
     position: 'absolute',
@@ -48,7 +49,7 @@ export default function ActivityModal({ boardId, open, setOpenActivity, onClose 
 
     return (
         <div>
-            <Button onClick={() => setOpenActivity(true)}><HistoryIcon /></Button>
+            <IconButton onClick={() => setOpenActivity(true)}><HistoryIcon /></IconButton>
 
             <Modal open={open} onClose={onClose}>
                 <Box sx={style}>

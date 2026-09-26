@@ -196,13 +196,11 @@ const Show = () => {
                         const isHidden = isHiddenColumns.includes(col._id);
                         return (
                             <DroppableColumn key={col._id} col={col}>
-                                <Heading col={col} handleDelete={handleDelete} setColumns={setColumns} boardId={boardId} />
+                                <Heading col={col} handleDelete={handleDelete} setColumns={setColumns} boardId={boardId} hideColumns={hideColumns} isHidden={isHidden} />
                                 <SortableContext
                                     items={updateCards?.map(card => card._id) || []}
                                     strategy={verticalListSortingStrategy}
                                 >
-
-                                    <Button onClick={() => hideColumns(col._id)}>{isHidden ? 'Show' : 'Hide'}</Button>
                                     {!isHidden && <Box>
                                         {updateCards.map((card) => (
                                             <SortableCard key={card._id} card={card} columnId={col._id} setColumns={setColumns} />

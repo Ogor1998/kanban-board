@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TextField, Button, Box, Typography, Modal } from '@mui/material';
+import { TextField, Button, Box, Typography, Modal, IconButton } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Create, Delete } from '@mui/icons-material';
@@ -173,12 +173,11 @@ export default function BoardHeading({ boardId, setPriorityFilter, priorityFilte
                     onClose={() => setOpenActivity(false)}
 
                 />
-                {isBoardOwner && <Button onClick={openInviteModal}><Share /></Button>}
+                {isBoardOwner && <IconButton onClick={openInviteModal}><Share /></IconButton>}
                 {canEditOrDelete &&
-
                     <>
-                        <Button color='primary' onClick={handleEdit}><Create /></Button>
-                        <Button onClick={handleOpen}><Delete /></Button></>
+                        <IconButton onClick={handleEdit} ><Create /></IconButton>
+                        <IconButton onClick={handleOpen}><Delete /></IconButton></>
                 }
             </Box>
             <InviteComponent closeInviteModal={closeInviteModal} openInvite={openInvite} boardId={boardId} isBoardOwner={isBoardOwner} />
