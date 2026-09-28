@@ -9,6 +9,7 @@ import './Login.css'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
+import { NavLink } from "react-router-dom"
 
 
 
@@ -107,6 +108,11 @@ export default function Register() {
 
                 <Password formData={formData} handleChange={handleChange} />
                 <Button type="submit" variant="outlined" fullWidth>Register</Button>
+
+                <Typography variant="h6" gutterBottom>
+                    Old User? <NavLink className='login__link' to={`/login`}>Sign In</NavLink>
+                </Typography>
+
 
             </Box>
 

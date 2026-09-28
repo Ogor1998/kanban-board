@@ -131,7 +131,7 @@ export default function BoardHeading({ boardId, setPriorityFilter, priorityFilte
                         <SearchField setSearch={setSearch} />
                     </>
                 )}
-                <label htmlFor="priority" style={{ fontSize: '2rem', marginRight: '1.05rem', fontWeight: '300' }}>GROUP BY</label>
+                <label htmlFor="priority" style={{ fontSize: '1.7rem', marginRight: '1.05rem', fontWeight: '300' }}>Group By</label>
                 <select name="priority" id="" onChange={(e) => setPriorityFilter(e.target.value)} value={priorityFilter}>
                     <option value=''>None</option>
                     <option value='low'>Low</option>

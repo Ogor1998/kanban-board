@@ -9,6 +9,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import { useNotification } from '../../context/NotificationContext';
 
 
 const Fade = React.forwardRef(function Fade(props, ref) {
@@ -71,15 +72,19 @@ export default function NewColumnModal({ formData, handleChange, handleSubmit })
     const navigate = useNavigate();
     const [open, setOpen] = React.useState(false);
     const location = useLocation();
+    const { setMessage } = useNotification();
+
+
+
     const handleOpen = () => {
         if (!isLoggedIn) {
-
-            navigate("/login", {
-                state: {
-                    from: location,
-                    message: "Please log in to create a column",
-                },
-            });
+            setMessage({
+                text: "Please log in to create a column",
+                severity: 'error'
+            })
+            navigate('/login', {
+                state: { from: location }
+            })
         } else {
             setOpen(true)
         }

@@ -41,3 +41,18 @@
     height: 100%;
     padding: 20px;
 }
+
+.login__link {
+    text-decoration: none;
+    padding: 0.2rem;
+    border-radius: 5px;
+    color: #ffffffac;
+    /* box-shadow: 10px 24px 124px #0000009b; */
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+}
+
+.login__link:active {
+    transform: scale(1.05);
+}

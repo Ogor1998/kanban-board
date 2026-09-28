@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import './Show.css'
 import { Box, TextField, Button } from '@mui/material'
 import Heading from '../components/common/Heading'
@@ -20,6 +20,7 @@ import { getColumns, createColumn, deleteColumn } from '../api/columns'
 import InviteComponent from '../components/invitation/InviteComponent'
 import { useAuth } from '../context/AuthContext'
 import { kanbanBackgrounds } from '../utils/kanbanBackgrounds'
+
 
 
 
@@ -99,11 +100,21 @@ const Show = () => {
             setMessage({ text: err.response?.data?.message || "Something went wrong", severity: 'error' })
         }
     }
+    const location = useLocation();
 
     const handleClick = (id) => {
-        console.log('this is specified id', id)
-        setisActiveColumn(prev => prev === id ? null : id)
-    }
+        if (!isLoggedIn) {
+            setMessage({
+                text: "Please log in to create a card",
+                severity: "warning",
+            });
+            navigate("/login", {
+                state: { from: location },
+            });
+            return;
+        }
+        setisActiveColumn((prev) => (prev === id ? null : id));
+    };
 
     const handleDragEnd = async (event) => {
         const { active, over } = event
@@ -163,6 +174,7 @@ const Show = () => {
             </div>
         )
     }
+
     console.log('this is the current', boardBackground)
 
     return (

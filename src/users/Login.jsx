@@ -9,6 +9,7 @@ import axios from "axios";
 import './Login.css'
 import AntigravityUsage from "../components/reuseable/AntigravityUsage"
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { NavLink } from "react-router-dom"
 
 
 
@@ -94,6 +95,10 @@ export default function Login() {
 
                 <Password formData={formData} handleChange={handleChange} />
                 <Button type="submit" variant="outlined" fullWidth>Login</Button>
+
+                <Typography variant="h6" gutterBottom>
+                    Don't have an account? <NavLink className='login__link' to={'/register'}>Sign Up</NavLink>
+                </Typography>
 
             </Box>
 

@@ -3,12 +3,19 @@
     border-radius: 50%;
     cursor: pointer;
 
+
 }
 
 .admin {
     border: 1px solid red;
     border-radius: 50%;
     cursor: pointer;
+    height: 30px;
+    width: 30px;
+}
+
+.members {
+    font-size: 1.7rem;
 }
 
 /* .admin,

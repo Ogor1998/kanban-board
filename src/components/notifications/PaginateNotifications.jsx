@@ -40,10 +40,20 @@ const PaginateNotifications = ({ username, notification, setNotification }) => {
                     const unread = item.isRead;
                     return (
                         <>
-                            <ListItem key={item._id} alignItems="flex-start" className='notification__item' sx={{ px: 1, backgroundColor: '#fff', color: '#000', borderRadius: '10px', alignItems: 'center', marginBottom: '0.2rem' }}>
+                            <ListItem key={item._id}
+                                alignItems="flex-start"
+                                className='notification__item'
+                                sx={{
+                                    px: 1,
+                                    backgroundColor: '#fff',
+                                    color: '#000',
+                                    borderRadius: '10px',
+                                    alignItems: 'center',
+                                    marginBottom: '0.2rem'
+                                }}>
                                 <ListItemAvatar>
-                                    <Avatar sx={{ width: 32, height: 32, fontSize: '0.8rem' }} src={item.user?.image}>
-                                        {item.user?.firstname?.charAt(0).toUpperCase()}
+                                    <Avatar sx={{ width: 32, height: 32, fontSize: '0.8rem' }} src={item.sender?.image}>
+                                        {item.sender?.firstname?.charAt(0).toUpperCase()}
                                     </Avatar>
                                 </ListItemAvatar>
                                 <ListItemText

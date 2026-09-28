@@ -4,4 +4,5 @@
 
 .notification__item:hover {
     background-color: #747070a2;
+    transform: scale(1.05);
 }
