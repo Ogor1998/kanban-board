@@ -12,7 +12,7 @@ import { useNotification } from '../../context/NotificationContext';
 import CommentIcon from '@mui/icons-material/Comment';
 import CommentComponent from './CommentsComponent';
 import { createComments, getComments, commentsCount } from '../../api/comments'
-import CardInviteComponent from '../CardInviteComponent';
+import CardInviteComponent from '../card/CardInviteComponent';
 
 const style = {
     position: 'absolute',

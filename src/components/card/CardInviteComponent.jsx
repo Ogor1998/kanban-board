@@ -10,8 +10,8 @@ import {
 import { Share, Close } from '@mui/icons-material';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { Autocomplete } from '@mui/material';
-import { useNotification } from '../context/NotificationContext';
-import { useAuth } from '../context/AuthContext';
+import { useNotification } from '../../context/NotificationContext';
+import { useAuth } from '../../context/AuthContext';
 import { Delete } from '@mui/icons-material';
 
 const style = {

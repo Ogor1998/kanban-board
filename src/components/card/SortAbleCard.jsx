@@ -13,7 +13,7 @@ import EditCard from './EditCard'
 import { deleteCard } from '../../api/cards'
 import { Avatar, AvatarGroup } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import DateFormatComponent from '../DateFormatComponent'
+import DateFormatComponent from '../common/DateFormatComponent'
 
 export default function SortableCard({ card, setColumns, columnId }) {
     const [isEditting, setIsEditting] = useState(false)

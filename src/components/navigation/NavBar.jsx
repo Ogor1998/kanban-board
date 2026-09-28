@@ -1,8 +1,8 @@
 
 import './NavBar.css'
-import { useAuth } from "../context/AuthContext"
+import { useAuth } from "../../context/AuthContext"
 import { NavLink } from "react-router-dom";
-import NotificationBell from './NotificationBell';
+import NotificationBell from '../notifications/NotificationBell';
 
 
 

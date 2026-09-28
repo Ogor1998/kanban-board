@@ -9,12 +9,14 @@ import {
     Fade
 } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import PaginateActivity from '../components/PaginateActivity';
-import PaginateNotifications from '../components/PaginateNotifications';
+import PaginateActivity from '../activity/PaginateActivity';
+import PaginateNotifications from './PaginateNotifications';
+
 
 export default function NotificationBell({ username, unreadCount = 0 }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const [tabIndex, setTabIndex] = useState(0);
+    const [notification, setNotification] = useState([])
 
     const handleClick = (event) => setAnchorEl(event.currentTarget);
     const handleClose = () => setAnchorEl(null);
@@ -25,7 +27,7 @@ export default function NotificationBell({ username, unreadCount = 0 }) {
     return (
         <>
             <IconButton color="inherit" onClick={handleClick}>
-                <Badge badgeContent={unreadCount} color="error">
+                <Badge badgeContent={notification.length} color="error">
                     <NotificationsIcon />
                 </Badge>
             </IconButton>
@@ -69,7 +71,7 @@ export default function NotificationBell({ username, unreadCount = 0 }) {
                     {open && tabIndex === 0 && (
 
                         <Box sx={{ textAlign: 'center', color: 'text.secondary' }}>
-                            <PaginateNotifications username={username} />
+                            <PaginateNotifications username={username} notification={notification} setNotification={setNotification} />
                         </Box>
                     )}
 

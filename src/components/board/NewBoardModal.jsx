@@ -6,10 +6,11 @@ import { TextField, Button, Box, Typography } from '@mui/material';
 import { useSpring, animated } from '@react-spring/web';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
-
+import { useAuth } from '../../context/AuthContext';
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useNotification } from '../../context/NotificationContext';
+import { useBoard } from '../../context/BoardContext';
 
 const Fade = React.forwardRef(function Fade(props, ref) {
 
@@ -60,13 +61,18 @@ const style = {
     transform: 'translate(-50%, -50%)',
     width: 400,
     bgcolor: 'background.paper',
-    borderRadius: '15px',
+    border: '2px solid #000',
     boxShadow: 24,
     p: 4,
-    display: 'flex', justifyContent: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
+    borderRadius: '15px'
 };
 
-export default function NewColumnModal({ formData, handleChange, handleSubmit }) {
+export default function NewBoardModal({ formData, setFormData }) {
+    const { board, setBoard } = useBoard();
     const { isLoggedIn } = useAuth();
     const navigate = useNavigate();
     const [open, setOpen] = React.useState(false);
@@ -77,7 +83,7 @@ export default function NewColumnModal({ formData, handleChange, handleSubmit })
             navigate("/login", {
                 state: {
                     from: location,
-                    message: "Please log in to create a column",
+                    message: "Please log in to create a board",
                 },
             });
         } else {
@@ -85,6 +91,29 @@ export default function NewColumnModal({ formData, handleChange, handleSubmit })
         }
     };
     const handleClose = () => setOpen(false);
+    const { setMessage } = useNotification();
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }))
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await axios.post('/boards', formData);
+            console.log(res.data)
+            console.log('this is the board', res.data.board)
+            setBoard(prev => [...prev, res.data.board])
+            setMessage({ text: res.data.message, severity: 'success' })
+            navigate('/boards')
+            setOpen(false)
+
+        } catch (err) {
+            console.log(err)
+            setMessage({ text: err.response?.data?.message, severity: 'error' })
+        }
+
+    }
 
     return (
         <div>
@@ -120,30 +149,44 @@ export default function NewColumnModal({ formData, handleChange, handleSubmit })
             >
                 <Fade in={open}>
                     <Box sx={style}>
+                        <Typography variant="h6" gutterBottom>
+
+                            Add a new Board
+                        </Typography>
                         <Box
                             component="form"
-                            sx={{ '& > :not(style)': { m: 1, width: '30rem', backgroundColor: '#fff', p: 1, textAlign: 'center' } }}
+                            sx={{ '& > :not(style)': { m: 1, display: 'flex', flexDirection: 'column', width: '30rem' } }}
                             noValidate
                             autoComplete="off"
                             onSubmit={handleSubmit}
-
                         >
-                            <Box sx={{ display: 'flex', gap: '10px', flexDirection: 'column', }}>
-                                <Typography variant="h6" gutterBottom>
 
-                                    Add a new Column
-                                </Typography>
-                                <TextField
-                                    fullWidth
-                                    id="outlined-basic"
-                                    label="Column-Title"
-                                    variant="outlined"
-                                    name='title'
-                                    value={formData.title}
-                                    onChange={handleChange}
-                                />
-                                <Button type='submit' variant='contained'>Submit</Button>
-                            </Box>
+
+                            <TextField
+                                fullWidth
+                                id="outlined-basic"
+                                variant="outlined"
+                                name='title'
+                                value={formData.title}
+                                onChange={handleChange}
+                                label="Board Name"
+                                sx={{
+                                    width: "25rem",
+
+                                    "& .MuiOutlinedInput-root": {
+                                        fontSize: "1.6rem",
+                                        paddingY: "0.8rem",
+                                    },
+
+                                    "& .MuiInputLabel-root": {
+                                        fontSize: "1.6rem",
+                                    },
+                                }}
+                            />
+
+
+                            <Button type='submit' sx={{ fontSize: '1.5rem', m: 1 }} variant='outlined'>Submit</Button>
+
                         </Box >
                     </Box>
                 </Fade>
@@ -151,3 +194,5 @@ export default function NewColumnModal({ formData, handleChange, handleSubmit })
         </div >
     );
 }
+
+

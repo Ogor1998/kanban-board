@@ -12,8 +12,10 @@ import {
     CircularProgress,
     Button
 } from '@mui/material'
-import { getActionColor } from '../utils/getActionColor'
+
+import { getActionColor } from '../../utils/getActionColor'
 import { formatDistanceToNow } from 'date-fns'
+
 
 
 
@@ -73,6 +75,14 @@ const PaginateActivity = ({ itemsPerPage, username }) => {
                 <CircularProgress size={30} />
             </Box>
         );
+    }
+
+    if (items.length === 0) {
+        return (
+            <Typography sx={{ fontSize: '2rem' }}>
+                You have no activities yet
+            </Typography>
+        )
     }
 
     return (

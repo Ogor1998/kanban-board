@@ -4,7 +4,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
-import UserActivity from './UserActivity';
+import UserActivity from '../../components/activity/UserActivity';
 import PaginateActivity from './PaginateActivity';
 import axios from 'axios';
 import { NavLink } from 'react-router-dom';

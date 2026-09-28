@@ -6,12 +6,13 @@ import CreateIcon from '@mui/icons-material/Create';
 import './Heading.css'
 import { Typography } from '@mui/material';
 import axios from 'axios';
-import { useNotification } from '../context/NotificationContext';
-import { useAuth } from '../context/AuthContext';
-import { updateColumn } from '../api/columns'
-import { useBoard } from '../context/BoardContext';
+import { useNotification } from '../../context/NotificationContext';
+import { useAuth } from '../../context/AuthContext';
+import { updateColumn } from '../../api/columns'
+import { useBoard } from '../../context/BoardContext';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ColumnDeleteModal from '../column/ColumnDeleteModal';
 
 
 
@@ -87,7 +88,9 @@ const Heading = ({ col, handleDelete, setColumns, boardId, isHidden, hideColumns
                     </Typography>
                     {canDeleteCol ? <>
                         <IconButton variant='outlined' color='success' onClick={handleClick}><CreateIcon /></IconButton>
-                        <IconButton variant='outlined' color='error' onClick={() => handleDelete(col._id)}><DeleteIcon /></IconButton></>
+                        {/* <IconButton variant='outlined' color='error' onClick={() => handleDelete(col._id)}><DeleteIcon /></IconButton> */}
+                        <ColumnDeleteModal col={col} handleDelete={handleDelete} />
+                    </>
                         : null}
                     <IconButton sx={{ fontSize: '2rem' }} onClick={() => hideColumns(col._id)}>{isHidden ? <ArrowDropDownIcon /> : <ArrowDropUpIcon />}</IconButton>
                 </Box>)

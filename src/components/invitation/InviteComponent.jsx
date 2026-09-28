@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { Share, Close } from '@mui/icons-material';
 import { Autocomplete } from '@mui/material';
-import { useNotification } from '../context/NotificationContext';
+import { useNotification } from '../../context/NotificationContext';
 // import { useAuth } from '../context/AuthContext';
 
 const style = {

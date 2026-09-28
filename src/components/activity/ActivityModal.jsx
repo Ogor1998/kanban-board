@@ -6,7 +6,7 @@ import {
 } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import { formatDistanceToNow } from 'date-fns'
-import { getActionColor } from '../utils/getActionColor'
+import { getActionColor } from '../../utils/getActionColor'
 import HistoryIcon from '@mui/icons-material/History';
 
 

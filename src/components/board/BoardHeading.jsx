@@ -3,18 +3,18 @@ import { TextField, Button, Box, Typography, Modal, IconButton } from '@mui/mate
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Create, Delete } from '@mui/icons-material';
-import { useNotification } from '../context/NotificationContext';
-import InviteComponent from './InviteComponent';
+import { useNotification } from '../../context/NotificationContext';
+import InviteComponent from '../invitation/InviteComponent';
 import { Share } from '@mui/icons-material';
 import { Stack, Avatar } from '@mui/material';
-import '../pages/Show.css'
+import '../../pages/Show.css';
 import './BoardHeading.css'
-import { useBoard } from '../context/BoardContext';
-import { findBoard } from '../api/boards';
-import { useAuth } from '../context/AuthContext';
-import SearchField from './reuseable/SearchField';
-import ActivityModal from './ActivityModal';
-import { kanbanBackgrounds } from '../utils/kanbanBackgrounds';
+import { useBoard } from '../../context/BoardContext';
+import { findBoard } from '../../api/boards';
+import { useAuth } from '../../context/AuthContext';
+import SearchField from '../reuseable/SearchField';
+import ActivityModal from '../activity/ActivityModal';
+import { kanbanBackgrounds } from '../../utils/kanbanBackgrounds';
 
 
 const style = {

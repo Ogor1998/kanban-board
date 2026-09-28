@@ -5,8 +5,8 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import AlertBox from '../components/AlertBox'
-import NewBoardModal from '../components/NewBoardModal'
+import AlertBox from '../components/common/AlertBox'
+import NewBoardModal from '../components/board/NewBoardModal';
 import { Box, Button } from '@mui/material'
 import Delete from '@mui/icons-material/Delete'
 import CircularProgress from '@mui/material/CircularProgress';

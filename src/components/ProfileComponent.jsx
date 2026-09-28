@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
 import Divider from '@mui/material/Divider';
-import TabComponent from "./TabComponent";
+import TabComponent from "../pages/profile/TabComponent";
 import '../pages/profile/Profile.css'
 import { useState, useEffect } from "react";
 import axios from "axios";

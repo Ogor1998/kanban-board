@@ -1,8 +1,8 @@
 import { Box, Button, TextField, Typography } from "@mui/material"
 import { useState } from "react"
-import Password from "../components/Password"
+import Password from "../components/reuseable/Password"
 import { useNotification } from "../context/NotificationContext"
-import AlertBox from "../components/AlertBox"
+import AlertBox from "../components/common/AlertBox"
 import axios from "axios"
 import AntigravityUsage from "../components/reuseable/AntigravityUsage"
 import './Login.css'

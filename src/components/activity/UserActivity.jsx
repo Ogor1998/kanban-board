@@ -5,7 +5,7 @@ import {
     Box, Typography, Avatar, List, ListItem,
     ListItemAvatar, ListItemText, Divider, CircularProgress, Button
 } from '@mui/material'
-import { getActionColor } from '../utils/getActionColor'
+import { getActionColor } from '../../utils/getActionColor'
 import { formatDistanceToNow } from 'date-fns'
 
 

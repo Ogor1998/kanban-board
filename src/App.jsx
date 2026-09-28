@@ -9,7 +9,7 @@ const Register = lazy(() => import('./users/Register'))
 const Profile = lazy(() => import('./pages/Profile/Profile'))
 import Error from './utils/Error'
 import { Navigate } from 'react-router-dom'
-import NavBar from './common/NavBar'
+import NavBar from './components/navigation/NavBar'
 import { Box } from '@mui/material'
 import './index.css'
 import CircularProgress from '@mui/material/CircularProgress';

@@ -1,0 +1,7 @@
+.notification__item {
+    transition: all ease-in-out 1s;
+}
+
+.notification__item:hover {
+    background-color: #747070a2;
+}
