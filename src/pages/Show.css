@@ -141,3 +141,7 @@
 .hide__column {
     display: none;
 }
+
+.board__icon {
+    color: var(--board-text);
+}

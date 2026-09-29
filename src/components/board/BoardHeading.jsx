@@ -15,6 +15,7 @@ import { useAuth } from '../../context/AuthContext';
 import SearchField from '../reuseable/SearchField';
 import ActivityModal from '../activity/ActivityModal';
 import { kanbanBackgrounds } from '../../utils/kanbanBackgrounds';
+import usePermissions from '../../hooks/usePermissions';
 
 
 const style = {
@@ -43,8 +44,14 @@ export default function BoardHeading({ boardId, setPriorityFilter, priorityFilte
     const [isEditting, setIsEditting] = React.useState(false)
     const { setMessage } = useNotification();
     const [openActivity, setOpenActivity] = React.useState(false)
+    const { isAdmin, isMember, isOwner, canEdit } = usePermissions(board);
 
-
+    console.log({
+        isAdmin,
+        isOwner,
+        isMember,
+        canEdit
+    })
 
     React.useEffect(() => {
         const fetchboards = async () => {
@@ -88,12 +95,6 @@ export default function BoardHeading({ boardId, setPriorityFilter, priorityFilte
         return navigate(`/profile/${username}`)
     }
 
-    const isBoardOwner = isLoggedIn && currentUser?._id === board.owner?._id;
-    const isAdmin = board?.members?.some(
-        m => m.user?._id === currentUser?._id && m.role === 'admin'
-    )
-
-    const canEditOrDelete = isAdmin || isBoardOwner;
 
 
     return (
@@ -173,14 +174,14 @@ export default function BoardHeading({ boardId, setPriorityFilter, priorityFilte
                     onClose={() => setOpenActivity(false)}
 
                 />
-                {isBoardOwner && <IconButton onClick={openInviteModal}><Share /></IconButton>}
-                {canEditOrDelete &&
+                {isOwner && <IconButton className='board__icon' onClick={openInviteModal}><Share /></IconButton>}
+                {canEdit &&
                     <>
-                        <IconButton onClick={handleEdit} ><Create /></IconButton>
-                        <IconButton onClick={handleOpen}><Delete /></IconButton></>
+                        <IconButton className='board__icon' onClick={handleEdit} ><Create /></IconButton>
+                        <IconButton className='board__icon' onClick={handleOpen}><Delete /></IconButton></>
                 }
             </Box>
-            <InviteComponent closeInviteModal={closeInviteModal} openInvite={openInvite} boardId={boardId} isBoardOwner={isBoardOwner} />
+            <InviteComponent closeInviteModal={closeInviteModal} openInvite={openInvite} boardId={boardId} isOwner={isOwner} />
             <Modal
                 open={open}
                 onClose={handleClose}

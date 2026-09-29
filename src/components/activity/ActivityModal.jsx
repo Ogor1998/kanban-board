@@ -49,7 +49,7 @@ export default function ActivityModal({ boardId, open, setOpenActivity, onClose 
 
     return (
         <div>
-            <IconButton onClick={() => setOpenActivity(true)}><HistoryIcon /></IconButton>
+            <IconButton className='board__icon' onClick={() => setOpenActivity(true)}><HistoryIcon /></IconButton>
 
             <Modal open={open} onClose={onClose}>
                 <Box sx={style}>

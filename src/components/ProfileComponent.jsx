@@ -44,8 +44,6 @@ export default function ProfileComponent({ profile, handleClick }) {
                     setboardsCount(res.data.boardCount)
                     setCommentsCount(res.data.commentsCount)
                     console.log('this is board', res.data.board)
-                    // console.log('this is the request', res.data)
-                    // console.log('this is the board', res.data)
                 } catch (err) {
                     console.log(err)
                 } finally {

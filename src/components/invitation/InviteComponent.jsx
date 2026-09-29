@@ -30,7 +30,7 @@ const style = {
 
 const permissions = ['admin', 'member', 'public']
 
-const InviteComponent = ({ closeInviteModal, openInvite, boardId, isBoardOwner }) => {
+const InviteComponent = ({ closeInviteModal, openInvite, boardId, isOwner }) => {
     const [selectedUser, setSelectedUser] = useState(null)
     const { setMessage } = useNotification();
     const [value, setValue] = useState("")
@@ -177,7 +177,7 @@ const InviteComponent = ({ closeInviteModal, openInvite, boardId, isBoardOwner }
                                 <Autocomplete
                                     options={permissions}
                                     sx={{ width: 170 }}
-                                    disabled={!isBoardOwner ? true : false}
+                                    disabled={!isOwner ? true : false}
                                     renderInput={(params) => <TextField {...params} label="Permissions" />}
                                     onChange={(event, newValue) => {
                                         setValue(newValue)

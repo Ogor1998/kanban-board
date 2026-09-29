@@ -20,6 +20,7 @@ import { getColumns, createColumn, deleteColumn } from '../api/columns'
 import InviteComponent from '../components/invitation/InviteComponent'
 import { useAuth } from '../context/AuthContext'
 import { kanbanBackgrounds } from '../utils/kanbanBackgrounds'
+import useFetch from '../hooks/useFetch'
 
 
 
@@ -30,12 +31,12 @@ const Show = () => {
     const navigate = useNavigate();
     const { currentUser, isLoggedIn } = useAuth();
     const [search, setSearch] = useState("")
-    const [columns, setColumns] = useState([])
+    // const [columns, setColumns] = useState([])
     const [formData, setFormData] = useState({ title: "", boardId })
     const [activeCard, setActiveCard] = useState(null)
     const [isActiveColumn, setisActiveColumn] = useState(null)
     const [priorityFilter, setPriorityFilter] = useState("")
-
+    const { data: columns, setData: setColumns, loading } = useFetch(`/columns/${boardId}`, (data) => data.columns);
 
     const [boardBackground, setBoardBackground] = useState(localStorage.getItem('backgrounds'))
 
@@ -63,28 +64,7 @@ const Show = () => {
         // setIsHidden(prev => prev === id ? null : id)
         setIsHiddenColumns(prev => prev.includes(id) ? prev.filter(colId => colId !== id) : [...prev, id])
     }
-    useEffect(() => {
-        const fetchColumns = async () => {
-            try {
-                const res = await getColumns(boardId)
-                setColumns(res.data.columns)
-
-            } catch (err) {
-                navigate('/error', {
-                    state: {
-                        statusCode: err.response?.status,
-                        message: err.response?.data?.message,
-                        stack: err.stack
-                    }
-                })
-
-            }
-
-        }
-        fetchColumns();
-    }, [boardId])
-
-    console.log('this is search field', search)
+    console.log('this is data', columns)
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -164,7 +144,7 @@ const Show = () => {
         setMessage({ text: res.data.message, severity: 'error' })
         console.log('Deleted Column')
     }
-    // const canDeleteColumn = isLoggedIn && c
+
 
     function DroppableColumn({ col, children }) {
         const { setNodeRef } = useDroppable({ id: col._id })
