@@ -1,6 +1,16 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+const checklistSchema = new Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    completed: {
+        type: Boolean,
+        default: false
+    }
+});
 
 const cardSchema = new Schema({
     title: String,
@@ -14,6 +24,7 @@ const cardSchema = new Schema({
     dueDate: {
         type: Date
     },
+    checklist: [checklistSchema],
     members: [{
         type: Schema.Types.ObjectId,
         ref: 'User'

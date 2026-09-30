@@ -21,8 +21,18 @@ import InviteComponent from '../components/invitation/InviteComponent'
 import { useAuth } from '../context/AuthContext'
 import { kanbanBackgrounds } from '../utils/kanbanBackgrounds'
 import useFetch from '../hooks/useFetch'
+import CardDetailsModal from '../components/card/CardDetailsModal'
 
 
+
+function DroppableColumn({ col, children }) {
+    const { setNodeRef } = useDroppable({ id: col._id })
+    return (
+        <div ref={setNodeRef} key={col._id} className='row'>
+            {children}
+        </div>
+    )
+}
 
 
 const Show = () => {
@@ -36,6 +46,8 @@ const Show = () => {
     const [activeCard, setActiveCard] = useState(null)
     const [isActiveColumn, setisActiveColumn] = useState(null)
     const [priorityFilter, setPriorityFilter] = useState("")
+    const [selectedCardId, setSelectedCardId] = useState(null);
+    const [open, setOpen] = useState(false);
     const { data: columns, setData: setColumns, loading } = useFetch(`/columns/${boardId}`, (data) => data.columns);
 
     const [boardBackground, setBoardBackground] = useState(localStorage.getItem('backgrounds'))
@@ -50,6 +62,10 @@ const Show = () => {
         }
     })
 
+    const selectedCard = columns?.flatMap(col => col.cards || [])
+        .find(c => c._id === selectedCardId);
+
+    const selectedColumnId = columns?.find(col => col.cards?.some(c => c._id === selectedCardId))?._id;
     useEffect(() => {
         localStorage.setItem('columns', JSON.stringify(isHiddenColumns))
 
@@ -146,14 +162,6 @@ const Show = () => {
     }
 
 
-    function DroppableColumn({ col, children }) {
-        const { setNodeRef } = useDroppable({ id: col._id })
-        return (
-            <div ref={setNodeRef} key={col._id} className='row'>
-                {children}
-            </div>
-        )
-    }
 
     console.log('this is the current', boardBackground)
 
@@ -195,7 +203,7 @@ const Show = () => {
                                 >
                                     {!isHidden && <Box>
                                         {updateCards.map((card) => (
-                                            <SortableCard key={card._id} card={card} columnId={col._id} setColumns={setColumns} />
+                                            <SortableCard key={card._id} card={card} columnId={col._id} setColumns={setColumns} onOpenModal={() => setSelectedCardId(card._id)} />
                                         ))}
                                     </Box>}
                                 </SortableContext>
@@ -208,6 +216,17 @@ const Show = () => {
                         )
                     })}
                 </DndContext>
+
+                {selectedCard && (
+                    <CardDetailsModal
+                        open={Boolean(selectedCardId)}
+                        onClose={() => setSelectedCardId(null)}
+                        card={selectedCard}
+                        columnId={selectedColumnId}
+                        setColumns={setColumns}
+                        setOpen={setSelectedCardId}
+                    />
+                )}
                 <NewColumnModal handleChange={handleChange} formData={formData} handleSubmit={handleSubmit} />
 
             </div>

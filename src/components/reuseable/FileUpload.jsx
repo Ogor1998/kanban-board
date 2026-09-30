@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-
+import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
@@ -23,9 +23,8 @@ export default function UploadComponent({ setFile, setPreviews }) {
             role={undefined}
             variant="contained"
             tabIndex={-1}
-            startIcon={<CloudUploadIcon />}
+            startIcon={<AddToPhotosIcon />}
         >
-            Upload Images
             <VisuallyHiddenInput
                 multiple
                 type="file"

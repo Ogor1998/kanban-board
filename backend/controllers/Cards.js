@@ -205,3 +205,67 @@ module.exports.deleteMember = async (req, res) => {
         card
     })
 }
+
+module.exports.checklist = async (req, res) => {
+    const { cardId } = req.params;
+    const { title } = req.body;
+    const card = await Card.findById(cardId)
+    if (!card) {
+        return res.status(404).json({
+            message: 'Card not found'
+        })
+    }
+    const column = await Column.findById(card.columnId)
+    const checklistItem = {
+        title,
+        completed: false
+    }
+
+    card.checklist.push(checklistItem)
+    const updatedCard = await card.save();
+    await Activity.create({
+        board: column.boardId,
+        user: req.user.userId,
+        action: 'Added a checklist item',
+        target: checklistItem.title
+    })
+
+    res.json({
+        message: 'You added a new checklist item',
+        card: updatedCard
+    })
+    console.log('you added a new item')
+}
+
+module.exports.toggleChecklist = async (req, res) => {
+    const { cardId, itemId } = req.params;
+    const card = await Card.findById(cardId)
+    if (!card) {
+        return res.status(404).json({
+            message: 'Card not found'
+        })
+    }
+
+    const checklistItem = card.checklist.id(itemId)
+    if (!checklistItem) {
+        return res.status(404).json({
+            message: 'Checklist item not found'
+        });
+    }
+    checklistItem.completed = !checklistItem.completed
+    const updateCard = await card.save();
+    const column = await Column.findById(card.columnId);
+    await Activity.create({
+        board: column.boardId,
+        user: req.user.userId,
+        action: 'Updated a checklist item',
+        target: checklistItem.title
+    })
+
+    res.json({
+        message: 'You added a new checklist item',
+        card: updateCard
+    })
+    console.log('you toggled item')
+
+}

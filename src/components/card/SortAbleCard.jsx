@@ -14,9 +14,12 @@ import { deleteCard } from '../../api/cards'
 import { Avatar, AvatarGroup } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import DateFormatComponent from '../common/DateFormatComponent'
+import { Zoom } from '@mui/material'
+import CardDetailsModal from './CardDetailsModal'
 
-export default function SortableCard({ card, setColumns, columnId }) {
+export default function SortableCard({ card, setColumns, columnId, onOpenModal }) {
     const [isEditting, setIsEditting] = useState(false)
+    const [open, setOpen] = useState(false);
 
     const navigate = useNavigate();
     const {
@@ -61,79 +64,71 @@ export default function SortableCard({ card, setColumns, columnId }) {
 
     return (
 
-        isEditting ? (
 
-            <EditCard card={card} handleSwitch={handleSwitch} columnId={columnId} setColumns={setColumns} />
-        ) : (
 
-            <Box
-                ref={setNodeRef}
-                style={style}
-                className='card'
-                sx={{ display: 'flex', alignItems: 'center', gap: '10px', p: 1, borderRadius: '15px', backgroundColor: '#fff', color: '#000', marginBottom: '10px' }} >
 
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', }}>
-                    <Box
-                        {...attributes}
-                        {...listeners}
-                        sx={{ cursor: "grab" }}
-                    >
-                        <DragIndicator />
-                    </Box>
+        <Box
+            ref={setNodeRef}
+            style={style}
+            className='card'
+            sx={{ display: 'flex', alignItems: 'center', gap: '10px', p: 1, borderRadius: '15px', backgroundColor: '#fff', color: '#000', marginBottom: '10px' }} >
 
-                    <Typography variant="h6" sx={{ fontWeight: 300, fontSize: '1.5rem' }} gutterBottom>
-                        {card.title}
-                    </Typography>
-
-                    <h4 className={`${card.priority}`}>{card.priority.toUpperCase()}</h4>
-                    <CardList handleCardDelete={handleCardDelete} handleSwitch={handleSwitch} card={card} />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', }}>
+                <Box
+                    {...attributes}
+                    {...listeners}
+                    sx={{ cursor: "grab" }}
+                >
+                    <DragIndicator />
                 </Box>
-                {card.images?.length > 0 &&
-                    <Carousel showThumbs={false}      // ← removes bottom thumbnails
-                        showStatus={false}      // ← removes "1 of 3" counter
-                        showIndicators={true}   // ← keeps the dots at bottom
-                        infiniteLoop={true}     // ← loops back to start
-                        width="100%"
-                    >
-                        {card.images?.map((src, index) => (
-                            <div key={index}>
-                                <img src={src} alt={`preview-${index}`}
-                                    style={{
-                                        width: '100%',
-                                        height: '150px',
-                                        objectFit: 'cover',  // ← prevents stretching
-                                        borderRadius: '10px'
-                                    }} />
-                            </div>
-                        ))}
-                    </Carousel>
-                }
-                {
-                    <Box  >
-                        <AvatarGroup spacing="small" max={3}>
-                            {card.members.map((member) => (
-                                <Avatar key={member._id} alt={member.username || 'Member'} src={member.image}
-                                    onClick={() => visitProfile(member.username)} />
-                            ))}
-                        </AvatarGroup>
-                    </Box>
-                }
-                <Typography variant="body2" gutterBottom>
-                    {card.description}
+
+                <Typography variant="h6" sx={{ fontWeight: 300, fontSize: '1.5rem' }} gutterBottom>
+                    {card.title}
                 </Typography>
-                <DateFormatComponent dueDate={dueDate} />
+                {/* <CardDetailsModal card={card} columnId={columnId} open={open} setOpen={setOpen} setColumns={setColumns} handleSwitch={handleSwitch} /> */}
+                <Button onClick={onOpenModal}>Expand</Button>
+                <h4 className={`${card.priority}`}>{card.priority.toUpperCase()}</h4>
+                <CardList handleCardDelete={handleCardDelete} handleSwitch={handleSwitch} card={card} />
+            </Box>
+            {card.images?.length > 0 &&
+                <Carousel showThumbs={false}      // ← removes bottom thumbnails
+                    showStatus={false}      // ← removes "1 of 3" counter
+                    showIndicators={true}   // ← keeps the dots at bottom
+                    infiniteLoop={true}     // ← loops back to start
+                    width="100%"
+                >
+                    {card.images?.map((src, index) => (
+                        <div key={index}>
+                            <img src={src} alt={`preview-${index}`}
+                                style={{
+                                    width: '100%',
+                                    height: '150px',
+                                    objectFit: 'cover',  // ← prevents stretching
+                                    borderRadius: '10px'
+                                }} />
+                        </div>
+                    ))}
+                </Carousel>
+            }
+            {
+                <Box  >
+                    <AvatarGroup spacing="small" max={3}>
+                        {card.members.map((member) => (
+                            <Avatar key={member._id} alt={member.username || 'Member'} src={member.image}
+                                onClick={() => visitProfile(member.username)} />
+                        ))}
+                    </AvatarGroup>
+                </Box>
+            }
+            <Typography variant="body2" gutterBottom>
+                {card.description}
+            </Typography>
+            <DateFormatComponent dueDate={dueDate} />
 
 
-                <CommentsModal card={card} setColumns={setColumns} />
-            </Box >
-
-        )
-
-
-
-
-
-
+            <CommentsModal card={card} setColumns={setColumns} />
+        </Box >
 
     )
+
 }
