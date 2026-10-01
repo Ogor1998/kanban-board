@@ -3,6 +3,7 @@ const Board = require('../models/Board')
 const User = require('../models/User')
 const AppError = require('../utils/AppError')
 const Activity = require('../models/Activity')
+const Column = require('../models/Column')
 const Comment = require('../models/Comment')
 const Notification = require('../models/Notification')
 
@@ -17,7 +18,6 @@ module.exports.allBoards = async (req, res) => {
     }
     res.json({
         board: board,
-        // message: 'You are on the right track'
     })
 }
 
@@ -73,7 +73,15 @@ module.exports.createBoard = async (req, res) => {
         title: title.trim(),
         owner: req.user.userId,
     });
+
     await board.save();
+
+    await Column.create({ title: 'Todo', boardId: board._id, order: 1 })
+    await Column.create({ title: 'In Progress', boardId: board._id, order: 2 })
+    await Column.create({ title: 'In Review', boardId: board._id, order: 3 })
+    await Column.create({ title: 'Done', boardId: board._id, order: 4 })
+
+
     await Activity.create({
         board: board._id,
         user: req.user.userId,

@@ -46,12 +46,6 @@ export default function BoardHeading({ boardId, setPriorityFilter, priorityFilte
     const [openActivity, setOpenActivity] = React.useState(false)
     const { isAdmin, isMember, isOwner, canEdit } = usePermissions(board);
 
-    console.log({
-        isAdmin,
-        isOwner,
-        isMember,
-        canEdit
-    })
 
     React.useEffect(() => {
         const fetchboards = async () => {

@@ -267,5 +267,40 @@ module.exports.toggleChecklist = async (req, res) => {
         card: updateCard
     })
     console.log('you toggled item')
+}
+
+module.exports.deleteItem = async (req, res) => {
+    const { cardId, itemId } = req.params;
+    const card = await Card.findById(cardId)
+    if (!card) {
+        return res.status(404).json({
+            message: 'Card not found'
+        })
+    }
+    const column = await Column.findById(card.columnId)
+
+    const itemTodelete = card.checklist.id(itemId)
+    if (!itemTodelete) {
+        return res.status(404).json({
+            message: 'Checklist item not found'
+        })
+    }
+    card.checklist.pull({ _id: itemId })
+    const updatedCard = await card.save();
+
+
+    await Activity.create({
+        board: column.boardId,
+        user: req.user.userId,
+        action: 'Deleted a checklist item',
+        target: itemTodelete.title
+    })
+
+    res.json({
+        message: "You've removed this item",
+        card: updatedCard
+    })
+
+    console.log('You deleted this item')
 
 }

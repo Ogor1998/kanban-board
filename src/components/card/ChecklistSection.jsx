@@ -1,9 +1,10 @@
 
 import { useState } from "react"
-import { Box, Button, Typography, TextField } from "@mui/material"
+import { Box, Button, Typography, TextField, IconButton } from "@mui/material"
 import { Checkbox } from "@mui/material"
 import axios from "axios"
 import { LinearProgress } from "@mui/material"
+import { Delete } from "@mui/icons-material"
 
 
 export default function ChecklistSection({ checklist = [], cardId, setColumns }) {
@@ -32,7 +33,6 @@ export default function ChecklistSection({ checklist = [], cardId, setColumns })
     const toggleItem = async (itemId) => {
         try {
             const res = await axios.patch(`/cards/${cardId}/checklist/${itemId}`)
-            console.log('Toggle response:', res.data);
             updateCardInColumns(res.data.card)
         } catch (err) {
             console.log('Failed to toggle item', err)
@@ -40,6 +40,11 @@ export default function ChecklistSection({ checklist = [], cardId, setColumns })
         }
     }
 
+    const handleDeleteItem = async (itemId) => {
+        const res = await axios.delete(`/cards/${cardId}/checklist/${itemId}`)
+        console.log('delete response:', res.data);
+        updateCardInColumns(res.data.card)
+    }
     const completed = checklist.filter(item => item.completed).length
     const progress = Math.round((completed / checklist.length) * 100) || 0
 
@@ -62,12 +67,12 @@ export default function ChecklistSection({ checklist = [], cardId, setColumns })
                 width: '100%',
                 minWidth: 400
             }}>
-                <Box sx={{ flex: 1, maxHeight: 200, overflowY: "auto" }}>
+                <Box sx={{ flex: 1, maxHeight: 200, overflowY: "auto", display: 'flex', flexDirection: 'column' }}>
                     {checklist.length === 0 ? (
-                        <Typography variant="caption" color="text.secondary" sx={{ mt: 4 }}>No items yet</Typography>
+                        <Typography variant="caption" color="text.secondary" sx={{ mt: 4, justifySelf: 'center', height: '100%' }}>No items yet</Typography>
                     ) : (
                         checklist.map(item => (
-                            <Box key={item._id} sx={{ display: "flex", alignItems: "center", py: 0.25 }}>
+                            <Box key={item._id} sx={{ display: "flex", alignItems: "center", py: 0.25, justifyContent: 'space-between' }}>
                                 <Checkbox
                                     size="small"
                                     checked={Boolean(item.completed)}
@@ -85,6 +90,7 @@ export default function ChecklistSection({ checklist = [], cardId, setColumns })
                                 >
                                     {item.title}
                                 </Typography>
+                                <IconButton onClick={() => handleDeleteItem(item._id)}> <Delete /></IconButton>
                             </Box>
                         ))
                     )}
@@ -95,7 +101,7 @@ export default function ChecklistSection({ checklist = [], cardId, setColumns })
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    minWidth: '5rem',
+                    maxWidth: '15rem',
                     gap: '10px',
                     p: 1
                 }}>
@@ -115,6 +121,7 @@ export default function ChecklistSection({ checklist = [], cardId, setColumns })
                         type="button"
                         variant="contained"
                         size="small"
+                        fullWidth
                         onClick={(e) => {
                             e.preventDefault();
                             addItem();

@@ -7,6 +7,8 @@ import { Delete } from "@mui/icons-material";
 import CloseIcon from '@mui/icons-material/Close';
 import DateFormatComponent from "../common/DateFormatComponent";
 import ChecklistSection from "./ChecklistSection";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import PersonIcon from '@mui/icons-material/Person';
 
 
 
@@ -20,7 +22,7 @@ const style = {
     boxShadow: 24,
     p: 3,
     textAlign: 'center',
-    minHeight: '45rem',
+    maxHeight: '55rem',
     overflowY: 'scroll',
     borderRadius: '15px'
 };
@@ -142,13 +144,13 @@ const CardDetailsModal = ({ card, columnId, setColumns, setOpen, open }) => {
                         />
                         <ChecklistSection checklist={card?.checklist} cardId={card?._id} setColumns={setColumns} />
 
-                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: "20px", alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: "20px", alignItems: 'center', border: '0.2px solid #000', p: 1, borderRadius: '15px' }}>
                             <Box>
                                 <Autocomplete
                                     disablePortal
                                     options={priority}
-                                    sx={{ width: 155, fontSize: '1.2rem' }}
-                                    renderInput={(params) => <TextField {...params} label="Priority" />}
+                                    sx={{ width: 150, fontSize: '1.2rem' }}
+                                    renderInput={(params) => <TextField {...params} label="Priority" variant="filled" />}
                                     onChange={(event, newValue) => {
                                         setValue(newValue)
                                         setFormData(prev => ({
@@ -160,18 +162,18 @@ const CardDetailsModal = ({ card, columnId, setColumns, setOpen, open }) => {
                                 />
                             </Box>
                             <Box>
-                                <Typography variant="h6" sx={{ fontWeight: 300, fontSize: '1.5rem' }} gutterBottom>
-                                    Due Date
+                                <Typography variant="h6" sx={{ fontWeight: 300, fontSize: '1.5rem', alignItems: 'center', display: 'flex', gap: '5px', mb: 2 }} gutterBottom>
+                                    <CalendarMonthIcon />  Due Date
                                 </Typography>
                                 <DateFormatComponent dueDate={dueDate} />
                             </Box>
                             <Box>
-                                <Typography variant="h6" sx={{ fontWeight: 300, fontSize: '1.5rem' }} gutterBottom>
-                                    Memebers
+                                <Typography variant="h6" sx={{ fontWeight: 300, fontSize: '1.5rem', display: 'flex', gap: '5px' }} gutterBottom>
+                                    <PersonIcon /> Memebers
                                 </Typography>
-                                <AvatarGroup spacing="small" max={3}>
+                                <AvatarGroup spacing="small" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }} max={3}>
                                     {card?.members?.map((member) => (
-                                        <Avatar key={member._id} alt={member.username || 'Member'} src={member.image}
+                                        <Avatar sx={{ height: '30px', width: '30px' }} key={member._id} alt={member.username || 'Member'} src={member.image}
                                             onClick={() => visitProfile(member.username)} />
                                     ))}
                                 </AvatarGroup>

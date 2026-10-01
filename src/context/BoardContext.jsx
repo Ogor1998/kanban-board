@@ -3,6 +3,7 @@ import axios from 'axios'
 import { createContext, useContext, useState, useEffect } from 'react'
 import { useNotification } from './NotificationContext';
 import { useAuth } from './AuthContext';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 
 const BoardContext = createContext();
@@ -12,6 +13,8 @@ export const BoardProvider = ({ children }) => {
     const [singleBoard, setSingleBoard] = useState({})
     const [loading, setLoading] = useState(true)
     const { setMessage } = useNotification();
+    // const navigate = useNavigate();
+    // const location = useLocation();
     useEffect(() => {
         const fetchboards = async () => {
             if (!isLoggedIn) {
@@ -42,6 +45,7 @@ export const BoardProvider = ({ children }) => {
             text: res.data?.message,
             severity: 'error'
         })
+        window.location.href = '/boards'
         console.log('frontend delete called')
     }
 
