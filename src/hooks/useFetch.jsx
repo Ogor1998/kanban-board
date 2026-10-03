@@ -9,7 +9,7 @@ const useFetch = (url, selector = (data) => data) => {
 
     useEffect(() => {
         const fetch = async () => {
-            if (!url) return
+            if (!url || url.includes('/undefined')) return;
             try {
                 const res = await axios.get(url);
                 setData(selector(res.data))

@@ -71,25 +71,25 @@ const style = {
     borderRadius: '15px'
 };
 
-export default function NewBoardModal({ formData, setFormData }) {
+export default function NewBoardModal({ formData, setFormData, handleOpen, setOpen, open }) {
     const { board, setBoard } = useBoard();
     const { isLoggedIn } = useAuth();
     const navigate = useNavigate();
-    const [open, setOpen] = React.useState(false);
-    const location = useLocation();
-    const handleOpen = () => {
-        if (!isLoggedIn) {
+    // const [open, setOpen] = React.useState(false);
+    // const location = useLocation();
+    // const handleOpen = () => {
+    //     if (!isLoggedIn) {
 
-            navigate("/login", {
-                state: {
-                    from: location,
-                    message: "Please log in to create a board",
-                },
-            });
-        } else {
-            setOpen(true)
-        }
-    };
+    //         navigate("/login", {
+    //             state: {
+    //                 from: location,
+    //                 message: "Please log in to create a board",
+    //             },
+    //         });
+    //     } else {
+    //         setOpen(true)
+    //     }
+    // };
     const handleClose = () => setOpen(false);
     const { setMessage } = useNotification();
     const handleChange = (e) => {

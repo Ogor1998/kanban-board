@@ -13,8 +13,8 @@ export const BoardProvider = ({ children }) => {
     const [singleBoard, setSingleBoard] = useState({})
     const [loading, setLoading] = useState(true)
     const { setMessage } = useNotification();
-    // const navigate = useNavigate();
-    // const location = useLocation();
+
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchboards = async () => {
             if (!isLoggedIn) {
@@ -25,7 +25,7 @@ export const BoardProvider = ({ children }) => {
             }
             try {
                 const res = await axios.get('/boards')
-                setBoard(res.data.board)
+                setBoard(res.data.boards || res.data.board || []);
             } catch (err) {
                 setMessage({
                     text: err.response?.data?.message,
@@ -38,6 +38,7 @@ export const BoardProvider = ({ children }) => {
         fetchboards();
     }, [isLoggedIn])
 
+
     const deleteBoard = async (id) => {
         const res = await axios.delete(`/boards/${id}`, { withCredentials: true })
         setBoard(prev => prev.filter(board => board._id !== id))
@@ -45,7 +46,7 @@ export const BoardProvider = ({ children }) => {
             text: res.data?.message,
             severity: 'error'
         })
-        window.location.href = '/boards'
+        navigate('/');
         console.log('frontend delete called')
     }
 
@@ -70,7 +71,8 @@ export const BoardProvider = ({ children }) => {
                 loading,
                 setLoading,
                 findBoard,
-                singleBoard
+                singleBoard,
+
             }
         }>
             {children}

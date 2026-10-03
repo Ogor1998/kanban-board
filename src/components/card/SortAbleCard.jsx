@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Box, Button } from '@mui/material'
+import { Box, Button, IconButton } from '@mui/material'
 import '../../pages/Show.css'
 import { Typography } from '@mui/material'
 import CardList from './CardList'
@@ -14,8 +14,7 @@ import { deleteCard } from '../../api/cards'
 import { Avatar, AvatarGroup } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import DateFormatComponent from '../common/DateFormatComponent'
-import { Zoom } from '@mui/material'
-import CardDetailsModal from './CardDetailsModal'
+import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
 
 export default function SortableCard({ card, setColumns, columnId, onOpenModal }) {
     const [isEditting, setIsEditting] = useState(false)
@@ -86,9 +85,9 @@ export default function SortableCard({ card, setColumns, columnId, onOpenModal }
                     {card.title}
                 </Typography>
                 {/* <CardDetailsModal card={card} columnId={columnId} open={open} setOpen={setOpen} setColumns={setColumns} handleSwitch={handleSwitch} /> */}
-                <Button onClick={onOpenModal}>Expand</Button>
+                <IconButton onClick={onOpenModal}><ZoomOutMapIcon /></IconButton>
                 <h4 className={`${card.priority}`}>{card.priority.toUpperCase()}</h4>
-                <CardList handleCardDelete={handleCardDelete} handleSwitch={handleSwitch} card={card} />
+                <CardList handleCardDelete={handleCardDelete} handleSwitch={onOpenModal} card={card} />
             </Box>
             {card.images?.length > 0 &&
                 <Carousel showThumbs={false}      // ← removes bottom thumbnails

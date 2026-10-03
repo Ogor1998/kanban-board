@@ -7,11 +7,13 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import AlertBox from '../components/common/AlertBox'
 import NewBoardModal from '../components/board/NewBoardModal';
-import { Box, Button, Typography, CircularProgress } from '@mui/material'
+import { Box, Button, Typography, CircularProgress, IconButton } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import { useBoard } from '../context/BoardContext'
 import { useAuth } from '../context/AuthContext';
 import useFetch from '../hooks/useFetch';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 
 const getmemberLabel = (members, currentUserId) => {
     const membersList = Array.isArray(members) ? members : [];
@@ -25,12 +27,28 @@ const getmemberLabel = (members, currentUserId) => {
     return `${membersList.length} member${membersList.length > 1 ? 's' : ''}`;
 };
 
-
-
 const Home = () => {
-    const { board: boards, setBoard, deleteBoard, loading } = useBoard();
+    const { board: boards, setBoard, deleteBoard, loading, } = useBoard();
+    const { data: columns } = useFetch(`/columns/${boards._id}`, (data) => data.columns);
+    const [open, setOpen] = useState(false);
 
-    const { currentUser } = useAuth();
+    const { currentUser, isLoggedIn } = useAuth();
+
+    const location = useLocation();
+    const navigate = useNavigate();
+    const handleOpen = () => {
+        console.log('clicked handle open')
+        if (!isLoggedIn) {
+            navigate("/login", {
+                state: {
+                    from: location,
+                    message: "Please log in to create a board",
+                },
+            });
+        } else {
+            setOpen(true)
+        }
+    };
     const [formData, setFormData] = useState({
         title: ""
     });
@@ -57,18 +75,19 @@ const Home = () => {
         );
     }
 
+
     return (
         <div className='home'>
             <AlertBox />
             <div className="home__container">
-                <Box component="header" sx={{ display: 'flex', justifyContent: 'space-between', border: '1px solid #000', p: 1, alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', border: '1px solid #000', p: 1, alignItems: 'center' }}>
                     <Typography
                         variant="h6"
                         sx={{ color: 'text.primary', display: 'inline' }}
                     >
                         My Boards
                     </Typography>
-                    <Button><AddIcon />Add Board</Button>
+                    <Button onClick={handleOpen}><AddIcon />Add Board</Button>
                 </Box>
                 <Box component='container' className='container__inner' sx={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
 
@@ -76,16 +95,14 @@ const Home = () => {
                         const ownerId = b.owner?._id || b.owner;
                         const canDelete = currentUser?._id && String(currentUser._id) === String(ownerId);
                         const memberLabel = getmemberLabel(b?.members, currentUser?._id);
-                        const { data: columns } = useFetch(`/columns/${b._id}`, (data) => data.columns);
-                        const fetchTotalCardCount = (columns) => {
-                            return columns
-                                .flatMap(col => col.cards)
-                                .reduce((accumulator, card) => accumulator + 1, 0);
-                        };
+                        const cardsCount = (value) => {
+                            if (value < 1) {
+                                return `No cards yet`
+                            }
+                            return `Total card ${value}`
 
-
-                        console.log(fetchTotalCardCount(columns))
-                        console.log('this is columns', columns)
+                        }
+                        console.log('this is columns', cardsCount(b.cardsCount))
                         return (
                             <Box
                                 className='board__box'
@@ -101,14 +118,14 @@ const Home = () => {
                                     variant="body2"
                                     sx={{ color: 'text.secondary', display: 'inline' }}
                                 >
-                                    Total Columns <strong>{columns.length}</strong>
+                                    Total Columns <strong>{b.columnsCount}</strong>
                                 </Typography>
                                 <Typography
                                     component="span"
                                     variant="body2"
                                     sx={{ color: 'text.secondary', display: 'inline' }}
                                 >
-                                    Total Card <strong>{fetchTotalCardCount(columns)}</strong>
+                                    <strong>{cardsCount(b.cardsCount)}</strong>
                                 </Typography>
                                 <Typography
                                     component="span"
@@ -120,9 +137,10 @@ const Home = () => {
                             </Box>
                         );
                     })}
+                    <Box className='board__box' onClick={handleOpen} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}><IconButton onClick={handleOpen}><AddIcon /></IconButton></Box>
                 </Box>
 
-                <NewBoardModal setFormData={setFormData} formData={formData} setBoard={setBoard} />
+                <NewBoardModal setFormData={setFormData} formData={formData} setBoard={setBoard} handleOpen={handleOpen} setOpen={setOpen} open={open} />
             </div>
         </div>
     );

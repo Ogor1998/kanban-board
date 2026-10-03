@@ -4,21 +4,36 @@ const User = require('../models/User')
 const AppError = require('../utils/AppError')
 const Activity = require('../models/Activity')
 const Column = require('../models/Column')
+const Card = require('../models/Card')
 const Comment = require('../models/Comment')
 const Notification = require('../models/Notification')
 
 
 module.exports.allBoards = async (req, res) => {
     console.log(req.user)
-    const board = await Board.find({ owner: req.user.userId })
-    if (board.length === 0) {
-        return res.status(404).json({
-            message: "You don't have any boards yet"
-        });
+    const boards = await Board.find({ owner: req.user.userId });
+    if (boards.length === 0) {
+        return res.json({ boards: [] });
     }
-    res.json({
-        board: board,
-    })
+
+    // 2. Loop through each board and count its columns and cards
+    const boardsWithCounts = await Promise.all(
+        boards.map(async (board) => {
+            // Get all column IDs belonging to this specific board
+            const columnIds = await Column.find({ boardId: board._id }).distinct('_id');
+
+            // Count cards inside those columns
+            const cardsCount = await Card.countDocuments({ columnId: { $in: columnIds } });
+
+            return {
+                ...board.toObject(), // convert mongoose doc to plain JS object
+                columnsCount: columnIds.length,
+                cardsCount: cardsCount
+            };
+        })
+    );
+
+    res.json({ boards: boardsWithCounts });
 }
 
 module.exports.findBoard = async (req, res) => {
@@ -30,6 +45,7 @@ module.exports.findBoard = async (req, res) => {
             message: 'Board not found'
         })
     }
+
     res.json(board)
 }
 module.exports.findUserBoard = async (req, res) => {

@@ -52,9 +52,12 @@ export default function BoardHeading({ boardId, setPriorityFilter, priorityFilte
             const res = await findBoard(boardId)
             // console.log('this is the board object', res.data)
             setBoard(res.data)
+            console.log('this is the board object', res.data)
         }
         fetchboards();
     }, [boardId])
+
+    console.log('this is the board title', board)
 
     const [title, setTitle] = React.useState({
         title: ''

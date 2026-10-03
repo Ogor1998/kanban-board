@@ -51,7 +51,7 @@ const CardDetailsModal = ({ card, columnId, setColumns, setOpen, open }) => {
             setPreviews(card.images || []);
         }
     }, [card, columnId]);
-    const priority = ['Low', 'Medium', 'High']
+    const priority = ['low', 'medium', 'high']
     const [value, setValue] = useState(card?.priority)
     const [file, setFile] = useState([])
     const [previews, setPreviews] = useState(card?.images)

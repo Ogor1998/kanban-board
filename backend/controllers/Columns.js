@@ -10,7 +10,9 @@ module.exports.allColumns = async (req, res) => {
     const board = await Board.findById(boardId)
     const columns = await Column.find({ boardId: boardId }).sort('order');
     if (!columns) {
-        return next(new AppError('Columns not found', 404));
+        return res.status(404).json({
+            message: 'Colums not found'
+        });
     }
 
     const columnsWithCard = await Promise.all(

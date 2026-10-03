@@ -101,7 +101,7 @@ module.exports.updateCard = async (req, res) => {
         message: 'You updated this card',
         card: updateCard
     })
-    console.log('card updated')
+    console.log('card updated', updateCard)
 
 }
 
