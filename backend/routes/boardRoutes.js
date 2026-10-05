@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router();
-const { allBoards, findBoard, createBoard, deleteBoard, inviteMember, updateBoard, findUserBoard } = require('../controllers/Boards')
+const { allBoards, findBoard, createBoard, deleteBoard, inviteMember, updateBoard, findUserBoard, deleteMember } = require('../controllers/Boards')
 const { catchAsync } = require('../utils/catchAsync')
 const { isLoggedIn } = require('../middleware/auth')
 const { isBoardOwner, validateBoard, isBoardMemeber } = require('../middleware/middleware')
@@ -12,7 +12,8 @@ router.get('/:boardId', catchAsync(findBoard))
 router.get('/user/:username', catchAsync(findUserBoard))
 router.post('/', isLoggedIn, validateBoard, catchAsync(createBoard))
 router.put('/:boardId', isLoggedIn, catchAsync(updateBoard))
-router.post('/:boardId/invite', isLoggedIn, isBoardOwner, isBoardMemeber, inviteMember)
+router.post('/:boardId/invite', isLoggedIn, isBoardOwner, catchAsync(inviteMember))
+router.delete('/:boardId/:memberID/invite', isLoggedIn, isBoardOwner, catchAsync(deleteMember))
 router.delete('/:boardId', isLoggedIn, isBoardOwner, catchAsync(deleteBoard))
 
 

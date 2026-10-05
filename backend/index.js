@@ -18,11 +18,10 @@ const AppError = require('./utils/AppError')
 const User = require('./models/User')
 const cookieParser = require('cookie-parser')
 const { isLoggedIn } = require('./middleware/auth')
-const { uploadToCloudinary } = require('./cloudinary')
-const { upload } = require('./cloudinary')
-const Comment = require('./models/Comment')
+const { Server } = require('socket.io')
+const http = require('http')
 
-
+const server = http.createServer(app)
 
 mongoose.connect("mongodb://127.0.0.1:27017/kanban").then(() => {
     console.log(`Mongo Connection Active`)
@@ -47,6 +46,32 @@ app.use('/activity', activityRoutes)
 app.use('/notifications', notificationRoutes)
 
 const secret = process.env.JWT_SECRET;
+const io = new Server(server, {
+    cors: {
+        origin: 'http://localhost:5173',
+        credentials: true
+    }
+})
+const connectedUsers = {}
+
+io.on('connection', (socket) => {
+    console.log('User Connected:', socket.id)
+
+    socket.on('register', (userId) => {
+        connectedUsers[userId] = socket.id;
+        console.log('registered user', userId)
+    })
+    socket.disconnect('disconnect', () => {
+        Object.keys(connectedUsers).forEach(userId => {
+            if (connectedUsers[userId] === socket.id) {
+                delete connectedUsers[userId]
+            }
+        })
+    })
+})
+
+module.exports = { io, connectedUsers }
+
 
 
 app.get("/check-auth", isLoggedIn, async (req, res) => {
@@ -112,6 +137,6 @@ app.use((err, req, res, next) => {
 
 
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Server is running on port ${port}`)
 })

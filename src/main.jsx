@@ -8,6 +8,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { NotificationProvider } from "./context/NotificationContext";
 import { AuthProvider } from './context/AuthContext.jsx'
 import { BoardProvider } from './context/BoardContext.jsx'
+import { SocketProvider } from './context/SocketContext.jsx'
 
 const theme = createTheme({
   typography: {
@@ -18,6 +19,7 @@ axios.defaults.withCredentials = true  // ← add this
 axios.defaults.baseURL = 'http://localhost:3000'
 
 
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
@@ -25,7 +27,9 @@ createRoot(document.getElementById('root')).render(
         <AuthProvider>
           <BoardProvider>
             <ThemeProvider theme={theme}>
-              <App />
+              <SocketProvider>
+                <App />
+              </SocketProvider>
             </ThemeProvider>
           </BoardProvider>
         </AuthProvider>

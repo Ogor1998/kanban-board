@@ -96,7 +96,7 @@ export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
                 <Autocomplete
                     disablePortal
                     options={priority}
-                    sx={{ width: 170 }}
+                    sx={{ width: 170, }}
                     renderInput={(params) => <TextField {...params} label="Priority" />}
                     onChange={(event, newValue) => {
                         setValue(newValue)
@@ -105,7 +105,7 @@ export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
                             priority: newValue,
                         }));
                     }}
-                    value={value.toUpperCase()}
+                    value={value}
                 />
 
 

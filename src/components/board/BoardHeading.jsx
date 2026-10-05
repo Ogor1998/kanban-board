@@ -178,7 +178,7 @@ export default function BoardHeading({ boardId, setPriorityFilter, priorityFilte
                         <IconButton className='board__icon' onClick={handleOpen}><Delete /></IconButton></>
                 }
             </Box>
-            <InviteComponent closeInviteModal={closeInviteModal} openInvite={openInvite} boardId={boardId} isOwner={isOwner} />
+            <InviteComponent closeInviteModal={closeInviteModal} openInvite={openInvite} boardId={boardId} isOwner={isOwner} board={board} />
             <Modal
                 open={open}
                 onClose={handleClose}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     IconButton,
     Badge,
@@ -11,23 +11,34 @@ import {
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PaginateActivity from '../activity/PaginateActivity';
 import PaginateNotifications from './PaginateNotifications';
+import { useSocket } from '../../context/SocketContext';
 
 
-export default function NotificationBell({ username, unreadCount = 0 }) {
+
+export default function NotificationBell({ username }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const [tabIndex, setTabIndex] = useState(0);
     const [notification, setNotification] = useState([])
+    const unreadCount = notification.filter(n => !n.read).length
+    const { socket } = useSocket();
 
     const handleClick = (event) => setAnchorEl(event.currentTarget);
     const handleClose = () => setAnchorEl(null);
     const handleTabChange = (event, newIndex) => setTabIndex(newIndex);
+
+    useEffect(() => {
+        if (!socket) return;
+        socket.on('notifications', (newNotification) => {
+            setNotification(prev => [newNotification, ...prev])
+        })
+    }, [socket])
 
     const open = Boolean(anchorEl);
 
     return (
         <>
             <IconButton color="inherit" onClick={handleClick}>
-                <Badge badgeContent={notification.length} color="error">
+                <Badge badgeContent={unreadCount} color="error">
                     <NotificationsIcon />
                 </Badge>
             </IconButton>

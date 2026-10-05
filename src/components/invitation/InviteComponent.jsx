@@ -10,7 +10,8 @@ import {
 import { Share, Close } from '@mui/icons-material';
 import { Autocomplete } from '@mui/material';
 import { useNotification } from '../../context/NotificationContext';
-// import { useAuth } from '../context/AuthContext';
+import usePermissions from '../../hooks/usePermissions';
+
 
 const style = {
     position: 'absolute',
@@ -30,14 +31,15 @@ const style = {
 
 const permissions = ['admin', 'member', 'public']
 
-const InviteComponent = ({ closeInviteModal, openInvite, boardId, isOwner }) => {
+const InviteComponent = ({ closeInviteModal, openInvite, boardId, isOwner, board }) => {
     const [selectedUser, setSelectedUser] = useState(null)
     const { setMessage } = useNotification();
     const [value, setValue] = useState("")
     const [formData, setFormData] = useState({})
     const [users, setUsers] = useState([]);
     const [isShare, setIshare] = useState(false)
-    // const { currentUser } = useAuth();
+    const { isMember } = usePermissions(board);
+    console.log('this is isMember', isMember)
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -88,6 +90,24 @@ const InviteComponent = ({ closeInviteModal, openInvite, boardId, isOwner }) => 
 
         fetchUser();
     }, []);
+
+    const deleteMember = async () => {
+        try {
+            await axios.delete(`/boards/${boardId}/${selectedUser._id}/invite`)
+            setMessage({
+                text: res.data.message,
+                severity: 'error'
+            })
+            console.log('member removed')
+        } catch (err) {
+            setMessage({
+                text: err.response?.data?.message,
+                severity: 'error'
+            })
+        }
+    }
+
+
 
     return (
         <Modal
@@ -188,8 +208,11 @@ const InviteComponent = ({ closeInviteModal, openInvite, boardId, isOwner }) => 
                                     }}
                                     value={value}
                                 />
+                                {isMember ? <Button type='error' variant='contained' onClick={deleteMember} >Remove user</Button> :
+                                    <Button type='submit' variant='contained'>Invite User</Button>
+                                }
 
-                                <Button type='submit' variant='contained'>Invite User</Button>
+
 
                             </Box>
                         </>

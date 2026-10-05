@@ -44,16 +44,22 @@ export default function Login() {
         e.preventDefault();
         try {
             const res = await axios.post('/login', formData, { withCredentials: true })
-            console.log(res.data)
-            setIsLoggedIn(true)
-            setCurrentUser(res.data.user)
-            const from = location.state?.from?.pathname || "/boards";
-            setMessage({
-                text: "Welcome back!",
-                severity: "success",
-            });
+            if (res.data?.isLoggedIn || res.data?.user) {
+                setIsLoggedIn(true)
+                setCurrentUser(res.data.user)
+                const from = location.state?.from?.pathname || "/boards";
+                setMessage({
+                    text: "Welcome back!",
+                    severity: "success",
+                });
 
-            navigate(from, { replace: true });
+                navigate(from, { replace: true });
+            } else {
+                setMessage({
+                    text: res.data?.message || "Invalid username or password",
+                    severity: "error",
+                });
+            }
 
         } catch (err) {
             setMessage({

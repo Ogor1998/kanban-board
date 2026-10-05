@@ -5,6 +5,7 @@ const Column = require('../models/Column')
 const Activity = require('../models/Activity')
 const Notification = require('../models/Notification')
 const { uploadToCloudinary } = require('../cloudinary')
+const { } = require('../index')
 
 
 module.exports.createCard = async (req, res) => {
@@ -157,7 +158,7 @@ module.exports.addMember = async (req, res) => {
     })
 
 
-    await Notification.create({
+    const notification = await Notification.create({
         recipient: memberID,
         sender: req.user.userId,
         message: 'Invited you to join this card',
@@ -165,6 +166,11 @@ module.exports.addMember = async (req, res) => {
         type: 'CARD_ASSIGNED',
         isRead: false,
     })
+
+    const recipientUserId = connectedUsers[memberID];
+    if (recipientUserId) {
+        io.to(recipientUserId).emit('notification', notification)
+    }
 
 
     res.json({
@@ -191,7 +197,7 @@ module.exports.deleteMember = async (req, res) => {
         action: 'Deleted a member',
         target: user?.username || memberID
     })
-    await Notification.create({
+    const notification = await Notification.create({
         recipient: memberID,
         sender: req.user.userId,
         message: 'Removed you from this card',
@@ -199,6 +205,13 @@ module.exports.deleteMember = async (req, res) => {
         type: 'MEMBER_REMOVED',
         isRead: false,
     })
+
+    const recipientUserId = connectedUsers[memberID];
+    if (recipientUserId) {
+        io.to(recipientUserId).emit('notification', notification)
+    }
+
+
 
     res.json({
         message: "You've removed this user from card",

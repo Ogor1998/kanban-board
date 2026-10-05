@@ -28,6 +28,9 @@ module.exports.isBoardMemeber = async (req, res, next) => {
     try {
         const { boardId } = req.params;
         const board = await Board.findById(boardId)
+        if (!board) {
+            return res.status(404).json({ message: 'Board not found' });
+        }
         const isOwner = board.owner.equals(req.user.userId)
         const isMember = board.members.some(m => m.user.equals(req.user.userId))
         if (!isOwner && !isMember) {
@@ -36,7 +39,6 @@ module.exports.isBoardMemeber = async (req, res, next) => {
         next();
     } catch (err) {
         res.status(500).json({ error: err.message });
-        next(err)
     }
 }
 

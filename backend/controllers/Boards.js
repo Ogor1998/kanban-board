@@ -7,6 +7,7 @@ const Column = require('../models/Column')
 const Card = require('../models/Card')
 const Comment = require('../models/Comment')
 const Notification = require('../models/Notification')
+const { io, connectedUsers } = require('../index')
 
 
 module.exports.allBoards = async (req, res) => {
@@ -157,32 +158,27 @@ module.exports.inviteMember = async (req, res) => {
     const { memberID, permissions } = req.body;
     const { boardId } = req.params;
     const board = await Board.findById(boardId)
-    const user = await User.findById(memberID)
-    const alreadyMember = board.members.some(m => m.user.equals(memberID))
-    if (alreadyMember) return res.status(400).json({
-        message: 'User already a member'
-    });
     if (!board) {
-        return res.json({
+        return res.status(404).json({
             message: 'Board not found'
         })
     }
+    const user = await User.findById(memberID)
     if (!user) {
         return res.status(404).json({
             message: 'User not found'
         })
     }
-
     board.members.push({ user: memberID, role: permissions || 'member' })
     await board.save();
     await Activity.create({
         board: boardId,
         user: req.user.userId,
         action: 'Invited a board member',
-        target: memberID
+        target: user.firstname
     })
 
-    await Notification.create({
+    const notification = await Notification.create({
         recipient: memberID,
         sender: req.user.userId,
         message: 'Invited you to joined board',
@@ -191,8 +187,60 @@ module.exports.inviteMember = async (req, res) => {
         isRead: false,
     })
 
+    const recipientUserId = connectedUsers[memberID];
+    if (recipientUserId) {
+        io.to(recipientUserId).emit('notification', notification)
+    }
+
     res.json({
         message: 'Permisson Granted',
         board
     })
+}
+
+
+module.exports.deleteMember = async (req, res) => {
+    const { boardId, memberID } = req.params;
+    const board = await Board.findById(boardId)
+    if (!board) {
+        return res.status(404).json({
+            message: 'board not found'
+        })
+    }
+    const user = await User.findById(memberID);
+    if (!user) {
+        return res.status(404).json({
+            message: 'User not found'
+        })
+    }
+
+    board.members.pull({ _id: memberID })
+
+    await board.save();
+    await Activity.create({
+        board: boardId,
+        user: req.user.userId,
+        action: 'Removed you from board',
+        target: user.firstname
+    })
+
+    const notification = await Notification.create({
+        recipient: memberID,
+        sender: req.user.userId,
+        message: 'Removed you from board',
+        link: `/columns/${boardId}`,
+        type: 'BOARD_INVITE',
+        isRead: false,
+    })
+
+
+    const recipientUserId = connectedUsers[memberID];
+    if (recipientUserId) {
+        io.to(recipientUserId).emit('notification', notification)
+    }
+
+    res.json({
+        message: 'Deleted Member successfully'
+    })
+
 }
