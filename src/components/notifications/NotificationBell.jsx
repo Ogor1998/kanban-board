@@ -12,6 +12,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import PaginateActivity from '../activity/PaginateActivity';
 import PaginateNotifications from './PaginateNotifications';
 import { useSocket } from '../../context/SocketContext';
+import axios from 'axios';
 
 
 
@@ -19,7 +20,7 @@ export default function NotificationBell({ username }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const [tabIndex, setTabIndex] = useState(0);
     const [notification, setNotification] = useState([])
-    const unreadCount = notification.filter(n => !n.read).length
+    const unreadCount = notification.filter(n => n.isRead).length
     const { socket } = useSocket();
 
     const handleClick = (event) => setAnchorEl(event.currentTarget);
@@ -27,8 +28,16 @@ export default function NotificationBell({ username }) {
     const handleTabChange = (event, newIndex) => setTabIndex(newIndex);
 
     useEffect(() => {
+        if (!username) return
+        const fetchNotifications = async () => {
+            const res = await axios.get(`/notifications/user/${username}`)
+            setNotification(res.data)
+        }
+        fetchNotifications()
+    }, [username])
+    useEffect(() => {
         if (!socket) return;
-        socket.on('notifications', (newNotification) => {
+        socket.on('notification', (newNotification) => {
             setNotification(prev => [newNotification, ...prev])
         })
     }, [socket])
@@ -82,7 +91,7 @@ export default function NotificationBell({ username }) {
                     {open && tabIndex === 0 && (
 
                         <Box sx={{ textAlign: 'center', color: 'text.secondary' }}>
-                            <PaginateNotifications username={username} notification={notification} setNotification={setNotification} />
+                            <PaginateNotifications notification={notification} setNotification={setNotification} />
                         </Box>
                     )}
 

@@ -7,8 +7,10 @@ const Column = require('../models/Column')
 const Card = require('../models/Card')
 const Comment = require('../models/Comment')
 const Notification = require('../models/Notification')
-const { io, connectedUsers } = require('../index')
+const { getIO, getConnectedUsers } = require('../utils/socket')
 
+const connectedUsers = getConnectedUsers();
+const io = getIO();
 
 module.exports.allBoards = async (req, res) => {
     console.log(req.user)
@@ -107,7 +109,13 @@ module.exports.createBoard = async (req, res) => {
     })
 
     console.log('this is the new board', board)
-    res.json({ message: 'You created a new board', board: board })
+    res.json({
+        message: 'You created a new board', board: {
+            ...board.toObject(),
+            columnsCount: 4,
+            cardsCount: 0
+        }
+    })
 }
 
 module.exports.updateBoard = async (req, res) => {
@@ -181,7 +189,7 @@ module.exports.inviteMember = async (req, res) => {
     const notification = await Notification.create({
         recipient: memberID,
         sender: req.user.userId,
-        message: 'Invited you to joined board',
+        message: 'Invited you to join the board',
         link: `/columns/${boardId}`,
         type: 'BOARD_INVITE',
         isRead: false,
@@ -214,7 +222,10 @@ module.exports.deleteMember = async (req, res) => {
         })
     }
 
-    board.members.pull({ _id: memberID })
+    // if (board.owner.equals(memberID)) {
+    //     return res.status(400).json({ message: "Cannot remove the board owner" });
+    // }
+    board.members.pull({ user: memberID })
 
     await board.save();
     await Activity.create({
@@ -229,7 +240,7 @@ module.exports.deleteMember = async (req, res) => {
         sender: req.user.userId,
         message: 'Removed you from board',
         link: `/columns/${boardId}`,
-        type: 'BOARD_INVITE',
+        type: 'MEMBER_REMOVED',
         isRead: false,
     })
 

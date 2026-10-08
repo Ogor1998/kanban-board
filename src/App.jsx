@@ -29,6 +29,7 @@ function App() {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Routes>
             <Route path='/boards' element={<Home />} />
+            <Route path='/' element={<Home />} />
             <Route path='/columns/:boardId' element={<Show />} />
             <Route path='/profile/:username' element={<Profile />} />
             <Route path='/error' element={<Error />} />

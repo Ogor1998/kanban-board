@@ -22,6 +22,7 @@ import { useAuth } from '../context/AuthContext'
 import { kanbanBackgrounds } from '../utils/kanbanBackgrounds'
 import useFetch from '../hooks/useFetch'
 import CardDetailsModal from '../components/card/CardDetailsModal'
+import { useBoard } from '../context/BoardContext'
 
 
 
@@ -49,7 +50,7 @@ const Show = () => {
     const [selectedCardId, setSelectedCardId] = useState(null);
     const [open, setOpen] = useState(false);
     const { data: columns, setData: setColumns, loading } = useFetch(`/columns/${boardId}`, (data) => data.columns);
-
+    const { fetchBoards } = useBoard();
     const [boardBackground, setBoardBackground] = useState(localStorage.getItem('backgrounds'))
 
     const selectedBackground = kanbanBackgrounds[boardBackground]
@@ -92,6 +93,7 @@ const Show = () => {
             const res = await createColumn({ title: formData.title, boardId })
             setMessage({ text: res.data.message, severity: 'success' })
             setColumns((prev) => [...prev, { ...res.data.column, cards: [] }])
+            await fetchBoards();
         } catch (err) {
             setMessage({ text: err.response?.data?.message || "Something went wrong", severity: 'error' })
         }

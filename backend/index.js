@@ -18,10 +18,9 @@ const AppError = require('./utils/AppError')
 const User = require('./models/User')
 const cookieParser = require('cookie-parser')
 const { isLoggedIn } = require('./middleware/auth')
-const { Server } = require('socket.io')
-const http = require('http')
-
+const { initSocket } = require('../backend/utils/socket')
 const server = http.createServer(app)
+initSocket(server)
 
 mongoose.connect("mongodb://127.0.0.1:27017/kanban").then(() => {
     console.log(`Mongo Connection Active`)

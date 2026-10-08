@@ -38,6 +38,18 @@ export const BoardProvider = ({ children }) => {
         fetchboards();
     }, [isLoggedIn])
 
+    const fetchBoards = async () => {
+        try {
+            const res = await axios.get('/boards');
+
+            setBoard(res.data.boards || []);
+        } catch (err) {
+            setMessage({
+                text: err.response?.data?.message,
+                severity: 'error'
+            });
+        }
+    };
 
     const deleteBoard = async (id) => {
         const res = await axios.delete(`/boards/${id}`, { withCredentials: true })
@@ -46,7 +58,7 @@ export const BoardProvider = ({ children }) => {
             text: res.data?.message,
             severity: 'error'
         })
-        navigate('/');
+        navigate('/boards');
         console.log('frontend delete called')
     }
 
@@ -72,6 +84,7 @@ export const BoardProvider = ({ children }) => {
                 setLoading,
                 findBoard,
                 singleBoard,
+                fetchBoards
 
             }
         }>

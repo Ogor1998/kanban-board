@@ -18,3 +18,24 @@ module.exports.findNotifications = async (req, res) => {
     }
     res.json(notifcation)
 }
+
+
+module.exports.openNotification = async (req, res) => {
+    const { notificationId } = req.params;
+    const notification = await Notification.findById(notificationId)
+    if (!notification) {
+        return res.status(404).json({
+            message: 'Notification not found'
+        })
+    }
+    console.log('this is the specific notification', notification)
+    notification.isRead = !notification.isRead;
+
+    console.log('notification opened')
+
+    await notification.save();
+    res.json({
+        message: 'read notification',
+        notification
+    })
+}

@@ -13,7 +13,7 @@ router.get('/user/:username', catchAsync(findUserBoard))
 router.post('/', isLoggedIn, validateBoard, catchAsync(createBoard))
 router.put('/:boardId', isLoggedIn, catchAsync(updateBoard))
 router.post('/:boardId/invite', isLoggedIn, isBoardOwner, catchAsync(inviteMember))
-router.delete('/:boardId/:memberID/invite', isLoggedIn, isBoardOwner, catchAsync(deleteMember))
+router.delete('/:boardId/:memberID/delete', isLoggedIn, isBoardOwner, catchAsync(deleteMember))
 router.delete('/:boardId', isLoggedIn, isBoardOwner, catchAsync(deleteBoard))
 
 

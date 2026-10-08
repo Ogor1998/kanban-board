@@ -29,7 +29,7 @@ const style = {
 };
 
 
-const permissions = ['admin', 'member', 'public']
+const permissions = ['admin', 'member']
 
 const InviteComponent = ({ closeInviteModal, openInvite, boardId, isOwner, board }) => {
     const [selectedUser, setSelectedUser] = useState(null)
@@ -93,7 +93,7 @@ const InviteComponent = ({ closeInviteModal, openInvite, boardId, isOwner, board
 
     const deleteMember = async () => {
         try {
-            await axios.delete(`/boards/${boardId}/${selectedUser._id}/invite`)
+            await axios.delete(`/boards/${boardId}/${selectedUser._id}/delete`)
             setMessage({
                 text: res.data.message,
                 severity: 'error'
@@ -208,7 +208,7 @@ const InviteComponent = ({ closeInviteModal, openInvite, boardId, isOwner, board
                                     }}
                                     value={value}
                                 />
-                                {isMember ? <Button type='error' variant='contained' onClick={deleteMember} >Remove user</Button> :
+                                {isMember ? <Button color='error' variant='contained' size='small' onClick={deleteMember} >Remove user</Button> :
                                     <Button type='submit' variant='contained'>Invite User</Button>
                                 }
 

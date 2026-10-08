@@ -9,10 +9,12 @@ import FileUpload from '../reuseable/FileUpload';
 import Delete from '@mui/icons-material/Delete';
 import { createCard } from '../../api/cards'
 import DateSelector from '../reuseable/DateSelector';
+import { useBoard } from '../../context/BoardContext';
 
 export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
     const { setMessage } = useNotification();
     const priority = ['low', 'medium', 'high']
+    const { fetchBoards } = useBoard()
     const [formData, setFormData] = useState({
         title: "",
         priority: "",
@@ -66,6 +68,7 @@ export default function NewCard({ setColumns, columnId, setisActiveColumn }) {
                         }
                         : column
                 ))
+            await fetchBoards();
             setisActiveColumn(null)
         } catch (err) {
             setMessage({ text: err.response?.data?.message, severity: 'error' })

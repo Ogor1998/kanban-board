@@ -76,6 +76,7 @@ export default function NewColumnModal({ formData, handleChange, handleSubmit })
 
 
 
+
     const handleOpen = () => {
         if (!isLoggedIn) {
             setMessage({

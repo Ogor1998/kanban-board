@@ -15,11 +15,11 @@ import { Avatar, AvatarGroup } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import DateFormatComponent from '../common/DateFormatComponent'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
-
+import { useBoard } from '../../context/BoardContext'
 export default function SortableCard({ card, setColumns, columnId, onOpenModal }) {
     const [isEditting, setIsEditting] = useState(false)
     const [open, setOpen] = useState(false);
-
+    const { fetchBoards } = useBoard();
     const navigate = useNavigate();
     const {
         attributes,
@@ -40,6 +40,7 @@ export default function SortableCard({ card, setColumns, columnId, onOpenModal }
     const handleCardDelete = async () => {
         try {
             await deleteCard(card._id)
+            await fetchBoards();
             setColumns(prev =>
                 prev.map(column =>
                 ({

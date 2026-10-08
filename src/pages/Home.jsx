@@ -29,7 +29,6 @@ const getmemberLabel = (members, currentUserId) => {
 
 const Home = () => {
     const { board: boards, setBoard, deleteBoard, loading, } = useBoard();
-    const { data: columns } = useFetch(`/columns/${boards._id}`, (data) => data.columns);
     const [open, setOpen] = useState(false);
 
     const { currentUser, isLoggedIn } = useAuth();
