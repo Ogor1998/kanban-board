@@ -5,7 +5,7 @@ const Column = require('../models/Column')
 const Activity = require('../models/Activity')
 const Notification = require('../models/Notification')
 const { uploadToCloudinary } = require('../cloudinary')
-const { } = require('../index')
+const { getIO, getConnectedUsers } = require('../utils/socket')
 
 
 module.exports.createCard = async (req, res) => {
@@ -128,6 +128,11 @@ module.exports.moveCard = async (req, res) => {
 module.exports.addMember = async (req, res) => {
     const { cardId } = req.params;
     const { memberID } = req.body;
+    const connectedUsers = getConnectedUsers();
+    const io = getIO();
+    console.log("connectedUsers:", connectedUsers)        // ← who is connected
+    console.log("looking for memberID:", memberID)        // ← who we're trying to reach
+    console.log("recipientSocketId:", connectedUsers[memberID])
     const card = await Card.findById(cardId)
     const user = await User.findById(memberID)
     const column = await Column.findById(card.columnId)
@@ -161,11 +166,13 @@ module.exports.addMember = async (req, res) => {
     const notification = await Notification.create({
         recipient: memberID,
         sender: req.user.userId,
-        message: 'Invited you to join this card',
+        message: `Invited you to join ${card.title || 'this card'}`,
         link: `/cards/${cardId}`,
         type: 'CARD_ASSIGNED',
         isRead: false,
     })
+
+    console.log("notification isRead:", notification.isRead)
 
     const recipientUserId = connectedUsers[memberID];
     if (recipientUserId) {
@@ -182,6 +189,8 @@ module.exports.addMember = async (req, res) => {
 }
 
 module.exports.deleteMember = async (req, res) => {
+    const connectedUsers = getConnectedUsers();
+    const io = getIO();
     const { cardId, memberID } = req.params;
     const card = await Card.findByIdAndUpdate(cardId, {
         $pull: {
@@ -200,11 +209,12 @@ module.exports.deleteMember = async (req, res) => {
     const notification = await Notification.create({
         recipient: memberID,
         sender: req.user.userId,
-        message: 'Removed you from this card',
+        message: `Removed you from ${card.title || 'this card'}`,
         link: `/cards/${cardId}`,
         type: 'MEMBER_REMOVED',
         isRead: false,
     })
+
 
     const recipientUserId = connectedUsers[memberID];
     if (recipientUserId) {

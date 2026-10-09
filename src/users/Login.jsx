@@ -100,10 +100,10 @@ export default function Login() {
                 />
 
                 <Password formData={formData} handleChange={handleChange} />
-                <Button type="submit" variant="outlined" fullWidth>Login</Button>
+                <Button type="submit" variant="contained" fullWidth>Login</Button>
 
                 <Typography variant="h6" gutterBottom>
-                    Don't have an account? <NavLink className='login__link' to={'/register'}>Sign Up</NavLink>
+                    Don't have an account? <NavLink className='login__link' to={'/register'}><Button variant="contained">Sign Up</Button></NavLink>
                 </Typography>
 
             </Box>

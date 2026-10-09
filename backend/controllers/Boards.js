@@ -9,8 +9,6 @@ const Comment = require('../models/Comment')
 const Notification = require('../models/Notification')
 const { getIO, getConnectedUsers } = require('../utils/socket')
 
-const connectedUsers = getConnectedUsers();
-const io = getIO();
 
 module.exports.allBoards = async (req, res) => {
     console.log(req.user)
@@ -146,6 +144,7 @@ module.exports.updateBoard = async (req, res) => {
 }
 
 module.exports.deleteBoard = async (req, res) => {
+
     const { boardId } = req.params;
     const board = await Board.findByIdAndDelete(boardId)
     await Activity.create({
@@ -155,6 +154,7 @@ module.exports.deleteBoard = async (req, res) => {
         target: board.title
     })
 
+
     res.json({
         message: "You've deleted the board",
         board: board
@@ -163,6 +163,9 @@ module.exports.deleteBoard = async (req, res) => {
 }
 
 module.exports.inviteMember = async (req, res) => {
+    const connectedUsers = getConnectedUsers();
+    const io = getIO();
+
     const { memberID, permissions } = req.body;
     const { boardId } = req.params;
     const board = await Board.findById(boardId)
@@ -208,6 +211,10 @@ module.exports.inviteMember = async (req, res) => {
 
 
 module.exports.deleteMember = async (req, res) => {
+
+    const connectedUsers = getConnectedUsers();
+    const io = getIO();
+
     const { boardId, memberID } = req.params;
     const board = await Board.findById(boardId)
     if (!board) {

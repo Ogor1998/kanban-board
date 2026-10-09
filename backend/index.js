@@ -19,6 +19,7 @@ const User = require('./models/User')
 const cookieParser = require('cookie-parser')
 const { isLoggedIn } = require('./middleware/auth')
 const { initSocket } = require('../backend/utils/socket')
+const http = require('http')
 const server = http.createServer(app)
 initSocket(server)
 
@@ -45,31 +46,6 @@ app.use('/activity', activityRoutes)
 app.use('/notifications', notificationRoutes)
 
 const secret = process.env.JWT_SECRET;
-const io = new Server(server, {
-    cors: {
-        origin: 'http://localhost:5173',
-        credentials: true
-    }
-})
-const connectedUsers = {}
-
-io.on('connection', (socket) => {
-    console.log('User Connected:', socket.id)
-
-    socket.on('register', (userId) => {
-        connectedUsers[userId] = socket.id;
-        console.log('registered user', userId)
-    })
-    socket.disconnect('disconnect', () => {
-        Object.keys(connectedUsers).forEach(userId => {
-            if (connectedUsers[userId] === socket.id) {
-                delete connectedUsers[userId]
-            }
-        })
-    })
-})
-
-module.exports = { io, connectedUsers }
 
 
 

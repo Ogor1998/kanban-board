@@ -15,6 +15,7 @@ import './index.css'
 import CircularProgress from '@mui/material/CircularProgress';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { Toaster } from 'react-hot-toast'
 
 
 
@@ -24,7 +25,7 @@ function App() {
   return (
     <Box className='page'>
       <NavBar />
-
+      <Toaster position="top-right" />
       <Suspense fallback={<CircularProgress thickness={3.6} />}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Routes>

@@ -9,6 +9,7 @@ import DateFormatComponent from "../common/DateFormatComponent";
 import ChecklistSection from "./ChecklistSection";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PersonIcon from '@mui/icons-material/Person';
+import { useNotification } from "../../context/NotificationContext";
 
 
 
@@ -30,7 +31,7 @@ const style = {
 const CardDetailsModal = ({ card, columnId, setColumns, setOpen, open }) => {
     // const [open, setOpen] = useState(false);
 
-
+    const { setMessage } = useNotification();
     const handleOpen = () => setOpen(true)
     const handleClose = () => setOpen(false);
     const [formData, setFormData] = useState({
@@ -79,6 +80,10 @@ const CardDetailsModal = ({ card, columnId, setColumns, setOpen, open }) => {
         console.log(formData)
         console.log(res.data)
 
+        setMessage({
+            text: res.data.message,
+            severity: 'succcess'
+        })
     }
 
     const handlePreviewDelete = (idx) => {

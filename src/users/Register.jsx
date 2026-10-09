@@ -107,10 +107,10 @@ export default function Register() {
                 />
 
                 <Password formData={formData} handleChange={handleChange} />
-                <Button type="submit" variant="outlined" fullWidth>Register</Button>
+                <Button type="submit" variant="contained" fullWidth>Register</Button>
 
                 <Typography variant="h6" gutterBottom>
-                    Old User? <NavLink className='login__link' to={`/login`}>Sign In</NavLink>
+                    Already a member? <NavLink className='login__link' to={`/login`}><Button variant="contained" >Sign In</Button></NavLink>
                 </Typography>
 
 

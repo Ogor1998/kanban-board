@@ -10,13 +10,34 @@ module.exports.findNotifications = async (req, res) => {
             message: "This user doesn't exist"
         })
     }
-    const notifcation = await Notification.find({ recipient: user._id }).populate('sender', 'firstname image');
-    if (!notifcation) {
+
+    const page = Number(req.query.page) || 1;
+    const limit = 5;
+    const skip = (page - 1) * limit;
+
+
+    // 2. Fetch the slice of activities
+    const notification = await Notification.find({ recipient: user._id })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate('sender', 'firstname image');
+
+    if (!notification) {
         return res.status(404).json({
             message: 'There are no notifications yet'
         })
     }
-    res.json(notifcation)
+
+    // 3. Count total to know if there's more
+    const total = await Notification.countDocuments({ recipient: user._id });
+
+    res.json({
+        notification,
+        pagination: {
+            hasMore: (skip + notification.length) < total
+        }
+    });
 }
 
 

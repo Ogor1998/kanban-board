@@ -73,6 +73,9 @@ export default function SortableCard({ card, setColumns, columnId, onOpenModal }
             className='card'
             sx={{ display: 'flex', alignItems: 'center', gap: '10px', p: 1, borderRadius: '15px', backgroundColor: '#fff', color: '#000', marginBottom: '10px' }} >
 
+            <>
+                <IconButton onClick={onOpenModal}><ZoomOutMapIcon /></IconButton>
+            </>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', }}>
                 <Box
                     {...attributes}
@@ -86,7 +89,6 @@ export default function SortableCard({ card, setColumns, columnId, onOpenModal }
                     {card.title}
                 </Typography>
                 {/* <CardDetailsModal card={card} columnId={columnId} open={open} setOpen={setOpen} setColumns={setColumns} handleSwitch={handleSwitch} /> */}
-                <IconButton onClick={onOpenModal}><ZoomOutMapIcon /></IconButton>
                 <h4 className={`${card.priority}`}>{card.priority.toUpperCase()}</h4>
                 <CardList handleCardDelete={handleCardDelete} handleSwitch={onOpenModal} card={card} />
             </Box>
