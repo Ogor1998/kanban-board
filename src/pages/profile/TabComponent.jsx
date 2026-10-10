@@ -95,12 +95,14 @@ export default function TabComponent({ profile, board }) {
                 </Box>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-                {board.map(item => (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', fontSize: '2rem' }}>
-                        <NavLink to={`/columns/${item._id}`} key={item._id} className='links1'>{item.title}
-                        </NavLink>
-                    </Box>
-                ))}
+                <Box className='board__list'>
+                    {board.map(item => (
+                        <Box sx={{ display: 'flex', flexDirection: 'column', fontSize: '2rem', }}>
+                            <NavLink to={`/columns/${item._id}`} key={item._id} className='links1'>{item.title}
+                            </NavLink>
+                        </Box>
+                    ))}
+                </Box>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
                 <PaginateActivity username={profile.username} itemsPerPage={5} />

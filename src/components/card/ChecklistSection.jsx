@@ -69,7 +69,7 @@ export default function ChecklistSection({ checklist = [], cardId, setColumns })
             }}>
                 <Box sx={{ flex: 1, maxHeight: 200, overflowY: "auto", display: 'flex', flexDirection: 'column' }}>
                     {checklist.length === 0 ? (
-                        <Typography variant="caption" color="text.secondary" sx={{ mt: 4, justifySelf: 'center', height: '100%' }}>No items yet</Typography>
+                        <Typography variant="caption" color="text.secondary" sx={{ mt: 4, justifySelf: 'center', height: '100%', p: 1 }}>No items yet</Typography>
                     ) : (
                         checklist.map(item => (
                             <Box key={item._id} sx={{ display: "flex", alignItems: "center", py: 0.25, justifyContent: 'space-between' }}>

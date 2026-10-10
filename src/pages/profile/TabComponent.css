@@ -28,3 +28,9 @@
     background-color: #000;
     color: #fff
 }
+
+
+.board__list {
+    max-height: 22rem;
+    overflow-y: auto;
+}

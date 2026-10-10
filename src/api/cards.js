@@ -10,3 +10,6 @@ export const updateACard = (cardID, formData) => {
 export const deleteCard = (cardID) => {
     return api.delete(`/cards/${cardID}`)
 }
+export const moveCard = (activeId, columnId) => {
+    return api.patch(`/cards/${activeId}/move`, columnId)
+}

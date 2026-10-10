@@ -17,12 +17,14 @@ import { arrayMove } from '@dnd-kit/sortable'
 import { useDroppable } from '@dnd-kit/core'
 import BoardHeading from '../components/board/BoardHeading'
 import { getColumns, createColumn, deleteColumn } from '../api/columns'
+import { moveCard } from '../api/cards'
 import InviteComponent from '../components/invitation/InviteComponent'
 import { useAuth } from '../context/AuthContext'
 import { kanbanBackgrounds } from '../utils/kanbanBackgrounds'
 import useFetch from '../hooks/useFetch'
 import CardDetailsModal from '../components/card/CardDetailsModal'
 import { useBoard } from '../context/BoardContext'
+import NewCardModal from '../components/card/NewCard'
 
 
 
@@ -53,6 +55,7 @@ const Show = () => {
     const { fetchBoards } = useBoard();
     const [boardBackground, setBoardBackground] = useState(localStorage.getItem('backgrounds'))
 
+
     const selectedBackground = kanbanBackgrounds[boardBackground]
     const [isHiddenColumns, setIsHiddenColumns] = useState(() => {
         try {
@@ -66,7 +69,7 @@ const Show = () => {
     const selectedCard = columns?.flatMap(col => col.cards || [])
         .find(c => c._id === selectedCardId);
 
-    const selectedColumnId = columns?.find(col => col.cards?.some(c => c._id === selectedCardId))?._id;
+    const selectedColumn = columns?.find(col => col.cards?.some(c => c._id === selectedCardId));
     useEffect(() => {
         localStorage.setItem('columns', JSON.stringify(isHiddenColumns))
 
@@ -152,7 +155,8 @@ const Show = () => {
             }))
 
             // Update backend
-            await axios.patch(`/cards/${active.id}/move`, { columnId: targetColumn._id })
+            // await axios.patch(`/cards/${active.id}/move`, { columnId: targetColumn._id })
+            await moveCard(active.id, { columnId: targetColumn._id })
         }
     }
 
@@ -218,13 +222,21 @@ const Show = () => {
                         )
                     })}
                 </DndContext>
+                <NewCardModal
+                    open={Boolean(isActiveColumn)}
+                    onClose={() => setisActiveColumn(null)}
+                    columnId={isActiveColumn}
+                    columnTitle={isActiveColumn?.title}
+                    setColumns={setColumns}
+                />
 
                 {selectedCard && (
                     <CardDetailsModal
                         open={Boolean(selectedCardId)}
                         onClose={() => setSelectedCardId(null)}
                         card={selectedCard}
-                        columnId={selectedColumnId}
+                        columnId={selectedColumn?._id}
+                        columnTitle={selectedColumn?.title}
                         setColumns={setColumns}
                         setOpen={setSelectedCardId}
                     />
