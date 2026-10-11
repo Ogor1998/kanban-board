@@ -15,6 +15,7 @@ import {
 
 import { getActionColor } from '../../utils/getActionColor'
 import { formatDistanceToNow } from 'date-fns'
+import { getUserActivity } from '../../api/activities'
 
 
 
@@ -42,7 +43,10 @@ const PaginateActivity = ({ itemsPerPage, username }) => {
 
         const fetchActivity = async () => {
             try {
-                const res = await axios.get(`/activity/user/${username}`, {
+                // const res = await axios.get(`/activity/user/${username}`, {
+                //     params: { page, limit: itemsPerPage }
+                // })
+                const res = await getUserActivity(username, {
                     params: { page, limit: itemsPerPage }
                 })
                 const { activities, pagination } = res.data

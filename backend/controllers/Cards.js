@@ -6,6 +6,7 @@ const Activity = require('../models/Activity')
 const Notification = require('../models/Notification')
 const { uploadToCloudinary } = require('../cloudinary')
 const { getIO, getConnectedUsers } = require('../utils/socket')
+const { TryRounded } = require('@mui/icons-material')
 
 
 module.exports.createCard = async (req, res) => {
@@ -109,6 +110,8 @@ module.exports.updateCard = async (req, res) => {
 module.exports.moveCard = async (req, res) => {
     const { activeId } = req.params;
     const { columnId } = req.body;
+    const connectedUsers = getConnectedUsers();
+    const io = getIO();
     const column = await Column.findById(columnId)
     const thisCard = await Card.findById(activeId)
     const card = await Card.findByIdAndUpdate(activeId, { columnId }, {
@@ -121,6 +124,8 @@ module.exports.moveCard = async (req, res) => {
         action: 'Moved a card',
         target: thisCard.title
     })
+
+    io.to(boardId).emit('cardMoved', { activeId, columnId });
     console.log('moved card')
     res.json(card)
 }
@@ -130,20 +135,18 @@ module.exports.addMember = async (req, res) => {
     const { memberID } = req.body;
     const connectedUsers = getConnectedUsers();
     const io = getIO();
-    console.log("connectedUsers:", connectedUsers)        // ← who is connected
-    console.log("looking for memberID:", memberID)        // ← who we're trying to reach
-    console.log("recipientSocketId:", connectedUsers[memberID])
     const card = await Card.findById(cardId)
-    const user = await User.findById(memberID)
-    const column = await Column.findById(card.columnId)
     if (!card) {
         return res.status(404).json({
             message: 'Card not found'
         })
     }
+    const updateCard = await Card.findByIdAndUpdate(cardId, { $addToSet: { members: memberID } }, { returnDocument: 'after' }).populate('members');
+    const user = await User.findById(memberID)
+    const column = await Column.findById(card.columnId)
     if (!user) {
         return res.status(404).json({
-            message: 'Card not found'
+            message: 'User not found'
         })
     }
     if (!column) {
@@ -151,10 +154,6 @@ module.exports.addMember = async (req, res) => {
             message: 'Column not found'
         })
     }
-    card.members.push(memberID)
-
-    await card.save();
-    await card.populate('members');
     await Activity.create({
         board: column.boardId,
         user: req.user.userId,
@@ -182,7 +181,7 @@ module.exports.addMember = async (req, res) => {
 
     res.json({
         message: 'You added this member to the card',
-        card
+        card: updateCard
     })
     console.log('You added this member to the card')
 

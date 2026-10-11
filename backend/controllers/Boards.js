@@ -169,6 +169,7 @@ module.exports.inviteMember = async (req, res) => {
     const { memberID, permissions } = req.body;
     const { boardId } = req.params;
     const board = await Board.findById(boardId)
+    const updateBoard = await Board.findByIdAndUpdate(boardId, { $addToSet: { members: { user: memberID, role: permissions || 'member' } } }, { returnDocument: 'after' })
     if (!board) {
         return res.status(404).json({
             message: 'Board not found'
@@ -180,8 +181,6 @@ module.exports.inviteMember = async (req, res) => {
             message: 'User not found'
         })
     }
-    board.members.push({ user: memberID, role: permissions || 'member' })
-    await board.save();
     await Activity.create({
         board: boardId,
         user: req.user.userId,
@@ -205,7 +204,7 @@ module.exports.inviteMember = async (req, res) => {
 
     res.json({
         message: 'Permisson Granted',
-        board
+        board: updateBoard
     })
 }
 
@@ -228,10 +227,6 @@ module.exports.deleteMember = async (req, res) => {
             message: 'User not found'
         })
     }
-
-    // if (board.owner.equals(memberID)) {
-    //     return res.status(400).json({ message: "Cannot remove the board owner" });
-    // }
     board.members.pull({ user: memberID })
 
     await board.save();

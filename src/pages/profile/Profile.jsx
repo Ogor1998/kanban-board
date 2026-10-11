@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom"
 import ProfileComponent from "../../components/ProfileComponent"
 import './Profile.css'
 import ProfileEditComponent from "./ProfileEditComponent";
+import { getUserProfile } from "../../api/profiles"
 
 export default function Profile() {
     const [profile, setProfile] = useState({});
@@ -12,7 +13,7 @@ export default function Profile() {
     useEffect(() => {
         if (!username || username === "undefined") return;
         const fetchProfile = async () => {
-            const res = await axios.get(`/profile/${username}`)
+            const res = await getUserProfile(username)
             setProfile(res.data)
             // console.log('this is  the profile:', res.data)
         }

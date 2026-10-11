@@ -15,6 +15,7 @@ import PaginateNotifications from './PaginateNotifications';
 import { useSocket } from '../../context/SocketContext';
 import axios from 'axios';
 import toast from 'react-hot-toast'
+import { getNotifications } from '../../api/notifications';
 
 
 
@@ -47,7 +48,10 @@ export default function NotificationBell({ itemsPerPage = 5, username }) {
         let isMounted = true;
         const fetchNotifications = async () => {
             try {
-                const res = await axios.get(`/notifications/user/${username}`, {
+                // const res = await axios.get(`/notifications/user/${username}`, {
+                //     params: { page, limit: itemsPerPage }
+                // })
+                const res = await getNotifications(username, {
                     params: { page, limit: itemsPerPage }
                 })
                 const { notification, pagination } = res.data

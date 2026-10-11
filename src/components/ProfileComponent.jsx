@@ -15,6 +15,7 @@ import TabComponent from "../pages/profile/TabComponent";
 import '../pages/profile/Profile.css'
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { getProfile } from "../api/profiles";
 
 
 
@@ -39,7 +40,7 @@ export default function ProfileComponent({ profile, handleClick }) {
         if (profile) {
             const fetchBoards = async () => {
                 try {
-                    const res = await axios.get(`/boards/user/${profile.username}`)
+                    const res = await getProfile(profile.username)
                     setBoard(res.data.board)
                     setboardsCount(res.data.boardCount)
                     setCommentsCount(res.data.commentsCount)

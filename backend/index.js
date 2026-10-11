@@ -2,6 +2,8 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 const express = require('express');
+const rateLimit = require('express-rate-limit')
+
 const app = express();
 const port = 3000;
 const mongoose = require('mongoose')
@@ -19,7 +21,9 @@ const User = require('./models/User')
 const cookieParser = require('cookie-parser')
 const { isLoggedIn } = require('./middleware/auth')
 const { initSocket } = require('../backend/utils/socket')
-const http = require('http')
+const { catchAsync } = require('./utils/catchAsync')
+const http = require('http');
+
 const server = http.createServer(app)
 initSocket(server)
 
@@ -35,6 +39,38 @@ app.use(cors({
     credentials: true
 }));
 app.use(cookieParser());
+// app.use(mongoSanitize())
+
+const cleanPayload = (obj) => {
+    if (!obj || typeof obj !== 'object') return;
+    for (const key of Object.keys(obj)) {
+        if (key.startsWith('$')) {
+            delete obj[key];
+        } else {
+            cleanPayload(obj[key]);
+        }
+    }
+};
+
+app.use((req, res, next) => {
+    cleanPayload(req.body);
+    cleanPayload(req.params);
+    cleanPayload(req.query);
+    next();
+})
+
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 100,
+    message: { message: 'Too many requests from this ip address, Try again later' },
+    standardHeaders: true,
+    legacyHeaders: false,
+})
+
+
+
+app.use(limiter)
 
 app.use('/columns', columnRoutes)
 app.use('/cards', cardRoutes)
@@ -49,14 +85,14 @@ const secret = process.env.JWT_SECRET;
 
 
 
-app.get("/check-auth", isLoggedIn, async (req, res) => {
+app.get("/check-auth", isLoggedIn, catchAsync(async (req, res) => {
     const user = await User.findById(req.user.userId).select("-password");
 
     res.json({
         isLoggedIn: true,
         user,
     });
-});
+}));
 
 
 app.post('/logout', (req, res) => {

@@ -8,6 +8,7 @@ import { Close } from '@mui/icons-material'
 import { formatDistanceToNow } from 'date-fns'
 import { getActionColor } from '../../utils/getActionColor'
 import HistoryIcon from '@mui/icons-material/History';
+import { getActivity } from '../../api/activities'
 
 
 const style = {
@@ -33,7 +34,7 @@ export default function ActivityModal({ boardId, open, setOpenActivity, onClose 
         if (!open) return  // ← only fetch when modal opens
         const fetchActivity = async () => {
             try {
-                const res = await axios.get(`/activity/${boardId}`)
+                const res = await getActivity(boardId)
                 console.log('this is the activity', res.data)
                 setActivity(res.data)
             } catch (err) {
