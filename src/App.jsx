@@ -16,6 +16,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Toaster } from 'react-hot-toast'
+import BoardSkeleton from './skeletons/BoardSkeleton'
+import ProfileSkeleton from './skeletons/ProfileSkeleton'
 
 
 
@@ -26,20 +28,39 @@ function App() {
     <Box className='page'>
       <NavBar />
       <Toaster position="top-right" />
-      <Suspense fallback={<CircularProgress thickness={3.6} />}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <Routes>
-            <Route path='/boards' element={<Home />} />
-            <Route path='/' element={<Home />} />
-            <Route path='/columns/:boardId' element={<Show />} />
-            <Route path='/profile/:username' element={<Profile />} />
-            <Route path='/error' element={<Error />} />
-            <Route path='/login' element={<Login />} />
-            <Route path='/register' element={<Register />} />
-            <Route path="*" element={<Navigate to="/error" state={{ statusCode: 404, message: "Page not found" }} replace />} />
-          </Routes>
-        </LocalizationProvider>
-      </Suspense>
+      {/* <Suspense fallback={<CircularProgress thickness={3.6} />}> */}
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Routes>
+          <Route path='/boards'
+            element={
+              <Suspense fallback={<BoardSkeleton />}>
+                <Home />
+              </Suspense>
+            }
+          />
+          <Route path='/'
+            element={
+              <Suspense fallback={<BoardSkeleton />}>
+                <Home />
+              </Suspense>
+            }
+          />
+          {/* <Route path='/' element={<Home />} />z */}
+          <Route path='/columns/:boardId' element={<Show />} />
+          <Route path='/profile/:username' element={
+            <Suspense fallback={<ProfileSkeleton />}>
+              <Profile />
+            </Suspense>
+          }
+          />
+
+          <Route path='/error' element={<Error />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+          <Route path="*" element={<Navigate to="/error" state={{ statusCode: 404, message: "Page not found" }} replace />} />
+        </Routes>
+      </LocalizationProvider>
+      {/* </Suspense> */}
 
     </Box>
   )

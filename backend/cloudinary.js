@@ -26,5 +26,4 @@ const uploadToCloudinary = async (fileBuffer) => {
 
 
 
-
 module.exports = { uploadToCloudinary, upload };

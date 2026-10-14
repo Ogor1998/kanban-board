@@ -1,5 +1,5 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React from 'react';
+import axios from 'axios';
 import {
     List,
     ListItem,
@@ -9,117 +9,141 @@ import {
     Box,
     Avatar,
     IconButton,
-    Divider,
     CircularProgress,
-    Button
-} from '@mui/material'
-import { formatDistanceToNow } from 'date-fns'
-import { MarkAsUnread } from '@mui/icons-material';
+    Button,
+    Tooltip
+} from '@mui/material';
+import { formatDistanceToNow } from 'date-fns';
+import MarkAsUnreadIcon from '@mui/icons-material/MarkAsUnread';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import { useNavigate } from 'react-router-dom';
-import './PaginateNotifications.css'
+import './PaginateNotifications.css';
+import NotificationSkeleton from '../../skeletons/NotificationSkeleton';
 
 const PaginateNotifications = ({
-    notification,
+    notification = [],
     setNotification,
     handleLoadMore,
     loading,
     hasMore,
-    initialLoading }) => {
-
+    initialLoading
+}) => {
     const navigate = useNavigate();
 
+    const handleItemClick = (link, notificationId, isRead) => {
+        if (!isRead) {
+            openNotification(notificationId, isRead);
+        }
+        if (link) {
+            navigate(link);
+        }
+    };
 
-    const directLink = (link) => {
-        navigate(link)
-    }
     const openNotification = async (notificationId, currentStatus) => {
         try {
-            await axios.put(`/notifications/${notificationId}`)
-            setNotification(prev => prev.map(n => n._id === notificationId ? { ...n, isRead: !currentStatus } : n))
-            console.log('notification opened')
+            await axios.put(`/notifications/${notificationId}`);
+            setNotification((prev) =>
+                prev.map((n) =>
+                    n._id === notificationId ? { ...n, isRead: !currentStatus } : n
+                )
+            );
         } catch (err) {
-            console.log('it failed because', err)
+            console.error('Failed to update notification status:', err);
         }
-    }
-
+    };
 
     if (initialLoading) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-                <CircularProgress size={30} />
-            </Box>
-        );
+        return <NotificationSkeleton />;
     }
 
-    if (notification?.length === 0) {
-        return (
-            <Typography sx={{ fontSize: '2rem' }}>
-                You have no notifications yet
-            </Typography>
-        )
-    }
+    // if (!notification || notification.length === 0) {
+    //     return (
+    //         <Box sx={{ p: 4, textAlign: 'center' }}>
+    //             <Typography variant="body1" color="text.secondary">
+    //                 You have no notifications yet
+    //             </Typography>
+    //         </Box>
+    //     );
+    // }
+
     return (
-        <div>
-            <List dense>
-                {notification?.map((item, index) => {
+        <Box sx={{ width: '100%' }}>
+            <List dense disablePadding>
+                {notification.map((item) => {
                     const unread = !item.isRead;
-                    console.log('this is unread', unread)
+
                     return (
                         <React.Fragment key={item._id}>
-
                             <ListItem
-                                alignItems="flex-start"
-                                className='notification__item'
+                                alignItems="center"
+                                className="notification__item"
+                                onClick={() => handleItemClick(item.link, item._id, item.isRead)}
                                 sx={{
-                                    px: 1,
-                                    backgroundColor: '#fff',
-                                    color: '#000',
-                                    borderRadius: '10px',
-                                    alignItems: 'center',
-                                    marginBottom: '0.2rem'
-                                }}>
+                                    px: 1.5,
+                                    py: 1,
+                                    mb: 0.75,
+                                    backgroundColor: unread ? 'rgba(25, 118, 210, 0.08)' : '#fff',
+                                    borderRadius: '8px',
+                                    border: '1px solid',
+                                    borderColor: unread ? 'rgba(25, 118, 210, 0.2)' : '#e0e0e0',
+                                    cursor: item.link ? 'pointer' : 'default',
+                                    transition: 'all 0.15s ease-in-out',
+                                    '&:hover': {
+                                        backgroundColor: unread ? 'rgba(25, 118, 210, 0.14)' : '#f5f5f5',
+                                    },
+                                }}
+                            >
                                 <ListItemAvatar>
-                                    <Avatar sx={{ width: 32, height: 32, fontSize: '0.8rem' }} src={item.sender?.image}>
+                                    <Avatar
+                                        sx={{ width: 34, height: 34, fontSize: '0.85rem' }}
+                                        src={item.sender?.image}
+                                    >
                                         {item.sender?.firstname?.charAt(0).toUpperCase()}
                                     </Avatar>
                                 </ListItemAvatar>
+
                                 <ListItemText
                                     primary={
-                                        <Typography variant="body2">
-                                            <strong>{item.sender?.firstname}</strong> {item.action}{' '}
+                                        <Typography variant="body2" sx={{ color: 'text.primary' }}>
+                                            <strong>{item.sender?.firstname || 'Someone'}</strong>{' '}
+                                            {item.action}{' '}
                                             {item.message && (
-                                                <Box component="span" sx={{ color: "#000" }}>
-                                                    {item.message}
+                                                <Box component="span" sx={{ fontWeight: 500 }}>
+                                                    "{item.message}"
                                                 </Box>
                                             )}
                                         </Typography>
                                     }
                                     secondary={
                                         <Typography variant="caption" color="text.secondary">
-                                            {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
+                                            {item.createdAt
+                                                ? formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })
+                                                : ''}
                                         </Typography>
                                     }
                                 />
-                                {unread ?
-                                    <IconButton onClick={() => openNotification(item._id, item.isRead)}><MarkEmailReadIcon sx={{ color: '#1976d2' }} /></IconButton>
 
-                                    :
-                                    <IconButton onClick={() => openNotification(item._id, item.isRead)} ><MarkAsUnread color='green' /></IconButton>
-                                }
+                                <Tooltip title={unread ? 'Mark as read' : 'Mark as unread'}>
+                                    <IconButton
+                                        size="small"
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Prevents triggering list item navigation
+                                            openNotification(item._id, item.isRead);
+                                        }}
+                                        sx={{ ml: 1 }}
+                                    >
+                                        {unread ? (
+                                            <MarkEmailReadIcon fontSize="small" sx={{ color: '#1976d2' }} />
+                                        ) : (
+                                            <MarkAsUnreadIcon fontSize="small" sx={{ color: 'text.disabled' }} />
+                                        )}
+                                    </IconButton>
+                                </Tooltip>
                             </ListItem>
-                            {index < notification.length - 1 && <Divider />}
                         </React.Fragment>
-                    )
-
+                    );
                 })}
             </List>
-
-            {loading && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
-                    <CircularProgress size={24} />
-                </Box>
-            )}
 
             {hasMore && (
                 <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
@@ -128,14 +152,14 @@ const PaginateNotifications = ({
                         size="small"
                         onClick={handleLoadMore}
                         disabled={loading}
+                        sx={{ textTransform: 'none', minWidth: 100 }}
                     >
-                        {loading ? <CircularProgress size={20} /> : 'Load More'}
+                        {loading ? <CircularProgress size={18} color="inherit" /> : 'Load More'}
                     </Button>
                 </Box>
             )}
-        </div>
+        </Box>
+    );
+};
 
-    )
-}
-
-export default PaginateNotifications
+export default PaginateNotifications;

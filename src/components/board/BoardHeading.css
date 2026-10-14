@@ -1,74 +1,92 @@
-.member {
-    border: 1px solid #000;
-    border-radius: 50%;
+/* =========================================
+   Member & Admin Avatar Rings
+   ========================================= */
+.member,
+.admin {
+    border-radius: 50% !important;
     cursor: pointer;
-    height: 30px;
-    width: 30px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
 
+.member {
+    border: 2px solid rgba(255, 255, 255, 0.7) !important;
 }
 
 .admin {
-    border: 1px solid red;
-    border-radius: 50%;
-    cursor: pointer;
-    height: 30px;
-    width: 30px;
+    border: 2px solid #ef4444 !important;
+    /* Clean red ring for admin */
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
 }
 
-.members {
-    font-size: 1.7rem;
-}
-
-/* .admin,
-.member {
-    margin-right: 10px;
-} */
-
-.member,
+.member:hover,
 .admin:hover {
-    transform: scale(1.05);
+    transform: scale(1.12);
+    z-index: 10;
 }
 
-
-/* Opt-in the select and its dropdown picker to be fully styleable */
-select,
-::picker(select) {
-    appearance: base-select;
+/* =========================================
+   Header Typography & Labels
+   ========================================= */
+.members {
+    font-size: 0.95rem;
+    font-weight: 500;
+    opacity: 0.9;
+    margin-right: 8px;
 }
 
-/* Style the closed select field (the button) */
+/* =========================================
+   Dropdowns (Native + Modern Fallback)
+   ========================================= */
 select {
-    padding: 0.5rem 1rem;
-    border: 0.4px solid #3b82f6;
+    padding: 6px 12px;
     border-radius: 8px;
-    background-color: #ffffff;
     font-family: inherit;
+    font-size: 0.9rem;
     cursor: pointer;
-    font-size: 1.7rem;
-    margin-right: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--board-text, #ffffff);
+    border: 1px solid var(--board-glass-border, rgba(255, 255, 255, 0.3));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    outline: none;
+    transition: all 0.2s ease;
 }
 
-/* Style the open dropdown container */
-::picker(select) {
-    border: 2px solid #3b82f6;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 4px;
+select:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
-/* Style individual options inside the picker */
+select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+/* Ensure options inside dropdown are readable across light/dark OS themes */
 select option {
-    padding: 0.5rem;
-    border-radius: 4px;
-    cursor: pointer;
+    background-color: #1e293b;
+    color: #ffffff;
+    padding: 8px;
 }
 
-/* Style the option when hovered or focused */
-select option:hover {
-    background-color: #eff6ff;
-}
+/* Progressive enhancement for browsers supporting customizable select */
+@supports (appearance: base-select) {
 
-/* Customize the native dropdown arrow icon */
-select::picker-icon {
-    color: #3b82f6;
+    select,
+    ::picker(select) {
+        appearance: base-select;
+    }
+
+    ::picker(select) {
+        background-color: #1e293b;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        padding: 6px;
+    }
+
+    select option:hover {
+        background-color: #3b82f6;
+    }
 }

@@ -25,6 +25,7 @@ import useFetch from '../hooks/useFetch'
 import CardDetailsModal from '../components/card/CardDetailsModal'
 import { useBoard } from '../context/BoardContext'
 import NewCardModal from '../components/card/NewCard'
+import ColumnSkeleton from '../skeletons/ColumnSkeleton'
 
 
 
@@ -167,6 +168,19 @@ const Show = () => {
         console.log('Deleted Column')
     }
 
+    if (loading) {
+        return (
+            <Box
+                className="big__container"
+                style={{
+                    "--board-background": selectedBackground?.css || '#1e293b',
+                    background: selectedBackground?.css || '#1e293b'
+                }}
+            >
+                <ColumnSkeleton />
+            </Box>
+        );
+    }
 
 
     console.log('this is the current', boardBackground)

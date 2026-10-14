@@ -16,7 +16,10 @@ import { NavLink } from "react-router-dom"
 export default function Login() {
     const { setMessage, message } = useNotification();
     const { setCurrentUser, setIsLoggedIn, currentUser } = useAuth();
+    const [triesCount, setTriesCount] = useState(5)
+    const [timerleft, setTimerLeft] = useState(5 * 60 * 1000)
     const location = useLocation();
+
     const [formData, setFormData] = useState({
         username: "",
         password: ""
@@ -33,10 +36,25 @@ export default function Login() {
 
     }, [location.state, setMessage])
 
+    const isLockedOut = triesCount === 0
+    useEffect(() => {
+        if (!isLockedOut) return
+        const intervalId = setInterval(() => {
+            setTimerLeft(prev => {
+                if (prev <= 1000) {
+                    setTriesCount(5);
+                    return 5 * 60 * 1000
+                }
+                return prev - 1000
+            })
+        }, 1000)
+        return () => clearInterval(intervalId)
+    }, [isLockedOut])
 
 
-
-
+    const minutes = Math.floor(timerleft / (1000 * 60))
+    const seconds = Math.floor(timerleft % (1000 * 60) / 1000)
+    const timeDisplay = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
@@ -62,11 +80,24 @@ export default function Login() {
             }
 
         } catch (err) {
-            setMessage({
-                text: err.response?.data?.message || "Login failed",
-                severity: 'error'
-            })
-            console.log(err)
+            const status = err.response?.status;
+
+            if (status === 401 || status === 400) {
+                setIsHidden(true);
+                setTriesCount(prev => Math.max(0, prev - 1));
+
+                setMessage({
+                    text: err.response?.data?.message || "Invalid username or password",
+                    severity: "error"
+                });
+            } else {
+                setMessage({
+                    text: "Unable to reach the server. Please try again.",
+                    severity: "error"
+                });
+            }
+
+            console.error(err);
         }
     }
     return (
@@ -100,7 +131,10 @@ export default function Login() {
                 />
 
                 <Password formData={formData} handleChange={handleChange} />
-                <Button type="submit" variant="contained" fullWidth>Login</Button>
+                <Button type="submit" variant="contained" disabled={triesCount === 0 ? true : false} fullWidth>Login</Button>
+                {triesCount < 5 && <Typography sx={{ fontSize: '1.7rem' }}>You have <strong style={{ color: 'red' }}>{triesCount}</strong> tries left </Typography>}
+                {triesCount === 0 && <Typography>Try again in {timeDisplay}</Typography>}
+
 
                 <Typography variant="h6" gutterBottom>
                     Don't have an account? <NavLink className='login__link' to={'/register'}><Button variant="contained">Sign Up</Button></NavLink>

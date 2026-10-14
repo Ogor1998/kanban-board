@@ -16,6 +16,7 @@ import {
 import { getActionColor } from '../../utils/getActionColor'
 import { formatDistanceToNow } from 'date-fns'
 import { getUserActivity } from '../../api/activities'
+import ActivitySkeleton from '../../skeletons/ActivitySkeleton'
 
 
 
@@ -74,11 +75,7 @@ const PaginateActivity = ({ itemsPerPage, username }) => {
         setPage(prev => prev + 1)
     }
     if (initialLoading) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-                <CircularProgress size={30} />
-            </Box>
-        );
+        return <ActivitySkeleton />
     }
 
     if (items.length === 0) {
@@ -90,7 +87,7 @@ const PaginateActivity = ({ itemsPerPage, username }) => {
     }
 
     return (
-        <div style={{ overflowY: 'auto' }}>
+        <div style={{ overflowY: 'auto', maxHeight: '22rem' }}>
             <List dense>
                 {items.map((item, index) => (
                     <Box key={item._id}>

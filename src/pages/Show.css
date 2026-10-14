@@ -105,18 +105,31 @@
     background-color: #4CAF50;
 }
 
-
 .board__top {
-    min-width: 0;
     width: 100%;
     margin-top: 10px;
-    background: rgba(255, 255, 255, 0.15);
+    box-sizing: border-box;
+    /* Prevents horizontal scroll when padding is added */
+    padding: 12px 20px;
+
+    /* Use dynamic board variables with solid fallbacks */
+    background: var(--board-glass, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--board-glass-border, rgba(255, 255, 255, 0.25));
+    color: var(--board-text, #ffffff);
+
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-
-    border: 1px solid #fff;
     border-radius: 15px;
 
+    /* Subtle depth to lift the toolbar off the background */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+
+    /* Flex alignment so contents center properly across screen sizes */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
 }
 
 @media (max-width: 600px) {

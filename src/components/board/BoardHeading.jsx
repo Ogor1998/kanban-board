@@ -1,203 +1,308 @@
-import * as React from 'react';
-import { TextField, Button, Box, Typography, Modal, IconButton } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import {
+    Box,
+    Typography,
+    TextField,
+    Button,
+    IconButton,
+    Avatar,
+    AvatarGroup,
+    Tooltip,
+    MenuItem,
+    Select,
+    FormControl,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions
+} from '@mui/material';
+import {
+    Edit as EditIcon,
+    Delete as DeleteIcon,
+    Share as ShareIcon,
+    History as HistoryIcon,
+    Close as CloseIcon,
+    Check as CheckIcon
+} from '@mui/icons-material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Create, Delete } from '@mui/icons-material';
+
 import { useNotification } from '../../context/NotificationContext';
-import InviteComponent from '../invitation/InviteComponent';
-import { Share } from '@mui/icons-material';
-import { Stack, Avatar } from '@mui/material';
-import '../../pages/Show.css';
-import './BoardHeading.css'
 import { useBoard } from '../../context/BoardContext';
-import { findBoard } from '../../api/boards';
 import { useAuth } from '../../context/AuthContext';
-import SearchField from '../reuseable/SearchField';
-import ActivityModal from '../activity/ActivityModal';
-import { kanbanBackgrounds } from '../../utils/kanbanBackgrounds';
+import { findBoard } from '../../api/boards';
 import usePermissions from '../../hooks/usePermissions';
+import { kanbanBackgrounds } from '../../utils/kanbanBackgrounds';
 
+import SearchField from '../reuseable/SearchField';
+import InviteComponent from '../invitation/InviteComponent';
+import ActivityModal from '../activity/ActivityModal';
+import './BoardHeading.css';
 
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4,
-    textAlign: 'center'
-};
-
-export default function BoardHeading({ boardId, setPriorityFilter, priorityFilter, setSearch, setBoardBackground, boardBackground }) {
-    const [open, setOpen] = React.useState(false);
-    const [openInvite, setInviteOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+export default function BoardHeading({
+    boardId,
+    setPriorityFilter,
+    priorityFilter = '',
+    setSearch,
+    setBoardBackground,
+    boardBackground = ''
+}) {
     const navigate = useNavigate();
-    const [board, setBoard] = React.useState({})
-    const openInviteModal = () => setInviteOpen(true);
-    const closeInviteModal = () => setInviteOpen(false);
-    const { deleteBoard } = useBoard();
-    const { currentUser, isLoggedIn } = useAuth();
-    const [isEditting, setIsEditting] = React.useState(false)
     const { setMessage } = useNotification();
-    const [openActivity, setOpenActivity] = React.useState(false)
+    const { deleteBoard } = useBoard();
+    const { currentUser } = useAuth();
+
+    const [board, setBoard] = useState({});
+    const [titleInput, setTitleInput] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
+
+    // Modals
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
+    const [openInviteModal, setOpenInviteModal] = useState(false);
+    const [openActivityModal, setOpenActivityModal] = useState(false);
+
     const { isAdmin, isMember, isOwner, canEdit } = usePermissions(board);
 
+    useEffect(() => {
+        const fetchBoardData = async () => {
+            try {
+                const res = await findBoard(boardId);
+                setBoard(res.data);
+                setTitleInput(res.data.title || '');
+            } catch (err) {
+                console.error('Failed to load board details:', err);
+            }
+        };
+        if (boardId) fetchBoardData();
+    }, [boardId]);
 
-    React.useEffect(() => {
-        const fetchboards = async () => {
-            const res = await findBoard(boardId)
-            // console.log('this is the board object', res.data)
-            setBoard(res.data)
-            console.log('this is the board object', res.data)
-        }
-        fetchboards();
-    }, [boardId])
+    const handleEditToggle = () => {
+        setTitleInput(board.title || '');
+        setIsEditing((prev) => !prev);
+    };
 
-    console.log('this is the board title', board)
-
-    const [title, setTitle] = React.useState({
-        title: ''
-    })
-    const handleEdit = () => {
-        setTitle(board.title || '');
-        setIsEditting(prev => !prev)
-    }
-
-
-
-    const handleSubmit = async (e) => {
+    const handleTitleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const res = await axios.put(`/boards/${boardId}`, { title })
-            console.log('this is data upon submission', res.data)
-            setBoard(prev => ({ ...prev, title: res.data.board.title || title }))
-            console.log('this is the title object', title)
+        if (!titleInput.trim()) return;
 
-            setIsEditting(false)
-            setMessage({ text: res.data.message, severity: 'success' })
-            // console.log('this is title info', res.data)
+        try {
+            const res = await axios.put(`/boards/${boardId}`, { title: titleInput });
+            const updatedTitle = res.data.board?.title || titleInput;
+            setBoard((prev) => ({ ...prev, title: updatedTitle }));
+            setIsEditing(false);
+            setMessage({ text: res.data.message || 'Board renamed successfully', severity: 'success' });
         } catch (err) {
             setMessage({
-                text: err.response?.data?.message,
+                text: err.response?.data?.message || 'Error updating board title',
                 severity: 'error'
-            })
+            });
         }
+    };
 
-    }
-    const visitProfile = (username) => {
-        return navigate(`/profile/${username}`)
-    }
-
-
+    const handleDeleteBoard = async () => {
+        try {
+            await deleteBoard(boardId);
+            setOpenDeleteModal(false);
+            navigate('/');
+        } catch (err) {
+            setMessage({ text: 'Failed to delete board', severity: 'error' });
+        }
+    };
 
     return (
-        <div>
-            <Box sx={{ display: 'flex', flexDirection: 'row', minWidth: '0', alignItems: 'center', p: 1 }}>
-                {isEditting ? (
+        <Box
+            className="board__top"
+            sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 2,
+                px: 2.5,
+                py: 1.5,
+            }}
+        >
+            {/* Left: Title or Inline Rename Form */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, minWidth: 260 }}>
+                {isEditing ? (
                     <Box
                         component="form"
-                        sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '5px', marginRight: 'auto' }}
-                        onSubmit={handleSubmit}
+                        onSubmit={handleTitleSubmit}
+                        sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                     >
-                        <TextField id="outlined-basic"
-                            label="Board-Title"
+                        <TextField
+                            size="small"
                             variant="outlined"
-                            name='title'
-                            fullWidth
-                            size='small'
-                            onChange={(e) => setTitle(e.target.value)}
-                            value={title}
+                            autoFocus
+                            value={titleInput}
+                            onChange={(e) => setTitleInput(e.target.value)}
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    bgcolor: 'rgba(255, 255, 255, 0.2)',
+                                    color: 'inherit'
+                                }
+                            }}
                         />
-                        <Button type='submit' variant='outlined' sx={{ px: 2 }}>Update</Button>
-                        <Button variant='outlined' color='error' onClick={handleEdit}>Cancel</Button>
+                        <IconButton size="small" type="submit" sx={{ color: 'inherit' }}>
+                            <CheckIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton size="small" onClick={handleEditToggle} sx={{ color: 'inherit' }}>
+                            <CloseIcon fontSize="small" />
+                        </IconButton>
                     </Box>
                 ) : (
-                    <>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Typography
-                            id="modal-modal-title"
-                            variant="h6"
-                            component="h2"
-                            sx={{ marginRight: 'auto' }}
-                            className='heading__board'
+                            variant="h5"
+                            component="h1"
+                            sx={{ fontWeight: 700, color: 'inherit', letterSpacing: '-0.02em' }}
                         >
-                            {board.title}
+                            {board.title || 'Untitled Board'}
                         </Typography>
-                        <SearchField setSearch={setSearch} />
-                    </>
+                        {canEdit && (
+                            <Tooltip title="Rename Board">
+                                <IconButton size="small" onClick={handleEditToggle} sx={{ color: 'inherit', opacity: 0.8 }}>
+                                    <EditIcon fontSize="small" />
+                                </IconButton>
+                            </Tooltip>
+                        )}
+                    </Box>
                 )}
-                <label htmlFor="priority" style={{ fontSize: '1.7rem', marginRight: '1.05rem', fontWeight: '300' }}>Group By</label>
-                <select name="priority" id="" onChange={(e) => setPriorityFilter(e.target.value)} value={priorityFilter}>
-                    <option value=''>None</option>
-                    <option value='low'>Low</option>
-                    <option value='medium'>Medium</option>
-                    <option value='high'>High</option>
-                </select>
-
-                <select name="background" id="" onChange={(e) => setBoardBackground(e.target.value)} value={boardBackground} >
-                    <option value=''>Select A Background</option>
-                    {Object.entries(kanbanBackgrounds).map(([key, value]) => (
-                        <option value={key} key={key}>{value.name}</option>
-                    ))}
-                </select>
-
-                {
-                    board?.members?.length > 0 && <Typography
-                        id="modal-modal-title"
-                        variant="h6"
-                        component="h2"
-                        sx={{ marginRight: '5px' }}
-                        className='members'
-                    >
-                        Members {board?.members?.length}
-                    </Typography>
-                }
-                {board?.members?.map(member => (
-                    <Box key={member._id}>
-                        <Stack direction="row" spacing={3}>
-                            <Avatar alt={member.user.username || 'Member'} src={member.user.image} className={`${member.role}`}
-                                onClick={() => visitProfile(member.user?.username && member.user?.username)} />
-                        </Stack>
-                    </Box>
-                ))}
-
-                <ActivityModal
-                    boardId={boardId}
-                    open={openActivity}
-                    setOpenActivity={setOpenActivity}
-                    onClose={() => setOpenActivity(false)}
-
-                />
-                {isOwner && <IconButton className='board__icon' onClick={openInviteModal}><Share /></IconButton>}
-                {canEdit &&
-                    <>
-                        <IconButton className='board__icon' onClick={handleEdit} ><Create /></IconButton>
-                        <IconButton className='board__icon' onClick={handleOpen}><Delete /></IconButton></>
-                }
             </Box>
-            <InviteComponent closeInviteModal={closeInviteModal} openInvite={openInvite} boardId={boardId} isOwner={isOwner} board={board} />
-            <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+
+            {/* Center: Search & Group/Background Filters */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+                <SearchField setSearch={setSearch} />
+
+                {/* Priority Filter */}
+                <FormControl size="small" sx={{ minWidth: 120 }}>
+                    <Select
+                        value={priorityFilter}
+                        onChange={(e) => setPriorityFilter(e.target.value)}
+                        displayEmpty
+                        sx={{
+                            color: 'inherit',
+                            bgcolor: 'rgba(255, 255, 255, 0.15)',
+                            borderRadius: '8px',
+                            '& .MuiSvgIcon-root': { color: 'inherit' }
+                        }}
+                    >
+                        <MenuItem value="">Group: All</MenuItem>
+                        <MenuItem value="low">Low Priority</MenuItem>
+                        <MenuItem value="medium">Medium Priority</MenuItem>
+                        <MenuItem value="high">High Priority</MenuItem>
+                    </Select>
+                </FormControl>
+
+                {/* Background Selector */}
+                <FormControl size="small" sx={{ minWidth: 160 }}>
+                    <Select
+                        value={boardBackground || ''}
+                        onChange={(e) => setBoardBackground(e.target.value)}
+                        displayEmpty
+                        sx={{
+                            color: 'inherit',
+                            bgcolor: 'rgba(255, 255, 255, 0.15)',
+                            borderRadius: '8px',
+                            '& .MuiSvgIcon-root': { color: 'inherit' }
+                        }}
+                    >
+                        <MenuItem value="">Theme / Background</MenuItem>
+                        {Object.entries(kanbanBackgrounds).map(([key, val]) => (
+                            <MenuItem value={key} key={key}>
+                                {val.name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </Box>
+
+            {/* Right: Members & Action Icons */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {board?.members?.length > 0 && (
+                    <AvatarGroup max={4} sx={{ mr: 1 }}>
+                        {board.members.map((member) => (
+                            <Tooltip key={member._id} title={member.user?.username || 'Member'}>
+                                <Avatar
+                                    alt={member.user?.username}
+                                    src={member.user?.image}
+                                    onClick={() => navigate(`/profile/${member.user?.username}`)}
+                                    sx={{
+                                        width: 32,
+                                        height: 32,
+                                        cursor: 'pointer',
+                                        border: '2px solid rgba(255,255,255,0.7) !important'
+                                    }}
+                                >
+                                    {member.user?.username?.charAt(0).toUpperCase()}
+                                </Avatar>
+                            </Tooltip>
+                        ))}
+                    </AvatarGroup>
+                )}
+
+                <Tooltip title="Activity Log">
+                    <IconButton sx={{ color: 'inherit' }} onClick={() => setOpenActivityModal(true)}>
+                        <HistoryIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+
+                {isOwner && (
+                    <Tooltip title="Invite Members">
+                        <IconButton sx={{ color: 'inherit' }} onClick={() => setOpenInviteModal(true)}>
+                            <ShareIcon fontSize="small" />
+                        </IconButton>
+                    </Tooltip>
+                )}
+
+                {canEdit && (
+                    <Tooltip title="Delete Board">
+                        <IconButton sx={{ color: 'inherit' }} onClick={() => setOpenDeleteModal(true)}>
+                            <DeleteIcon fontSize="small" />
+                        </IconButton>
+                    </Tooltip>
+                )}
+            </Box>
+
+            {/* Modals & Dialogs */}
+            <InviteComponent
+                openInvite={openInviteModal}
+                closeInviteModal={() => setOpenInviteModal(false)}
+                boardId={boardId}
+                isOwner={isOwner}
+                board={board}
+            />
+
+            <ActivityModal
+                boardId={boardId}
+                open={openActivityModal}
+                setOpenActivity={setOpenActivityModal}
+                onClose={() => setOpenActivityModal(false)}
+            />
+
+            <Dialog
+                open={openDeleteModal}
+                onClose={() => setOpenDeleteModal(false)}
+                PaperProps={{
+                    sx: { borderRadius: '14px', p: 1, bgcolor: '#ffffff' }
+                }}
             >
-                <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Are you sure?
-                    </Typography>
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        Do you really want to delete board? This process is irreversable
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: '10px', m: 1, justifyContent: 'center' }}>
-                        <Button variant='outlined' color='success' onClick={handleClose}>Cancel</Button>
-                        <Button variant='outlined' color='error' onClick={() => deleteBoard(boardId)}>Yes, Delete Board</Button>
-                    </Box>
-                </Box>
-            </Modal>
-        </div >
+                <DialogTitle sx={{ fontWeight: 600 }}>Delete this board?</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        This will permanently remove <strong>'{board.title}'</strong>, its columns, and all associated cards. This action cannot be undone.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions sx={{ pb: 2, px: 3 }}>
+                    <Button onClick={() => setOpenDeleteModal(false)} color="inherit">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleDeleteBoard} color="error" variant="contained">
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </Box>
     );
 }

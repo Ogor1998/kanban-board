@@ -1,153 +1,123 @@
-console.log("ProfileComponent loaded")
 import {
     Avatar,
     Box,
     Card,
     CardContent,
     Typography,
-    CircularProgress,
     Button,
-    Paper
+    Divider
 } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
-import Divider from '@mui/material/Divider';
 import TabComponent from "../pages/profile/TabComponent";
 import '../pages/profile/Profile.css'
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { getProfile } from "../api/profiles";
-
-
+import ProfileSkeleton from "../skeletons/ProfileSkeleton";
 
 export default function ProfileComponent({ profile, handleClick }) {
     const { currentUser } = useAuth();
     const [board, setBoard] = useState([])
     const [commentsCount, setCommentsCount] = useState(0)
-    const [cardsCount, setCardsCount] = useState(0)
     const [boardsCount, setboardsCount] = useState(0)
     const [loading, setLoading] = useState(true)
 
-    if (!profile) {
-        return (
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
-                <CircularProgress />
-            </Box>
-        );
-    }
-
     useEffect(() => {
         if (!profile) return
-        if (profile) {
-            const fetchBoards = async () => {
-                try {
-                    const res = await getProfile(profile.username)
-                    setBoard(res.data.board)
-                    setboardsCount(res.data.boardCount)
-                    setCommentsCount(res.data.commentsCount)
-                    console.log('this is board', res.data.board)
-                } catch (err) {
-                    console.log(err)
-                } finally {
-                    setLoading(false)
-                }
+        const fetchBoards = async () => {
+            try {
+                const res = await getProfile(profile.username)
+                setBoard(res.data.board)
+                setboardsCount(res.data.boardCount)
+                setCommentsCount(res.data.commentsCount)
+            } catch (err) {
+                console.log(err)
+            } finally {
+                setLoading(false)
             }
-            fetchBoards();
         }
+        fetchBoards()
     }, [profile])
-    const allowedToEditProfile =
-        profile._id === currentUser?._id;
 
-    const style = {
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: 'center',
-        mb: 5,
-        p: 3
-    }
+    const allowedToEditProfile = profile?._id === currentUser?._id
 
-    if (loading) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', p: 4, height: '100%' }}>
-                <CircularProgress size={30} />
-            </Box>
-        );
-    }
-
+    if (!profile || loading) return <ProfileSkeleton />
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                // justifyContent: "center",
-                mt: 5,
-                // width: '100%'
-                // minHeight: '50rem'
-            }}
-            className='profile__box'
+        <Box sx={{
+            mt: 5,
+            px: 4,        // ← side padding
+            maxWidth: 900, // ← wider max width
+            margin: '40px auto'  // ← centered but wider
+        }}>
+            <Card sx={{ boxShadow: '10px 10px 20px rgba(0, 0, 0, 0.3)', width: '100%' }}>
+                <CardContent sx={{ p: 4 }}>  {/* ← more internal padding */}
 
-        >
-            <Card sx={{ boxShadow: ' 10px 10px 20px rgba(0, 0, 0, 0.3)' }}>
-                <CardContent>
-                    <Box
-                        style={style}
-                        elevation={3}
-                    >
+                    {/* ── Avatar + Name Section ── */}
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 3,
+                        mb: 4,
+                        pb: 3,
+                    }}>
                         <Avatar
                             src={profile.image}
                             alt={profile.username}
-                            sx={{ width: 100, height: 100, marginRight: '2rem' }}
+                            sx={{ width: 120, height: 120 }}  // ← bigger avatar
                         />
-
-                        <Box sx={{ marginRight: 'auto', my: 1, textAlign: 'left', mb: 3 }}>
-                            <Typography variant="h5" sx={{ fontSize: '1.7rem' }}>
+                        <Box sx={{ flex: 1 }}>  {/* ← flex: 1 takes remaining space */}
+                            <Typography variant="h4" fontWeight={600}>
                                 {profile.firstname} {profile.lastname}
                             </Typography>
-                            <Typography variant="h5" sx={{ my: 1, fontSize: '1.7rem' }} >
+                            <Typography sx={{ fontSize: '1.5rem', color: 'text.secondary', my: 0.5 }}>
                                 @{profile.username}
                             </Typography>
-                            <Typography variant="h5" sx={{ fontSize: '1.5rem' }} >
+                            <Typography sx={{ fontSize: '1.4rem', color: 'text.secondary' }}>
                                 Job Description Placeholder
                             </Typography>
-
                         </Box>
-                        {allowedToEditProfile && <Button color='alert' variant="outlined" onClick={handleClick} sx={{ marginBottom: '10px' }}>Edit</Button>}
+                        {allowedToEditProfile && (
+                            <Button variant="outlined" onClick={handleClick}>
+                                Edit
+                            </Button>
+                        )}
                     </Box>
 
                     <Divider />
 
-                    <Box style={style} sx={{ my: 2, gap: '5rem' }}>
-                        <Box className='profile__extras'>
-                            <Typography variant="body1" gutterBottom>
-                                <strong>Boards</strong>
-                            </Typography>
-                            <Typography variant="body1" gutterBottom>
-                                {boardsCount}
-                            </Typography>
-                        </Box>
-                        <Box className='profile__extras'>
-                            <Typography variant="body1" gutterBottom>
-                                <strong>Cards</strong>
-                            </Typography>
-                            <Typography variant="body1" gutterBottom>
-                                0
-                            </Typography>
-                        </Box>
-                        <Box className='profile__extras'>
-                            <Typography variant="body1" gutterBottom>
-                                <strong>Comments</strong>
-                            </Typography>
-                            <Typography variant="body1" gutterBottom>
-                                {commentsCount}
-                            </Typography>
-                        </Box>
+                    {/* ── Stats Section ── */}
+                    <Box sx={{
+                        display: 'flex',
+                        justifyContent: 'space-around',
+                        py: 3,
+                    }}>
+                        {[
+                            { label: 'Boards', value: boardsCount },
+                            { label: 'Cards', value: 0 },
+                            { label: 'Comments', value: commentsCount }
+                        ].map(stat => (
+                            <Box key={stat.label} sx={{ textAlign: 'center' }}>
+                                <Typography variant="h5" fontWeight={700}>
+                                    {stat.value}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    {stat.label}
+                                </Typography>
+                            </Box>
+                        ))}
                     </Box>
+
                     <Divider />
 
-                    <TabComponent profile={profile} board={board} />
+                    {/* ── Tabs Section ── */}
+                    <Box sx={{ mt: 3 }}>
+                        <TabComponent profile={profile} board={board} />
+                    </Box>
 
                 </CardContent>
             </Card>
         </Box>
-    );
+    )
+
 }

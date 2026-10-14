@@ -9,10 +9,12 @@ import {
     Typography,
 } from "@mui/material";
 import { useNotification } from "../../context/NotificationContext";
+import { CircularProgress } from "@mui/material";
 
 
 export default function ProfileEditComponent({ profile, setProfile, handleClick }) {
     // const { username } = useParams();
+    const [isSaving, setIsSaving] = useState(false)
     const [formData, setFormData] = useState({
         username: "",
         firstname: "",
@@ -48,6 +50,7 @@ export default function ProfileEditComponent({ profile, setProfile, handleClick 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        setIsSaving(true)
 
         const form = new FormData();
         form.append("username", formData.username)
@@ -74,6 +77,8 @@ export default function ProfileEditComponent({ profile, setProfile, handleClick 
             handleClick();
         } catch (err) {
             setMessage({ text: err.response?.data?.message, severity: "error" })
+        } finally {
+            setIsSaving(false)
         }
     };
 
@@ -140,8 +145,15 @@ export default function ProfileEditComponent({ profile, setProfile, handleClick 
                 <Button
                     type="submit"
                     variant="contained"
+                    disabled={isSaving}
+                    startIcon={
+                        isSaving ? (<CircularProgress size={18} color="inherit" thickness={4} />
+                        ) : null
+                    }
+
+                    sx={{ minWidth: 140 }}
                 >
-                    Save Changes
+                    {isSaving ? 'Saving' : 'Save Changes'}
                 </Button>
                 <Button
                     onClick={() => handleClick()}
@@ -154,8 +166,10 @@ export default function ProfileEditComponent({ profile, setProfile, handleClick 
 
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
                 Last Profile Edit{" "}
-                {new Date(profile.updatedAt).toLocaleDateString()}
+                {profile?.updatedAt
+                    ? new Date(profile.updatedAt).toLocaleDateString()
+                    : 'Never'}
             </Typography>
-        </Box>
+        </Box >
     );
 }

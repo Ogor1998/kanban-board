@@ -47,6 +47,7 @@ export default function NotificationBell({ itemsPerPage = 5, username }) {
         if (!username) return
         let isMounted = true;
         const fetchNotifications = async () => {
+            setInitialLoading(true)
             try {
                 // const res = await axios.get(`/notifications/user/${username}`, {
                 //     params: { page, limit: itemsPerPage }
