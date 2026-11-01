@@ -17,6 +17,12 @@ module.exports.allBoards = async (req, res) => {
         return res.json({ boards: [] });
     }
 
+    if (!boards) {
+        return res.status(401).json({
+            message: "You don't have boards yets",
+        })
+    }
+
     // 2. Loop through each board and count its columns and cards
     const boardsWithCounts = await Promise.all(
         boards.map(async (board) => {
@@ -33,6 +39,8 @@ module.exports.allBoards = async (req, res) => {
             };
         })
     );
+
+
 
     res.json({ boards: boardsWithCounts });
 }

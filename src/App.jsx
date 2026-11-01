@@ -5,8 +5,11 @@ import { Link, Routes, Route } from 'react-router-dom'
 const Home = lazy(() => import('./pages/Home'))
 const Show = lazy(() => import('./pages/Show'))
 const Login = lazy(() => import('./users/Login'))
-const Register = lazy(() => import('./users/Register'))
+// const Register = lazy(() => import('./users/Register'))
+const Register = lazy(() => import('./users/Registerv12'))
+
 const Profile = lazy(() => import('./pages/Profile/Profile'))
+// import Register from './Registerv12'
 import Error from './utils/Error'
 import { Navigate } from 'react-router-dom'
 import NavBar from './components/navigation/NavBar'

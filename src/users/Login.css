@@ -10,9 +10,9 @@
     gap: 20px;
     padding: 0 20px;
     box-shadow: 10px 24px 124px #0000009b;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    /* background: rgba(255, 255, 255, 0.15); */
+    /* backdrop-filter: blur(15px); */
+    /* -webkit-backdrop-filter: blur(15px); */
 
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow:
@@ -44,10 +44,11 @@
 }
 
 .login__link {
-    text-decoration: none;
+    /* text-decoration: none; */
     padding: 0.2rem;
     border-radius: 5px;
-    color: #ffffffac;
+    /* color: #; */
+
 }
 
 .login__link:active {

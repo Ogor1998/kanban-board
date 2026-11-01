@@ -1,6 +1,7 @@
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const { uploadToCloudinary } = require('../cloudinary')
 
 
 const secret = process.env.JWT_SECRET;
@@ -23,6 +24,10 @@ module.exports.register = async (req, res) => {
         password: hashedPassword,
         email
     })
+    if (req.file) {
+        const result = await uploadToCloudinary(req.file.buffer)
+        user.image = result.secure_url
+    }
     await user.save();
     // console.log('this is the new user', user)
     res.json({

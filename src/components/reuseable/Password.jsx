@@ -3,7 +3,7 @@ import { InputAdornment, IconButton, TextField } from "@mui/material"
 import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
 
-const Password = ({ formData, handleChange }) => {
+const Password = ({ formData, handleChange, errors }) => {
 
     const [showPassword, setShowPassword] = useState(false)
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -22,8 +22,11 @@ const Password = ({ formData, handleChange }) => {
             name='password'
             fullWidth
             value={formData.password}
+            autoComplete='new-password'
             onChange={handleChange}
             type={showPassword ? 'text' : 'password'}
+            error={!!errors?.password}
+            helperText={errors?.password}
             slotProps=
             {{
                 input: {

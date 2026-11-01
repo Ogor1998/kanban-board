@@ -19,6 +19,7 @@ export default function Login() {
     const [triesCount, setTriesCount] = useState(5)
     const [timerleft, setTimerLeft] = useState(5 * 60 * 1000)
     const location = useLocation();
+    const [errors, setErrors] = useState({})
 
     const [formData, setFormData] = useState({
         username: "",
@@ -58,8 +59,20 @@ export default function Login() {
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
+
+
+
+    const validate = () => {
+        let next = {}
+        if (formData.username < 3) next.username = 'Username must be at least 3 Characters'
+        if (formData.username === '' || formData.username === '') next.username = 'Username cannot be empty'
+        if (formData.password === '') next.password = 'Password cannot be empty'
+        setErrors(next)
+        return Object.keys(next).length === 0
+    }
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validate()) return
         try {
             const res = await axios.post('/login', formData, { withCredentials: true })
             if (res.data?.isLoggedIn || res.data?.user) {
@@ -126,18 +139,21 @@ export default function Login() {
                     variant="outlined"
                     name='username'
                     onChange={handleChange}
+                    error={!!errors.username}
                     value={formData.username}
                     fullWidth
+                    autoComplete="username"
+                    helperText={errors.username}
                 />
 
-                <Password formData={formData} handleChange={handleChange} />
+                <Password formData={formData} errors={errors} handleChange={handleChange} />
                 <Button type="submit" variant="contained" disabled={triesCount === 0 ? true : false} fullWidth>Login</Button>
                 {triesCount < 5 && <Typography sx={{ fontSize: '1.7rem' }}>You have <strong style={{ color: 'red' }}>{triesCount}</strong> tries left </Typography>}
                 {triesCount === 0 && <Typography>Try again in {timeDisplay}</Typography>}
 
 
-                <Typography variant="h6" gutterBottom>
-                    Don't have an account? <NavLink className='login__link' to={'/register'}><Button variant="contained">Sign Up</Button></NavLink>
+                <Typography variant="h6" sx={{ fontSize: '1.4rem' }} gutterBottom>
+                    Don't have an account? <NavLink className='login__link' to={'/register'}>Sign Up</NavLink>
                 </Typography>
 
             </Box>

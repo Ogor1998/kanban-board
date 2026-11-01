@@ -76,6 +76,7 @@ export default function Register() {
                     label="Username"
                     variant="outlined"
                     name='username'
+                    autoComplete="username"
                     onChange={handleChange}
                     value={formData.username}
                     fullWidth
