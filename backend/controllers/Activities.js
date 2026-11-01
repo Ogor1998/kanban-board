@@ -2,12 +2,32 @@ const Activity = require('../models/Activity')
 const User = require('../models/User')
 
 module.exports.findActivity = async (req, res) => {
-    const { boardId } = req.params;
-    const activity = await Activity.find({ board: boardId }).sort('-createdAt').populate('user', 'firstname username image')
-        .sort('-createdAt')
-        .limit(50)
-    res.json(activity)
-}
+    try {
+        const { boardId } = req.params;
+        const page = Math.max(Number(req.query.page) || 1, 1);
+        const limit = 5;
+        const skip = (page - 1) * limit;
+
+        const [activities, total] = await Promise.all([
+            Activity.find({ board: boardId })
+                .sort({ createdAt: -1, _id: -1 })
+                .skip(skip)
+                .limit(limit)
+                .populate('user', 'firstname username image')
+                .lean(),
+            Activity.countDocuments({ board: boardId })
+        ]);
+
+        console.log(activities)
+
+        res.json({
+            activities,
+            pagination: { hasMore: skip + activities.length < total }
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Could not load activity' });
+    }
+};
 module.exports.getUserActivities = async (req, res) => {
     try {
         const { username } = req.params;

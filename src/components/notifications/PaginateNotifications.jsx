@@ -56,15 +56,15 @@ const PaginateNotifications = ({
         return <NotificationSkeleton />;
     }
 
-    // if (!notification || notification.length === 0) {
-    //     return (
-    //         <Box sx={{ p: 4, textAlign: 'center' }}>
-    //             <Typography variant="body1" color="text.secondary">
-    //                 You have no notifications yet
-    //             </Typography>
-    //         </Box>
-    //     );
-    // }
+    if (!notification || notification.length === 0) {
+        return (
+            <Box sx={{ p: 4, textAlign: 'center' }}>
+                <Typography variant="body1" color="text.secondary">
+                    You have no notifications yet
+                </Typography>
+            </Box>
+        );
+    }
 
     return (
         <Box sx={{ width: '100%' }}>

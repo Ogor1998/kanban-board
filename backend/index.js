@@ -35,7 +35,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/kanban").then(() => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: 'http://localhost:5174',
+    origin: 'http://localhost:5173',
     credentials: true
 }));
 app.use(cookieParser());
