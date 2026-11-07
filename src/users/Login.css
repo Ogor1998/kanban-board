@@ -48,6 +48,8 @@
     padding: 0.2rem;
     border-radius: 5px;
     /* color: #; */
+    color: purple;
+    text-decoration: underline;
 
 }
 

@@ -98,8 +98,6 @@ const Home = () => {
                 <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                     {boards.map((b) => {
                         const membersList = Array.isArray(b?.members) ? b.members : [];
-                        console.log('this is memberslsit', membersList)
-
                         return (
                             <Box
                                 key={b._id}

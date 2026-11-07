@@ -87,7 +87,7 @@ const PaginateActivity = ({ itemsPerPage, username }) => {
     }
 
     return (
-        <div style={{ overflowY: 'auto', minHeight: '22rem' }}>
+        <div style={{ overflowY: 'scroll', maxHeight: '22rem' }}>
             <List dense>
                 {items.map((item, index) => (
                     <Box key={item._id}>

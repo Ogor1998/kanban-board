@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, NavLink } from "react-router-dom";
 import axios from "axios";
 import AvatarUpload from "./AvatarUpload";
 import {
@@ -7,13 +7,19 @@ import {
     TextField,
     Button,
     Typography,
+    Paper,
+    Divider,
+    Stack,
 } from "@mui/material";
 import { useNotification } from "../../context/NotificationContext";
 import { CircularProgress } from "@mui/material";
+import { useAuth } from "../../context/AuthContext";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import SaveIcon from '@mui/icons-material/Save';
+import { Link as RouterLink } from "react-router-dom";
 
-
-export default function ProfileEditComponent({ profile, setProfile, handleClick }) {
-    // const { username } = useParams();
+export default function ProfileEditComponent() {
+    const { username } = useParams();
     const [isSaving, setIsSaving] = useState(false)
     const [formData, setFormData] = useState({
         username: "",
@@ -22,9 +28,48 @@ export default function ProfileEditComponent({ profile, setProfile, handleClick 
         email: "",
         image: ""
     });
+    const [loading, setLoading] = useState(false)
     const [preview, setPreview] = useState(null)
-    const [file, setFile] = useState(profile?.image)
     const { setMessage } = useNotification();
+    const [profile, setProfile] = useState(null)
+
+
+
+    const { isLoggedIn, currentUser } = useAuth();
+    const navigate = useNavigate();
+
+
+    // useEffect(() => {
+    //     if (!currentUser) {
+    //         setTimeout(() => {
+
+    //             navigate('/login')
+    //         }, 1000)
+    //     }
+    // }, [currentUser])
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            setLoading(true)
+            try {
+                const res = await axios.get(`/profile/${username}`)
+                console.log(res.data)
+                setProfile(res.data)
+            }
+            catch (err) {
+                setMessage({
+                    text: err.response?.data?.message,
+                    severity: 'error'
+                })
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchProfile();
+
+    }, [username])
+    const [file, setFile] = useState(profile?.image)
+
 
     useEffect(() => {
         if (profile) {
@@ -72,9 +117,7 @@ export default function ProfileEditComponent({ profile, setProfile, handleClick 
                 text: "Profile updated successfully",
                 severity: "success"
             });
-
-
-            handleClick();
+            navigate(`/profile/${username}`)
         } catch (err) {
             setMessage({ text: err.response?.data?.message, severity: "error" })
         } finally {
@@ -83,93 +126,121 @@ export default function ProfileEditComponent({ profile, setProfile, handleClick 
     };
 
     return (
-        <Box
+        <Paper
+            elevation={3}
             component="form"
             onSubmit={handleSubmit}
             sx={{
+                width: "100%",
+                maxWidth: 480,
+                mx: "auto",
+                mt: 4,
+                p: { xs: 2.5, sm: 4 },
+                borderRadius: 3,
                 display: "flex",
                 flexDirection: "column",
-                gap: 2,
-                // maxWidth: 500,
-                width: '30rem',
-                margin: "auto",
-                mt: 5,
-                backgroundColor: '#fff',
-                p: 2
+                gap: 2.5,
             }}
         >
+            <Box>
+                <Typography variant="h5" fontWeight={700}>
+                    Edit Profile
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    Update your account details and profile picture.
+                </Typography>
+            </Box>
 
-            <Typography variant="h5">
-                Edit Profile
-            </Typography>
+            <Divider />
 
-            <AvatarUpload setFile={setFile} currentImage={profile?.image} />
-            <TextField
-                fullWidth
-                label="Username"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                disabled
-            />
+            {/* Avatar Section */}
+            <Box sx={{ display: "flex", justifyContent: "center", py: 1 }}>
+                <AvatarUpload setFile={setFile} currentImage={profile?.image} />
+            </Box>
 
-            <TextField
-                fullWidth
-                label="Email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-            />
+            {/* Form Fields */}
+            <Stack spacing={2}>
+                <TextField
+                    fullWidth
+                    size="small"
+                    label="Username"
+                    name="username"
+                    value={formData.username}
+                    disabled
+                    helperText="Username cannot be modified"
+                />
 
-            <TextField
-                fullWidth
-                label="First Name"
-                name="firstname"
-                value={formData.firstname}
-                onChange={handleChange}
-            />
+                <TextField
+                    fullWidth
+                    size="small"
+                    label="Email Address"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                />
 
-            <TextField
-                fullWidth
-                label="Last Name"
-                name="lastname"
-                value={formData.lastname}
-                onChange={handleChange}
-            />
+                <Box sx={{ display: "flex", gap: 1.5 }}>
+                    <TextField
+                        fullWidth
+                        size="small"
+                        label="First Name"
+                        name="firstname"
+                        value={formData.firstname}
+                        onChange={handleChange}
+                        required
+                    />
+                    <TextField
+                        fullWidth
+                        size="small"
+                        label="Last Name"
+                        name="lastname"
+                        value={formData.lastname}
+                        onChange={handleChange}
+                        required
+                    />
+                </Box>
+            </Stack>
 
-            {/* {preview && <img src={preview} width="200" />}
-            <UploadComponent setFile={setFile} setPreview={setPreview} /> */}
+            <Divider sx={{ my: 0.5 }} />
 
+            {/* Action Buttons */}
+            <Box sx={{ display: "flex", gap: 1.5, justifyContent: "flex-end" }}>
+                <Button
+                    component={RouterLink}
+                    to={`/profile/${username}`}
+                    variant="outlined"
+                    color="inherit"
+                    startIcon={<ArrowBackIcon />}
+                    disabled={isSaving}
+                >
+                    Return Home
+                </Button>
 
-            <Box sx={{ display: 'flex', gap: '10px' }}>
                 <Button
                     type="submit"
                     variant="contained"
                     disabled={isSaving}
                     startIcon={
-                        isSaving ? (<CircularProgress size={18} color="inherit" thickness={4} />
-                        ) : null
+                        isSaving ? (
+                            <CircularProgress size={18} color="inherit" thickness={4} />
+                        ) : (
+                            <SaveIcon />
+                        )
                     }
-
                     sx={{ minWidth: 140 }}
                 >
-                    {isSaving ? 'Saving' : 'Save Changes'}
-                </Button>
-                <Button
-                    onClick={() => handleClick()}
-                    variant="contained"
-                    color='error'
-                >
-                    Cancel
+                    {isSaving ? "Saving..." : "Save Changes"}
                 </Button>
             </Box>
 
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                Last Profile Edit{" "}
-                {profile?.updatedAt
-                    ? new Date(profile.updatedAt).toLocaleDateString()
-                    : 'Never'}
-            </Typography>
-        </Box >
+            {profile?.updatedAt && (
+                <Typography variant="caption" color="text.secondary" textAlign="center">
+                    Last modified: {new Date(profile.updatedAt).toLocaleDateString()}
+                </Typography>
+            )}
+        </Paper>
     );
+
 }

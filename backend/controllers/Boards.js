@@ -66,14 +66,17 @@ module.exports.findUserBoard = async (req, res) => {
         });
     }
     // console.log('this is the user', user)
-    const board = await Board.find({
-        $or: [
-            { owner: user._id },
-            { 'members.user': user._id }
-        ]
-    })
-    const boardCount = await Board.countDocuments({ owner: user._id })
-    const commentsCount = await Comment.countDocuments({ author: user._id })
+
+    const [board, commentsCount] = await Promise.all([
+        Board.find({
+            $or: [
+                { owner: user._id },
+                { 'members.user': user._id }
+            ]
+        }),
+        Comment.countDocuments({ author: user._id })
+    ])
+    const boardCount = board.length
     if (!board) {
         return res.status(404).json({
             message: 'Board not found'

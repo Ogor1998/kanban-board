@@ -1,12 +1,13 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-import ProfileComponent from "../../components/ProfileComponent"
+import { useParams, useNavigate } from "react-router-dom"
+// import ProfileComponent from "./ProfileComponent"
+import ProfileComponent from "./ProfileComponentv1"
 import './Profile.css'
-import ProfileEditComponent from "./ProfileEditComponent";
 import { getUserProfile } from "../../api/profiles"
 import ProfileSkeleton from "../../skeletons/ProfileSkeleton"
 import { useNotification } from "../../context/NotificationContext"
+import { useAuth } from "../../context/AuthContext"
 
 export default function Profile() {
     const [profile, setProfile] = useState({});
@@ -33,18 +34,11 @@ export default function Profile() {
         fetchProfile();
     }, [username])
 
-    const handleClick = () => {
-        setIsEditting(prev => !prev);
-        console.log(isEditting)
-    }
-
     if (loading) {
         return <ProfileSkeleton />
     }
     return (
-        isEditting ? <ProfileEditComponent profile={profile} setProfile={setProfile} handleClick={handleClick} /> :
-            <ProfileComponent profile={profile} handleClick={handleClick} />
-
+        <ProfileComponent profile={profile} username={username} />
 
     )
 }

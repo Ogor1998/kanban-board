@@ -95,7 +95,7 @@ export default function TabComponent({ profile, board }) {
                 </Box>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-                <Box className='board__list'>
+                <Box className='board__list' sx={{ maxHeight: '22rem' }}>
                     {board.map(item => (
                         <Box sx={{ display: 'flex', flexDirection: 'column', fontSize: '2rem', }}>
                             <NavLink to={`/columns/${item._id}`} key={item._id} className='links1'>{item.title}

@@ -21,6 +21,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Toaster } from 'react-hot-toast'
 import BoardSkeleton from './skeletons/BoardSkeleton'
 import ProfileSkeleton from './skeletons/ProfileSkeleton'
+// import ProfileEditComponent from './pages/profile/ProfileEditComponent'
+import ProfileEditComponent from './pages/Profile/ProfileEditComponent'
+// import ProfileEditComponent from './components/ProfileEditComponent'
 
 
 
@@ -56,6 +59,14 @@ function App() {
             </Suspense>
           }
           />
+
+          <Route path='/profile/:username/edit' element={
+            <Suspense fallback={<ProfileSkeleton />}>
+              <ProfileEditComponent />
+            </Suspense>
+          }
+          />
+
 
           <Route path='/error' element={<Error />} />
           <Route path='/login' element={<Login />} />
