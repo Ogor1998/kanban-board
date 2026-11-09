@@ -67,16 +67,16 @@ module.exports.findUserBoard = async (req, res) => {
     }
     // console.log('this is the user', user)
 
-    const [board, commentsCount] = await Promise.all([
+    const [board, boardCount, commentsCount] = await Promise.all([
         Board.find({
             $or: [
                 { owner: user._id },
                 { 'members.user': user._id }
             ]
         }),
+        Board.countDocuments({ owner: user._id }),
         Comment.countDocuments({ author: user._id })
     ])
-    const boardCount = board.length
     if (!board) {
         return res.status(404).json({
             message: 'Board not found'
@@ -103,12 +103,13 @@ module.exports.createBoard = async (req, res) => {
     });
 
     await board.save();
+    await Promise.all([
+        Column.create({ title: 'Todo', boardId: board._id, order: 1 }),
+        Column.create({ title: 'In Progress', boardId: board._id, order: 2 }),
+        Column.create({ title: 'In Review', boardId: board._id, order: 3 }),
+        Column.create({ title: 'Done', boardId: board._id, order: 4 })
 
-    await Column.create({ title: 'Todo', boardId: board._id, order: 1 })
-    await Column.create({ title: 'In Progress', boardId: board._id, order: 2 })
-    await Column.create({ title: 'In Review', boardId: board._id, order: 3 })
-    await Column.create({ title: 'Done', boardId: board._id, order: 4 })
-
+    ])
 
     await Activity.create({
         board: board._id,

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+
 import {
     Modal, Box, Typography, Avatar, List, ListItem,
     ListItemAvatar, ListItemText, Divider, CircularProgress, Button, IconButton

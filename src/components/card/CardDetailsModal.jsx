@@ -288,7 +288,7 @@ const CardDetailsModal = ({ card, columnId, setColumns, setOpen, open, columnTit
                                 <Select
                                     value={formData.priority}
                                     onChange={handlePriorityChange}
-                                    sx={{ bgcolor: '#fff', fontSize: '0.875rem' }}
+                                    sx={{ bgcolor: '#fff', fontSize: '1.4rem' }}
                                 >
                                     <MenuItem value="low">Low</MenuItem>
                                     <MenuItem value="medium">Medium</MenuItem>

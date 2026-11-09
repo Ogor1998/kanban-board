@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+
 import {
     Box,
     Typography,
@@ -132,8 +132,9 @@ const PaginateActivity = ({ itemsPerPage, username }) => {
                         size="small"
                         onClick={handleLoadMore}
                         disabled={loading}
+                        sx={{ textTransform: 'none', minWidth: 100 }}
                     >
-                        {loading ? <CircularProgress size={20} /> : 'Load More'}
+                        {loading ? <CircularProgress size={18} color="inherit" /> : 'Load More'}
                     </Button>
                 </Box>
             )}
