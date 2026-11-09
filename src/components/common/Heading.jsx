@@ -13,6 +13,8 @@ import { useBoard } from '../../context/BoardContext';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ColumnDeleteModal from '../column/ColumnDeleteModal';
+import { Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from '@mui/material'
+
 
 
 
@@ -27,6 +29,8 @@ const Heading = ({ col, handleDelete, setColumns, boardId, isHidden, hideColumns
         setTitle(title);
         setIsEditting(prev => !prev)
     }
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
+
 
     // console.log('this is the column', col)
 

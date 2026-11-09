@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom'
 import DateFormatComponent from '../common/DateFormatComponent'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
 import { useBoard } from '../../context/BoardContext'
+import CardDeleteModal from './CardDeleteModal'
 export default function SortableCard({ card, setColumns, columnId, onOpenModal }) {
     const [isEditting, setIsEditting] = useState(false)
     const [open, setOpen] = useState(false);
@@ -73,9 +74,12 @@ export default function SortableCard({ card, setColumns, columnId, onOpenModal }
             className='card'
             sx={{ display: 'flex', alignItems: 'center', gap: '10px', p: 1, borderRadius: '15px', backgroundColor: '#fff', color: '#000', marginBottom: '10px' }} >
 
-            <>
+            <Box sx={{ display: 'flex' }}>
+
                 <IconButton onClick={onOpenModal}><ZoomOutMapIcon /></IconButton>
-            </>
+                {/* <CardDeleteModal card={card} handleCardDelete={handleCardDelete} /> */}
+            </Box>
+
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', }}>
                 <Box
                     {...attributes}
@@ -126,7 +130,6 @@ export default function SortableCard({ card, setColumns, columnId, onOpenModal }
                 {card.description}
             </Typography>
             <DateFormatComponent dueDate={dueDate} />
-
 
             <CommentsModal card={card} setColumns={setColumns} />
         </Box >

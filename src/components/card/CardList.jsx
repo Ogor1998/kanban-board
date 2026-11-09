@@ -7,6 +7,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Button } from '@mui/material';
 import { useAuth } from '../../context/AuthContext';
 import { useBoard } from '../../context/BoardContext'
+import CardDeleteModal from './CardDeleteModal';
 
 
 
@@ -14,11 +15,15 @@ import { useBoard } from '../../context/BoardContext'
 const ITEM_HEIGHT = 48;
 
 export default function CardList({ handleCardDelete, handleSwitch, card }) {
+    const [openCardDelete, setOpenCardDelete] = useState(false)
+    const handleCardDeleteOpen = () => setOpenCardDelete(true);
+    const handleCardDeleteClose = () => setOpenCardDelete(false);
+
     const { currentUser } = useAuth()
     const { singleBoard } = useBoard();
     const options = [
         { label: 'Edit', action: handleSwitch },
-        { label: 'Delete', action: handleCardDelete }
+        { label: 'Delete', action: handleCardDeleteOpen }
 
     ];
     const [anchorEl, setAnchorEl] = useState(null);
@@ -79,6 +84,13 @@ export default function CardList({ handleCardDelete, handleSwitch, card }) {
                     </Menu>
                 </>
             ) : null}
+
+
+            <CardDeleteModal
+                handleCardDeleteClose={handleCardDeleteClose}
+                openCardDelete={openCardDelete}
+                card={card}
+            />
         </div>
     );
 }

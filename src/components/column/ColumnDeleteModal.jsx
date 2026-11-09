@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { Modal, Box, Typography, Button, IconButton } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from '@mui/material'
+
+
 const style = {
     position: 'absolute',
     top: '50%',
@@ -24,25 +27,31 @@ const ColumnDeleteModal = ({ col, handleDelete }) => {
     return (
         <div>
             <IconButton variant='outlined' color='error' onClick={handleOpen} ><DeleteIcon /></IconButton>
-            <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Are you sure?
-                    </Typography>
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        Do you really want to delete column? This process is irreversable
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: '10px', m: 1, justifyContent: 'center' }}>
-                        <Button variant='outlined' color='success' onClick={handleClose}>Cancel</Button>
-                        <Button variant='outlined' color='error' onClick={() => handleDelete(col._id)}>Yes, Delete Column</Button>
-                    </Box>
-                </Box>
-            </Modal>
+            <Box>
+                <Dialog
+                    open={open}
+                    onClose={handleClose}
+                    PaperProps={{
+                        sx: { borderRadius: '14px', p: 1, bgcolor: '#ffffff' }
+                    }}
+                >
+                    <DialogTitle sx={{ fontWeight: 600 }}>Delete this column?</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            This will permanently remove <strong>'{col?.title}'</strong> all associated cards. This action cannot be undone.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions sx={{ pb: 2, px: 3 }}>
+                        <Button onClick={handleClose} color="inherit">
+                            Cancel
+                        </Button>
+                        <Button onClick={() => handleDelete(col._id)} color="error" variant="contained">
+                            Delete
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </Box>
+
         </div >
     )
 }

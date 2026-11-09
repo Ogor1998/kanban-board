@@ -26,6 +26,7 @@ import CardDetailsModal from '../components/card/CardDetailsModal'
 import { useBoard } from '../context/BoardContext'
 import NewCardModal from '../components/card/NewCard'
 import ColumnSkeleton from '../skeletons/ColumnSkeleton'
+// import { Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from '@mui/material'
 
 
 
@@ -55,7 +56,6 @@ const Show = () => {
     const { data: columns, setData: setColumns, loading } = useFetch(`/columns/${boardId}`, (data) => data.columns);
     const { fetchBoards } = useBoard();
     const [boardBackground, setBoardBackground] = useState(localStorage.getItem('backgrounds'))
-
 
     const selectedBackground = kanbanBackgrounds[boardBackground]
     const [isHiddenColumns, setIsHiddenColumns] = useState(() => {
@@ -161,6 +161,7 @@ const Show = () => {
         }
     }
 
+
     const handleDelete = async (id) => {
         const res = await deleteColumn(id)
         setColumns((prev) => prev.filter(col => col._id !== id))
@@ -256,6 +257,7 @@ const Show = () => {
                     />
                 )}
                 <NewColumnModal handleChange={handleChange} formData={formData} handleSubmit={handleSubmit} />
+
 
             </div>
         </Box>
