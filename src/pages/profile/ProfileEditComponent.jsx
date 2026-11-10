@@ -26,7 +26,8 @@ export default function ProfileEditComponent() {
         firstname: "",
         lastname: "",
         email: "",
-        image: ""
+        image: "",
+        description: ""
     });
     const [loading, setLoading] = useState(false)
     const [preview, setPreview] = useState(null)
@@ -78,7 +79,8 @@ export default function ProfileEditComponent() {
                 firstname: profile.firstname || "",
                 lastname: profile.lastname || "",
                 email: profile.email || "",
-                image: profile.image || ""
+                image: profile.image || "",
+                description: profile.description || ""
             });
         }
     }, [profile]);
@@ -102,6 +104,7 @@ export default function ProfileEditComponent() {
         form.append("email", formData.email)
         form.append("firstname", formData.firstname)
         form.append("lastname", formData.lastname)
+        form.append("description", formData.description)
 
         if (file) {
             form.append("image", file)
@@ -179,6 +182,17 @@ export default function ProfileEditComponent() {
                     value={formData.email}
                     onChange={handleChange}
                     required
+                />
+
+                <TextField
+                    id="outlined-multiline-flexible"
+                    label="Description"
+                    name="description"
+                    multiline
+                    fullWidth
+                    maxRows={4}
+                    value={formData.description}
+                    onChange={handleChange}
                 />
 
                 <Box sx={{ display: "flex", gap: 1.5 }}>

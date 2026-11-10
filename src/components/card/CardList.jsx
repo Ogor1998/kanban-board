@@ -8,6 +8,7 @@ import { Button } from '@mui/material';
 import { useAuth } from '../../context/AuthContext';
 import { useBoard } from '../../context/BoardContext'
 import CardDeleteModal from './CardDeleteModal';
+import { Create, Delete } from '@mui/icons-material';
 
 
 
@@ -22,8 +23,8 @@ export default function CardList({ handleCardDelete, handleSwitch, card }) {
     const { currentUser } = useAuth()
     const { singleBoard } = useBoard();
     const options = [
-        { label: 'Edit', action: handleSwitch },
-        { label: 'Delete', action: handleCardDeleteOpen }
+        { label: 'Edit', action: handleSwitch, icon: <Create /> },
+        { label: 'Delete', action: handleCardDeleteOpen, icon: <Delete /> }
 
     ];
     const [anchorEl, setAnchorEl] = useState(null);
@@ -63,7 +64,8 @@ export default function CardList({ handleCardDelete, handleSwitch, card }) {
                             paper: {
                                 style: {
                                     maxHeight: ITEM_HEIGHT * 4.5,
-                                    width: '20ch',
+                                    width: '25ch',
+                                    display: 'flex',
                                 },
                             },
                             list: {
@@ -77,7 +79,7 @@ export default function CardList({ handleCardDelete, handleSwitch, card }) {
                                 onClick={handleClose}
                             >
                                 <Button onClick={option.action}>
-                                    {option.label}
+                                    <IconButton sx={{ marginRight: 'auto' }}>{option.icon} </IconButton> {option.label}
                                 </Button>
                             </MenuItem>
                         ))}

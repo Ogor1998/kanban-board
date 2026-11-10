@@ -9,6 +9,7 @@ import { NotificationProvider } from "./context/NotificationContext";
 import { AuthProvider } from './context/AuthContext.jsx'
 import { BoardProvider } from './context/BoardContext.jsx'
 import { SocketProvider } from './context/SocketContext.jsx'
+// const api_url= import.meta.env.VITE_WEATHER_API_KEY
 
 const theme = createTheme({
   typography: {

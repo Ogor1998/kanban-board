@@ -3,7 +3,7 @@ const router = express.Router();
 const { allBoards, findBoard, createBoard, deleteBoard, inviteMember, updateBoard, findUserBoard, deleteMember } = require('../controllers/Boards')
 const { catchAsync } = require('../utils/catchAsync')
 const { isLoggedIn } = require('../middleware/auth')
-const { isBoardOwner, validateBoard, isBoardMemeber } = require('../middleware/middleware')
+const { isBoardOwner, validateBoard, isBoardMember } = require('../middleware/middleware')
 
 
 

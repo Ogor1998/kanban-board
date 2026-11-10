@@ -29,11 +29,22 @@ module.exports.register = async (req, res) => {
         user.image = result.secure_url
     }
     await user.save();
-    // console.log('this is the new user', user)
+
+
+    const token = jwt.sign({ userId: user._id }, secret, { expiresIn: '1h' });
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: false,       // true in production
+        sameSite: 'lax',
+        maxAge: 1000 * 60 * 60,
+    });
+
+    const { password: _pw, ...safeUser } = user.toObject();
+
     res.json({
         message: "You've registered successfully",
         isLoggedIn: true,
-        user: user
+        user: safeUser
     })
 
 }

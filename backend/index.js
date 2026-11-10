@@ -5,7 +5,7 @@ const express = require('express');
 const rateLimit = require('express-rate-limit')
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT;
 const mongoose = require('mongoose')
 const cors = require('cors')
 const boardRoutes = require('./routes/boardRoutes')
@@ -27,7 +27,7 @@ const http = require('http');
 const server = http.createServer(app)
 initSocket(server)
 
-mongoose.connect("mongodb://127.0.0.1:27017/kanban").then(() => {
+mongoose.connect(process.env.DB_URL).then(() => {
     console.log(`Mongo Connection Active`)
 }).catch((err) => {
     console.log(`Mongo Failed Because ${err}`)
@@ -35,7 +35,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/kanban").then(() => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: process.env.CLIENT_URL,
     credentials: true
 }));
 app.use(cookieParser());
@@ -60,17 +60,17 @@ app.use((req, res, next) => {
 })
 
 
-// const limiter = rateLimit({
-//     windowMs: 15 * 60 * 1000,
-//     limit: 10000,
-//     message: { message: 'Too many requests from this ip address, Try again later' },
-//     standardHeaders: true,
-//     legacyHeaders: false,
-// })
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 10000,
+    message: { message: 'Too many requests from this ip address, Try again later' },
+    standardHeaders: true,
+    legacyHeaders: false,
+})
 
 
 
-// app.use(limiter)
+app.use(limiter)
 
 app.use('/columns', columnRoutes)
 app.use('/cards', cardRoutes)
@@ -80,8 +80,6 @@ app.use('/profile', profileRoutes)
 app.use('/comments', commentRoutes)
 app.use('/activity', activityRoutes)
 app.use('/notifications', notificationRoutes)
-
-const secret = process.env.JWT_SECRET;
 
 
 

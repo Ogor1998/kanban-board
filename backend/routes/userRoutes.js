@@ -9,7 +9,7 @@ const { upload } = require('../cloudinary')
 
 router.get('/users', catchAsync(findUsers))
 router.post('/register', upload.single('image'), validateUser, catchAsync(register))
-router.post('/login', catchAsync(login))
+router.post('/login', authLimiter, catchAsync(login))
 
 
 

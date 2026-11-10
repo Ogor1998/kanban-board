@@ -21,7 +21,7 @@ router.post('/', isLoggedIn, validateCard, upload.array('images', 10), catchAsyn
 
 router.delete('/:id', isLoggedIn, catchAsync(deleteCard))
 
-router.put('/:id', isLoggedIn, validateCard, upload.array('images', 10), catchAsync(updateCard))
+router.put('/:id', isLoggedIn, upload.array('images', 10), validateCard, catchAsync(updateCard))
 router.post('/:cardId/checklist', isLoggedIn, catchAsync(checklist))
 router.patch('/:cardId/checklist/:itemId', isLoggedIn, catchAsync(toggleChecklist))
 router.delete('/:cardId/checklist/:itemId', isLoggedIn, catchAsync(deleteItem))

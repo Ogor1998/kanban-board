@@ -11,6 +11,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useNotification } from '../../context/NotificationContext';
 import { useBoard } from '../../context/BoardContext';
+import { CircularProgress } from '@mui/material';
+import { Create } from '@mui/icons-material';
 
 const Fade = React.forwardRef(function Fade(props, ref) {
 
@@ -77,6 +79,7 @@ export default function NewBoardModal({ formData, setFormData, handleOpen, setOp
     const navigate = useNavigate();
     const handleClose = () => setOpen(false);
     const { setMessage } = useNotification();
+    const [isSaving, setIsSaving] = React.useState(false)
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }))
@@ -84,6 +87,7 @@ export default function NewBoardModal({ formData, setFormData, handleOpen, setOp
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsSaving(true)
         try {
             const res = await axios.post('/boards', formData);
             console.log(res.data)
@@ -96,7 +100,11 @@ export default function NewBoardModal({ formData, setFormData, handleOpen, setOp
         } catch (err) {
             console.log(err)
             setMessage({ text: err.response?.data?.message, severity: 'error' })
+        } finally {
+            setIsSaving(false)
+
         }
+
 
     }
 
@@ -169,6 +177,22 @@ export default function NewBoardModal({ formData, setFormData, handleOpen, setOp
                                 }}
                             />
 
+
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                disabled={isSaving}
+                                startIcon={
+                                    isSaving ? (
+                                        <CircularProgress size={18} color="inherit" thickness={4} />
+                                    ) : (
+                                        <Create />
+                                    )
+                                }
+                                sx={{ minWidth: 140 }}
+                            >
+                                {isSaving ? "Saving..." : "Save Changes"}
+                            </Button>
 
                             <Button type='submit' sx={{ fontSize: '1.5rem', m: 1 }} variant='outlined'>Submit</Button>
 

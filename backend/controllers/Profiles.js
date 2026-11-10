@@ -16,11 +16,12 @@ module.exports.findProfile = async (req, res) => {
 
 
 module.exports.updateProfile = async (req, res) => {
-    const { firstname, lastname, email } = req.body;
+    const { firstname, lastname, email, description } = req.body;
     const updateData = {
         firstname,
         lastname,
-        email
+        email,
+        description
     }
     if (req.file) {
         const result = await uploadToCloudinary(req.file.buffer)

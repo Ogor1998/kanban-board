@@ -105,7 +105,10 @@ export default function TabComponent({ profile, board }) {
                 </Box>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-                <PaginateActivity username={profile.username} itemsPerPage={5} />
+                <Box sx={{ maxHeight: '25rem', overflow: 'scroll' }}>
+                    <PaginateActivity username={profile.username} itemsPerPage={5} />
+                </Box>
+
             </CustomTabPanel>
         </Box>
     );

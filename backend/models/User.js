@@ -9,11 +9,16 @@ const userSchema = new Schema({
         required: true,
         unique: true,
     },
-    username: String,
+    username: {
+        type: String,
+        require: true,
+        unique: true
+    },
     password: String,
     firstname: String,
     lastname: String,
-    image: String
+    image: String,
+    description: String
 }, { timestamps: true })
 
 
