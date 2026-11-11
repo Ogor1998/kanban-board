@@ -79,7 +79,7 @@ export default function ProfileComponent({ profile, username }) {
                     sx={{ width: 120, height: 120 }}  // ← bigger avatar
                 />
                 <Box sx={{ flex: 1 }}>  {/* ← flex: 1 takes remaining space */}
-                    <Typography variant="h4" fontWeight={600}>
+                    <Typography variant="h4" fontWeight={600} sx={{ width: '100%', textWrap: 'nowrap', fontSize: '2rem' }}>
                         {profile.firstname} {profile.lastname}
                     </Typography>
                     <Typography sx={{ fontSize: '1.5rem', color: 'text.secondary', my: 0.5 }}>

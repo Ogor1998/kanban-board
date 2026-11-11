@@ -194,7 +194,7 @@ export default function NewBoardModal({ formData, setFormData, handleOpen, setOp
                                 {isSaving ? "Saving..." : "Save Changes"}
                             </Button>
 
-                            <Button type='submit' sx={{ fontSize: '1.5rem', m: 1 }} variant='outlined'>Submit</Button>
+                            {/* <Button type='submit' sx={{ fontSize: '1.5rem', m: 1 }} variant='outlined'>Submit</Button> */}
 
                         </Box >
                     </Box>

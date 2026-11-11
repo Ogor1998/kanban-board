@@ -4,10 +4,11 @@ const { validateUser } = require('../middleware/middleware')
 const { login, register, findUsers } = require('../controllers/Users')
 const { catchAsync } = require('../utils/catchAsync')
 const { authLimiter } = require('../middleware/rateLimiter')
-const { upload } = require('../cloudinary')
+const { upload } = require('../cloudinary');
+const { isLoggedIn } = require('../middleware/auth');
 
 
-router.get('/users', catchAsync(findUsers))
+router.get('/users', isLoggedIn, catchAsync(findUsers))
 router.post('/register', upload.single('image'), validateUser, catchAsync(register))
 router.post('/login', authLimiter, catchAsync(login))
 

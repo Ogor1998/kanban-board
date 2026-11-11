@@ -8,7 +8,7 @@ const { sendToken } = require('../utils/setAuthToken')
 const secret = process.env.JWT_SECRET;
 
 module.exports.findUsers = async (req, res) => {
-    const users = await User.find().select('-password').populate();
+    const users = await User.find().select('firstname username image').populate();
     ;
     res.json(users)
 }
