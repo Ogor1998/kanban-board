@@ -3,13 +3,14 @@ import { useEffect, useState } from "react"
 import Password from "../components/reuseable/Password"
 import { useNotification } from "../context/NotificationContext"
 import { useAuth } from "../context/AuthContext"
-import { useLocation, useNavigate } from "react-router-dom";
+import { replace, useLocation, useNavigate } from "react-router-dom";
 import AlertBox from "../components/common/AlertBox";
 import axios from "axios";
 import './Login.css'
 import AntigravityUsage from "../components/reuseable/AntigravityUsage"
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { NavLink } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 
 
 
@@ -20,6 +21,7 @@ export default function Login() {
     const [timerleft, setTimerLeft] = useState(5 * 60 * 1000)
     const location = useLocation();
     const [errors, setErrors] = useState({})
+    const [searchParams, setSearchParams] = useSearchParams()
 
     const [formData, setFormData] = useState({
         username: "",
@@ -51,6 +53,16 @@ export default function Login() {
         }, 1000)
         return () => clearInterval(intervalId)
     }, [isLockedOut])
+
+    useEffect(() => {
+        if (searchParams.get('expired',)) {
+            setMessage({
+                text: 'Your session expired... Please login again',
+                severity: 'warning'
+            })
+        }
+        setSearchParams({}, { replace: true })
+    }, [])
 
 
     const minutes = Math.floor(timerleft / (1000 * 60))

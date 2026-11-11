@@ -118,6 +118,10 @@ module.exports.moveCard = async (req, res) => {
         returnDocument: 'after',
         runValidators: true
     })
+    const target = await Column.findById(columnId)
+    if (!target || !target.boardId.equals(column.boardId)) {
+        return res.status(400).json({ message: 'Invalid destination column' })
+    }
     await Activity.create({
         board: column.boardId,
         user: req.user.userId,

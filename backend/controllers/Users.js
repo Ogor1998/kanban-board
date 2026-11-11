@@ -2,6 +2,7 @@ const User = require('../models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { uploadToCloudinary } = require('../cloudinary')
+const { sendToken } = require('../utils/setAuthToken')
 
 
 const secret = process.env.JWT_SECRET;
@@ -31,13 +32,7 @@ module.exports.register = async (req, res) => {
     await user.save();
 
 
-    const token = jwt.sign({ userId: user._id }, secret, { expiresIn: '1h' });
-    res.cookie('token', token, {
-        httpOnly: true,
-        secure: false,       // true in production
-        sameSite: 'lax',
-        maxAge: 1000 * 60 * 60,
-    });
+    sendToken(res, user)
 
     const { password: _pw, ...safeUser } = user.toObject();
 
@@ -51,7 +46,6 @@ module.exports.register = async (req, res) => {
 module.exports.login = async (req, res) => {
     const { username, password } = req.body;
     const user = await User.findOne({ username })
-    // console.log(user)
     if (!user) {
         return res.status(401).json({
             message: "Invalid username or password",
@@ -67,20 +61,7 @@ module.exports.login = async (req, res) => {
         })
     }
 
-    const token = jwt.sign(
-        { userId: user._id },
-        secret,
-        {
-            expiresIn: "1h",
-        }
-    );
-
-    res.cookie("token", token, {
-        httpOnly: true,
-        secure: false,      // true in production with HTTPS
-        sameSite: "lax",
-        maxAge: 1000 * 60 * 60, // 1 hour
-    });
+    sendToken(res, user)
     res.json({
         message: 'Logged in successfully',
         isLoggedIn: true,

@@ -1,32 +1,41 @@
-
 const { Server } = require('socket.io')
-const http = require('http')
+const jwt = require('jsonwebtoken')
+const cookie = require('cookie')          // npm i cookie
 
 let io
-const connectedUsers = {}
+const connectedUsers = {}                 // userId -> socket.id
 
 const initSocket = (server) => {
     io = new Server(server, {
         cors: {
-            origin: 'http://localhost:5173',
+            origin: process.env.CLIENT_URL,
             credentials: true
         }
     })
 
+    // runs once per connection, before 'connection' fires
+    io.use((socket, next) => {
+        try {
+            const raw = socket.handshake.headers.cookie || ''
+            const { token } = cookie.parse(raw)
+            if (!token) return next(new Error('Not authenticated'))
+
+            socket.user = jwt.verify(token, process.env.JWT_SECRET)   // { userId }
+            next()
+        } catch (err) {
+            next(new Error('Invalid or expired token'))
+        }
+    })
+
     io.on('connection', (socket) => {
-        console.log('User Connected:', socket.id)
+        // register automatically, using the verified ID
+        connectedUsers[socket.user.userId] = socket.id
+        console.log('registered user', socket.user.userId)
 
-        socket.on('register', (userId) => {
-            connectedUsers[userId] = socket.id
-            console.log('registered user', userId)
-        })
-
-        socket.on('disconnect', () => {  // ← also fix socket.disconnect to socket.on
-            Object.keys(connectedUsers).forEach(userId => {
-                if (connectedUsers[userId] === socket.id) {
-                    delete connectedUsers[userId]
-                }
-            })
+        socket.on('disconnect', () => {
+            if (connectedUsers[socket.user.userId] === socket.id) {
+                delete connectedUsers[socket.user.userId]
+            }
         })
     })
 

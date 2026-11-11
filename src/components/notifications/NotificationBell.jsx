@@ -49,9 +49,6 @@ export default function NotificationBell({ itemsPerPage = 5, username }) {
         const fetchNotifications = async () => {
             setInitialLoading(true)
             try {
-                // const res = await axios.get(`/notifications/user/${username}`, {
-                //     params: { page, limit: itemsPerPage }
-                // })
                 const res = await getNotifications(username, {
                     params: { page, limit: itemsPerPage }
                 })
