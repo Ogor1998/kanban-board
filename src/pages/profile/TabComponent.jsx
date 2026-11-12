@@ -41,7 +41,16 @@ function a11yProps(index) {
     };
 }
 
-export default function TabComponent({ profile, board }) {
+const fontSize =
+{
+    fontSize: {
+        xs: '1.3rem',
+        md: '1.7rem'
+    }
+}
+
+
+export default function TabComponent({ profile, board, isOwnerProfile }) {
     const [value, setValue] = React.useState(0);
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -66,26 +75,26 @@ export default function TabComponent({ profile, board }) {
                 <Box sx={{ display: 'flex', flexDirection: 'row', gap: '5rem', textAlign: 'left' }}>
 
                     <Box>
-                        <Typography variant="body1" gutterBottom>
+                        <Typography sx={fontSize} variant="body1" gutterBottom>
                             <strong>Username</strong>
                         </Typography>
-                        <Typography variant="body1" gutterBottom>
+                        {isOwnerProfile && <Typography sx={fontSize} variant="body1" gutterBottom>
                             <strong>Email</strong>
-                        </Typography>
-                        <Typography variant="body1" gutterBottom>
+                        </Typography>}
+                        <Typography sx={fontSize} variant="body1" gutterBottom>
                             <strong>Joined</strong>{" "}
                         </Typography>
 
                     </Box>
                     <Box>
-                        <Typography variant="body1" sx={{ marginRight: 'auto' }} gutterBottom>
+                        <Typography variant="body1" sx={fontSize} gutterBottom>
 
                             {profile.username}
                         </Typography>
-                        <Typography variant="body1" gutterBottom>
+                        {isOwnerProfile && <Typography variant="body1" sx={fontSize} gutterBottom>
                             {profile.email}
-                        </Typography>
-                        <Typography variant="body1" gutterBottom>
+                        </Typography>}
+                        <Typography variant="body1" sx={fontSize} gutterBottom>
                             {new Date(profile.createdAt).toLocaleDateString()}
                         </Typography>
 

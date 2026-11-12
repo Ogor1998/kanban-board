@@ -9,7 +9,6 @@ const { isBoardOwner, validateBoard, isBoardMember } = require('../middleware/mi
 
 router.get('/', isLoggedIn, catchAsync(allBoards))
 router.get('/:boardId', isLoggedIn, catchAsync(findBoard))
-router.get('/user/:username', isLoggedIn, catchAsync(findUserBoard))
 router.post('/', isLoggedIn, validateBoard, catchAsync(createBoard))
 router.put('/:boardId', isLoggedIn, isBoardOwner, catchAsync(updateBoard))
 router.post('/:boardId/invite', isLoggedIn, isBoardOwner, catchAsync(inviteMember))

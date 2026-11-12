@@ -6,7 +6,8 @@ import {
     Typography,
     Button,
     Divider,
-    Paper
+    Paper,
+    IconButton
 } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import TabComponent from "./TabComponent";
@@ -16,6 +17,8 @@ import { getProfile } from "../../api/profiles";
 import ProfileSkeleton from "../../skeletons/ProfileSkeleton";
 import { NavLink } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 export default function ProfileComponent({ profile, username }) {
     const { currentUser } = useAuth();
@@ -45,7 +48,7 @@ export default function ProfileComponent({ profile, username }) {
         setSublength(prev => !prev)
     }
 
-    const allowedToEditProfile = profile?._id === currentUser?._id
+    const isOwnerProfile = profile?._id === currentUser?._id
 
     if (!profile || loading) return <ProfileSkeleton />
 
@@ -67,30 +70,54 @@ export default function ProfileComponent({ profile, username }) {
             {/* ── Avatar + Name Section ── */}
             <Box sx={{
                 display: 'flex',
-                flexDirection: 'row',
+                flexDirection: {
+                    xs: 'column',
+                    md: 'row',
+                },
                 alignItems: 'center',
                 gap: 3,
                 // mb: 4,
                 // pb: 3,
             }}>
                 <Avatar
-                    src={profile.image}
-                    alt={profile.username}
+                    src={profile?.image}
+                    alt={profile?.username}
                     sx={{ width: 120, height: 120 }}  // ← bigger avatar
                 />
                 <Box sx={{ flex: 1 }}>  {/* ← flex: 1 takes remaining space */}
                     <Typography variant="h4" fontWeight={600} sx={{ width: '100%', textWrap: 'nowrap', fontSize: '2rem' }}>
-                        {profile.firstname} {profile.lastname}
+                        {profile?.firstname} {profile?.lastname}
                     </Typography>
                     <Typography sx={{ fontSize: '1.5rem', color: 'text.secondary', my: 0.5 }}>
-                        @{profile.username}
+                        @{profile?.username}
                     </Typography>
-                    <Typography sx={{ fontSize: '1.4rem', color: 'text.secondary' }} variant="body1">
-                        {sublength ? profile.description.substring(0, 100) : profile.description}
-                        <Button onClick={() => switchSubstringLength()}>{sublength ? 'Show More' : 'Show Less'}</Button>
+                    <Typography sx={{
+                        fontSize: {
+                            xs: '1.2rem',
+                            md: '1.5rem'
+                        }, color: 'text.secondary',
+
+                    }} variant="body1">
+                        {sublength ? profile?.description?.substring(0, 100) || 'Job description placeholder' : profile.description}
+                        <Button sx={{
+                            fontSize: {
+                                xs: '1.2rem',
+                                md: '1.25rem'
+                            }
+
+                        }}
+                            startIcon={
+                                sublength ? (
+                                    <ArrowDropDownIcon />
+
+                                ) : (
+                                    <ArrowDropUpIcon />
+                                )
+                            }
+                            onClick={() => switchSubstringLength()}>{sublength ? 'Show More' : 'Show Less'}</Button>
                     </Typography>
                 </Box>
-                {allowedToEditProfile && (
+                {isOwnerProfile && (
                     <Button
                         component={RouterLink}
                         to={`/profile/${username}/edit`}
@@ -130,10 +157,10 @@ export default function ProfileComponent({ profile, username }) {
 
             {/* ── Tabs Section ── */}
             <Box sx={{ mt: 3 }}>
-                <TabComponent profile={profile} board={board} />
+                <TabComponent profile={profile} board={board} isOwnerProfile={isOwnerProfile} />
             </Box>
             {/* </Box> */}
-        </Paper>
+        </Paper >
     )
 
 }

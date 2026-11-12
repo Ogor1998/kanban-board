@@ -7,7 +7,7 @@ const { isLoggedIn } = require('../middleware/auth')
 
 
 
-router.get('/:username', catchAsync(findProfile))
+router.get('/:username', isLoggedIn, catchAsync(findProfile))
 
 router.put('/', isLoggedIn, upload.single('image'), catchAsync(updateProfile))
 

@@ -6,11 +6,12 @@ const { catchAsync } = require('../utils/catchAsync')
 const { authLimiter } = require('../middleware/rateLimiter')
 const { upload } = require('../cloudinary');
 const { isLoggedIn } = require('../middleware/auth');
-
+const { findUserInfo } = require('../controllers/Users')
 
 router.get('/users', isLoggedIn, catchAsync(findUsers))
 router.post('/register', authLimiter, upload.single('image'), validateUser, catchAsync(register))
 router.post('/login', authLimiter, catchAsync(login))
+router.get('/user/:username', isLoggedIn, catchAsync(findUserInfo))
 
 
 

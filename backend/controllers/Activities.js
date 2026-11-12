@@ -1,4 +1,5 @@
 const Activity = require('../models/Activity')
+const Board = require('../models/Board')
 const User = require('../models/User')
 
 module.exports.findActivity = async (req, res) => {
@@ -40,15 +41,33 @@ module.exports.getUserActivities = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
+        const me = req.user.userId;
+        const isSelf = user._id.equals(me)
+
+        const query = {
+            $or: [{ user: user._id }]
+        }
+        if (!isSelf) {
+
+            const sharedBoards = await Board.find({
+                $and: [
+                    { $or: [{ owner: user._id }, { 'members.user': user._id }] },
+                    { $or: [{ owner: me }, { 'members.user': me }] }
+                ]
+            }).select('_id');
+
+            query.board = { $in: sharedBoards.map(b => b._id) };
+        }
+
         // 2. Fetch the slice of activities
-        const activities = await Activity.find({ user: user._id })
+        const activities = await Activity.find(query)
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
             .populate('user', 'firstname image');
 
         // 3. Count total to know if there's more
-        const total = await Activity.countDocuments({ user: user._id });
+        const total = await Activity.countDocuments(query);
 
         res.json({
             activities,
