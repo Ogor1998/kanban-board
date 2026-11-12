@@ -3,8 +3,8 @@ const User = require('../models/User')
 
 
 module.exports.findNotifications = async (req, res) => {
-    const { username } = req.params;
-    const user = await User.findOne({ username })
+    // const { username } = req.params;
+    const user = await User.find({ _id: req.user.userId })
     if (!user) {
         return res.status(404).json({
             message: "This user doesn't exist"
@@ -17,11 +17,14 @@ module.exports.findNotifications = async (req, res) => {
 
 
     // 2. Fetch the slice of activities
-    const notification = await Notification.find({ recipient: user._id })
+    const notification = await Notification.find({ recipient: req.user.userId })
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .populate('sender', 'firstname image');
+
+
+    console.log(notification)
 
     if (!notification) {
         return res.status(404).json({

@@ -16,10 +16,10 @@ const { isLoggedIn } = require('../middleware/auth');
 const { validateCard, isCardMember, isBoardMember, canAccessCard, canAccessColumnFromBody } = require('../middleware/middleware')
 const { upload } = require('../cloudinary')
 
-router.post('/', isLoggedIn, canAccessColumnFromBody, validateCard, upload.array('images', 10), catchAsync(createCard))
+router.post('/', isLoggedIn, upload.array('images', 10), canAccessColumnFromBody, validateCard, catchAsync(createCard))
 
 
-router.delete('/:id', isLoggedIn, isBoardMember, catchAsync(deleteCard))
+router.delete('/:id', isLoggedIn, canAccessCard, catchAsync(deleteCard))
 
 router.put('/:id', isLoggedIn, upload.array('images', 10), validateCard, catchAsync(updateCard))
 router.post('/:cardId/checklist', isLoggedIn, catchAsync(checklist))
@@ -30,7 +30,7 @@ router.delete('/:cardId/checklist/:itemId', isLoggedIn, canAccessCard, catchAsyn
 router.put('/:cardId/invite', isLoggedIn, isCardMember, catchAsync(addMember))
 router.delete('/:cardId/member/:memberID', isLoggedIn, canAccessCard, catchAsync(deleteMember))
 
-router.patch('/:activeId/move', isLoggedIn, isBoardMember, catchAsync(moveCard))
+router.patch('/:activeId/move', isLoggedIn, canAccessCard, catchAsync(moveCard))
 
 
 module.exports = router;

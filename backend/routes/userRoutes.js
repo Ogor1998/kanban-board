@@ -9,7 +9,7 @@ const { isLoggedIn } = require('../middleware/auth');
 
 
 router.get('/users', isLoggedIn, catchAsync(findUsers))
-router.post('/register', upload.single('image'), validateUser, catchAsync(register))
+router.post('/register', authLimiter, upload.single('image'), validateUser, catchAsync(register))
 router.post('/login', authLimiter, catchAsync(login))
 
 

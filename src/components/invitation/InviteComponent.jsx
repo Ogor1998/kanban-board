@@ -11,7 +11,7 @@ import { Share, Close } from '@mui/icons-material';
 import { Autocomplete } from '@mui/material';
 import { useNotification } from '../../context/NotificationContext';
 import usePermissions from '../../hooks/usePermissions';
-
+import { inviteUser } from '../../api/invites';
 
 const style = {
     position: 'absolute',
@@ -59,10 +59,11 @@ const InviteComponent = ({ closeInviteModal, openInvite, boardId, isOwner, board
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(`/boards/${boardId}/invite`, {
-                memberID: selectedUser._id,
-                permissions: formData.permissions
-            })
+            const res = await inviteUser(boardId,
+                {
+                    memberID: selectedUser._id,
+                    permissions: formData.permissions
+                })
             console.log('this is the message', res.data.message)
             setMessage({
                 text: res.data.message,

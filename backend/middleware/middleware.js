@@ -44,8 +44,8 @@ module.exports.canAccessColumn = async (req, res, next) => {
     next()
 }
 module.exports.canAccessColumnFromBody = async (req, res, next) => {
-    const { id } = req.body;
-    const column = await Column.findById(id)
+    const { columnId } = req.body;
+    const column = await Column.findById(columnId)
     if (!column) return res.status(404).json({ message: 'Column not found' })
     const problem = await checkBoardAccess(req.body.boardId, req.user.userId)
     if (problem) return res.status(problem.status).json({ message: problem.message })

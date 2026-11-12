@@ -39,6 +39,7 @@ import SearchField from '../reuseable/SearchField';
 import InviteComponent from '../invitation/InviteComponent';
 import ActivityModal from '../activity/ActivityModal';
 import './BoardHeading.css';
+import { updateBoardTitle } from '../../api/boards';
 
 export default function BoardHeading({
     boardId,
@@ -87,7 +88,7 @@ export default function BoardHeading({
         if (!titleInput.trim()) return;
 
         try {
-            const res = await axios.put(`/boards/${boardId}`, { title: titleInput });
+            const res = await updateBoardTitle(boardId, { title: titleInput });
             const updatedTitle = res.data.board?.title || titleInput;
             setBoard((prev) => ({ ...prev, title: updatedTitle }));
             setIsEditing(false);

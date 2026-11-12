@@ -49,7 +49,7 @@ export default function NotificationBell({ itemsPerPage = 5, username }) {
         const fetchNotifications = async () => {
             setInitialLoading(true)
             try {
-                const res = await getNotifications(username, {
+                const res = await getNotifications({
                     params: { page, limit: itemsPerPage }
                 })
                 const { notification, pagination } = res.data

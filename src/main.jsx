@@ -9,7 +9,7 @@ import { NotificationProvider } from "./context/NotificationContext";
 import { AuthProvider } from './context/AuthContext.jsx'
 import { BoardProvider } from './context/BoardContext.jsx'
 import { SocketProvider } from './context/SocketContext.jsx'
-// const api_url= import.meta.env.VITE_WEATHER_API_KEY
+
 
 const theme = createTheme({
   typography: {
@@ -17,7 +17,7 @@ const theme = createTheme({
   },
 });
 axios.defaults.withCredentials = true  // ← add this
-axios.defaults.baseURL = 'http://localhost:3000'
+axios.defaults.baseURL = import.meta.env.VITE_API_URL
 
 
 

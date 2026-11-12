@@ -7,9 +7,9 @@ const { catchAsync } = require('../utils/catchAsync')
 
 router.get('/:cardID', isLoggedIn, canAccessComments, catchAsync(allComments))
 
-router.get('/:cardID/count', catchAsync(commentCount))
+router.get('/:cardID/count', isLoggedIn, canAccessComments, catchAsync(commentCount))
 
 router.post('/', isLoggedIn, canAccessComments, catchAsync(createComment))
-router.delete('/:commentID', isLoggedIn, isCommentAuthor, deleteComment)
+router.delete('/:commentID', isLoggedIn, isCommentAuthor, catchAsync(deleteComment))
 
 module.exports = router

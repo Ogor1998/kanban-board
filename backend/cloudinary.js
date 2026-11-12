@@ -14,7 +14,7 @@ const uploadToCloudinary = async (fileBuffer) => {
     return new Promise((resolve, reject) => {
         cloudinary.uploader.upload(
             `data:image/jpeg;base64,${fileBuffer.toString('base64')}`,
-            { folder: "blog" },
+            { folder: "kanban" },
             (error, result) => {
                 if (error) return reject(error);
                 console.log(result)

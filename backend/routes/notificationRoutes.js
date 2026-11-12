@@ -7,7 +7,7 @@ const { isLoggedIn } = require('../middleware/auth')
 
 
 
-router.get('/user/:username', isLoggedIn, catchAsync(findNotifications))
+router.get('/user', isLoggedIn, catchAsync(findNotifications))
 router.put('/:notificationId', isLoggedIn, catchAsync(openNotification))
 
 
