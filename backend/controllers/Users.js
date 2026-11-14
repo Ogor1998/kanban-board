@@ -95,13 +95,29 @@ module.exports.findUserInfo = async (req, res) => {
         Board.find(query),
         isSelf ? Comment.countDocuments({ author: user._id }) : null
     ])
+    const boards = await Board.find({ owner: req.user.userId }).populate('members.user', 'firstname lastname username email image')
+    const boardsWithCounts = await Promise.all(
+        boards.map(async (board) => {
+            // Get all column IDs belonging to this specific board
+            const columnIds = await Column.find({ boardId: board._id }).distinct('_id');
+
+            // Count cards inside those columns
+            const cardsCount = await Card.countDocuments({ columnId: { $in: columnIds } });
+
+            return {
+                ...board.toObject(), // convert mongoose doc to plain JS object
+                columnsCount: columnIds.length,
+                cardsCount: cardsCount
+            };
+        })
+    );
     if (!board) {
         return res.status(404).json({
             message: 'Board not found'
         })
     }
     res.json({
-        board,
+        board: boardsWithCounts,
         boardCount: board.length,
         commentsCount
     })

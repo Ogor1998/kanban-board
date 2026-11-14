@@ -11,7 +11,6 @@ const { getIO, getConnectedUsers } = require('../utils/socket')
 
 
 module.exports.allBoards = async (req, res) => {
-    console.log(req.user)
     const boards = await Board.find({ owner: req.user.userId }).populate('members.user', 'firstname lastname username email image')
     if (boards.length === 0) {
         return res.json({ boards: [] });

@@ -56,7 +56,7 @@ export default function ProfileComponent({ profile, username }) {
 
         <Paper sx={{
             width: "100%",
-            maxWidth: 480,
+            maxWidth: { xs: 480, md: 600 },
             mx: "auto",
             mt: 4,
             p: { xs: 2.5, sm: 4 },

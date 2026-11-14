@@ -23,9 +23,6 @@ module.exports.findNotifications = async (req, res) => {
         .limit(limit)
         .populate('sender', 'firstname image');
 
-
-    console.log(notification)
-
     if (!notification) {
         return res.status(404).json({
             message: 'There are no notifications yet'
